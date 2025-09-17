@@ -1,0 +1,58 @@
+<Project>
+  <!-- Common properties shared across all projects -->
+  
+  <!-- Assembly attributes -->
+  <PropertyGroup>
+    <Product>IndQuestResults</Product>
+    <Company>Exxerpro Solutions SA de CV</Company>
+    <Copyright>Copyright © Exxerpro Solutions SA de CV $([System.DateTime]::Now.Year)</Copyright>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+
+  <!-- Strong naming -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <SignAssembly>false</SignAssembly>
+    <!-- Add strong name key file path here if needed -->
+    <!-- <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)strongname.snk</AssemblyOriginatorKeyFile> -->
+  </PropertyGroup>
+
+  <!-- Runtime identifiers for cross-platform support -->
+  <PropertyGroup>
+    <RuntimeIdentifiers>win-x64;win-x86;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <!-- Performance and optimization settings -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>true</Optimize>
+    <TieredCompilation>true</TieredCompilation>
+    <TieredCompilationQuickJit>false</TieredCompilationQuickJit>
+    <PublishTrimmed Condition="'$(IsTrimmable)' == 'true'">true</PublishTrimmed>
+    <PublishReadyToRun Condition="'$(RuntimeIdentifier)' != ''">true</PublishReadyToRun>
+  </PropertyGroup>
+
+  <!-- Source Link for debugging support -->
+  <PropertyGroup Condition="'$(CI)' == 'true' OR '$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DeterministicSourcePaths>true</DeterministicSourcePaths>
+  </PropertyGroup>
+
+  <!-- Trimming support -->
+  <PropertyGroup>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <IsTrimmable>true</IsTrimmable>
+    <TrimMode>link</TrimMode>
+  </PropertyGroup>
+
+  <!-- Package validation: enable only for packable projects on CI -->
+  <PropertyGroup Condition="('$(CI)' == 'true' OR '$(GITHUB_ACTIONS)' == 'true') AND '$(IsPackable)' == 'true'">
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <!-- Set baseline version in CI via environment or keep unset locally to avoid NuGet lookups -->
+    <PackageValidationBaselineVersion Condition="'$(PackageValidationBaselineVersion)' != ''">$(PackageValidationBaselineVersion)</PackageValidationBaselineVersion>
+  </PropertyGroup>
+</Project>

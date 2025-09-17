@@ -1,0 +1,52 @@
+<Project>
+  <!-- Import common targets -->
+  
+  <!-- Package metadata validation -->
+  <Target Name="ValidatePackageMetadata" BeforeTargets="Pack" Condition="'$(IsPackable)' == 'true'">
+    <Error Condition="'$(Authors)' == ''" Text="Authors property must be set for packable projects" />
+    <Error Condition="'$(Description)' == ''" Text="Description property must be set for packable projects" />
+    <Error Condition="'$(PackageLicenseExpression)' == ''" Text="PackageLicenseExpression property must be set for packable projects" />
+  </Target>
+
+  <!-- Automatic versioning for CI builds -->
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' AND '$(GITHUB_REF)' != ''">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <DeterministicSourcePaths>true</DeterministicSourcePaths>
+  </PropertyGroup>
+
+  <!-- Source Link support -->
+  <PropertyGroup Condition="'$(CI)' == 'true' OR '$(TF_BUILD)' == 'true'">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <!-- Analyzers configuration -->
+  <PropertyGroup>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <!-- Code coverage settings -->
+  <PropertyGroup Condition="$(MSBuildProjectName.Contains('Tests'))">
+    <CollectCoverage>true</CollectCoverage>
+    <CoverletOutputFormat>opencover</CoverletOutputFormat>
+    <CoverletOutput>$(MSBuildThisFileDirectory)artifacts\coverage\$(MSBuildProjectName).opencover.xml</CoverletOutput>
+    <ExcludeByAttribute>CompilerGeneratedAttribute,GeneratedCodeAttribute,ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
+  </PropertyGroup>
+
+  <!-- InternalsVisibleTo for test projects -->
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests.Unit" />
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests.Performance" />
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests.Mutation" />
+  </ItemGroup>
+
+  <!-- Clean artifacts on clean -->
+  <Target Name="CleanArtifacts" AfterTargets="Clean">
+    <RemoveDir Directories="$(BaseIntermediateOutputPath)" />
+    <RemoveDir Directories="$(OutputPath)" />
+  </Target>
+</Project>

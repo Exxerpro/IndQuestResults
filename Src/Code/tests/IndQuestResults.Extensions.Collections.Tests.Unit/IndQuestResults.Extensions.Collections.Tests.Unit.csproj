@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>IndQuestResults.Extensions.Collections.Tests.Unit</RootNamespace>
+    <AssemblyName>IndQuestResults.Extensions.Collections.Tests.Unit</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
+    <ProjectReference Include="..\..\src\IndQuestResults.Extensions.Collections\IndQuestResults.Extensions.Collections.csproj" />
+  </ItemGroup>
+
+</Project>
+
+

@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>IndQuestResults.Extensions.Observables</RootNamespace>
+    <AssemblyName>IndQuestResults.Extensions.Observables</AssemblyName>
+    <PackageId>IndQuestResults.Extensions.Observables</PackageId>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    
+    <Title>IndQuestResults Observable Extensions</Title>
+    <Description>Observable and reactive programming extensions for IndQuestResults library with subscription management.</Description>
+    <Version>1.0.0</Version>
+    <Authors>Exxerpro Engineering Team</Authors>
+    <Company>Exxerpro Solutions SA de CV</Company>
+    <Copyright>Copyright © Exxerpro Solutions SA de CV 2025</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <!-- Toggle between local project references and NuGet package consumption -->
+  <PropertyGroup>
+    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">false</UseLocalRefs>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(UseLocalRefs)' == 'true'">
+    <ProjectReference Include="..\IndQuestResults\IndQuestResults.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
+    <PackageReference Include="IndQuestResults" />
+    <PackageReference Include="IndQuestResults.Extensions.Collections" />
+  </ItemGroup>
+
+</Project>

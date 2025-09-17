@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>IndQuestResults.Tests.Performance</RootNamespace>
+    <AssemblyName>IndQuestResults.Tests.Performance</AssemblyName>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">false</UseLocalRefs>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(UseLocalRefs)' == 'true'">
+    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
+    <PackageReference Include="IndQuestResults" />
+  </ItemGroup>
+
+  <!-- Performance Testing -->
+  <ItemGroup>
+    <Compile Include="Benchmarks\ResultCreationBenchmarks.cs" />
+    <Compile Include="Benchmarks\ErrorFormattingBenchmarks.cs" />
+    <Compile Include="Benchmarks\FluentChainBenchmarks.cs" />
+    <Compile Include="Benchmarks\SpanOptimizationBenchmarks.cs" />
+    <Compile Include="Benchmarks\ConcurrencyBenchmarks.cs" />
+    <Compile Include="Program.cs" />
+  </ItemGroup>
+
+</Project>

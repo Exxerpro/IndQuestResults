@@ -28,7 +28,8 @@ $ErrorActionPreference = "Stop"
 $RootPath = Split-Path $PSScriptRoot -Parent
 $SrcPath = Join-Path $RootPath "Src"
 $ArtifactsPath = Join-Path $RootPath "artifacts"
-$SolutionFile = Join-Path $SrcPath "IndQuestResults.sln"
+# Projects live under Src/Code; point solution accordingly
+$SolutionFile = Join-Path (Join-Path $SrcPath "Code") "IndQuestResults.sln"
 
 Write-Host "🏗️ Building IndQuestResults" -ForegroundColor Green
 Write-Host "Configuration: $Configuration" -ForegroundColor Cyan
@@ -58,13 +59,13 @@ if (-not $SkipTests) {
 
     # Run performance tests
     Write-Host "⚡ Running performance benchmarks..." -ForegroundColor Yellow
-    $BenchmarkProject = Join-Path $SrcPath "benchmarks/IndQuestResults.Benchmarks/IndQuestResults.Benchmarks.csproj"
+    $BenchmarkProject = Join-Path (Join-Path $SrcPath "Code") "benchmarks/IndQuestResults.Benchmarks/IndQuestResults.Benchmarks.csproj"
     dotnet run --project $BenchmarkProject --configuration $Configuration -- --exporters json --artifacts "$ArtifactsPath/benchmarks"
     
     # Run mutation tests (if Stryker is available)
     if (Get-Command "dotnet-stryker" -ErrorAction SilentlyContinue) {
         Write-Host "🧬 Running mutation tests..." -ForegroundColor Yellow
-        Push-Location (Join-Path $SrcPath "tests/IndQuestResults.Tests.Mutation")
+        Push-Location (Join-Path (Join-Path $SrcPath "Code") "tests/IndQuestResults.Tests.Mutation")
         dotnet stryker --output "$ArtifactsPath/mutation" --reporter "html" --reporter "json"
         Pop-Location
     } else {
@@ -75,7 +76,7 @@ if (-not $SkipTests) {
 if (-not $SkipPack) {
     # Create NuGet packages
     Write-Host "📦 Creating NuGet packages..." -ForegroundColor Yellow
-    $ProjectFile = Join-Path $SrcPath "src/IndQuestResults/IndQuestResults.csproj"
+    $ProjectFile = Join-Path (Join-Path $SrcPath "Code") "src/IndQuestResults/IndQuestResults.csproj"
     dotnet pack $ProjectFile --configuration $Configuration --no-build --output "$ArtifactsPath/packages" --verbosity $Verbosity
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }

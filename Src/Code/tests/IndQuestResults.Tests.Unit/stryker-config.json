@@ -1,0 +1,28 @@
+{
+  "stryker-config": {
+    "project": "../../src/IndQuestResults/IndQuestResults.csproj",
+    "test-projects": [
+      "IndQuestResults.Tests.Unit.csproj"
+    ],
+    "mutate": [
+      "../../src/IndQuestResults/Operations/Result.cs",
+      "../../src/IndQuestResults/Operations/ResultExtensions.cs"
+    ],
+    "ignore-mutations": [
+    ],
+    "coverage-analysis": "perTest",
+    "concurrency": 4,
+    "additional-timeout": 30000,
+    "thresholds": {
+      "high": 90,
+      "low": 75,
+      "break": 0
+    },
+    "reporters": [
+      "Progress",
+      "Html",
+      "Json"
+    ],
+    "verbosity": "info"
+  }
+}

@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>IndQuestResults.Tests.Unit</RootNamespace>
+    <AssemblyName>IndQuestResults.Tests.Unit</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Test Configuration -->
+    <CollectCoverage>true</CollectCoverage>
+    <CoverletOutputFormat>cobertura</CoverletOutputFormat>
+    <CoverletOutput>../../../artifacts/coverage/unit/</CoverletOutput>
+    <Threshold>95</Threshold>
+    <ThresholdType>line</ThresholdType>
+    <ThresholdStat>total</ThresholdStat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Additional test utilities beyond Directory.Build.props -->
+    <PackageReference Include="AutoFixture" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">false</UseLocalRefs>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
+    <PackageReference Include="IndQuestResults" />
+    <PackageReference Include="IndQuestResults.Extensions.Collections" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
+  </ItemGroup>
+
+  <!-- Test Data -->
+  <ItemGroup>
+    <EmbeddedResource Include="TestData\**\*.json" />
+  </ItemGroup>
+
+</Project>

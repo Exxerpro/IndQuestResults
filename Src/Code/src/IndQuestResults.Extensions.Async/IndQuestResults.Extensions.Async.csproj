@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>IndQuestResults.Extensions.Async</RootNamespace>
+    <AssemblyName>IndQuestResults.Extensions.Async</AssemblyName>
+    <PackageId>IndQuestResults.Extensions.Async</PackageId>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    
+    <Title>IndQuestResults Async Extensions</Title>
+    <Description>Async and Task-based extensions for IndQuestResults library providing async composition patterns.</Description>
+    <Version>1.0.0</Version>
+    <Authors>Exxerpro Engineering Team</Authors>
+    <Company>Exxerpro Solutions SA de CV</Company>
+    <Copyright>Copyright © Exxerpro Solutions SA de CV 2025</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <!-- Toggle between local project references and NuGet package consumption -->
+  <PropertyGroup>
+    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">false</UseLocalRefs>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(UseLocalRefs)' == 'true'">
+    <ProjectReference Include="..\IndQuestResults\IndQuestResults.csproj" />
+    <ProjectReference Include="..\IndQuestResults.Extensions.Collections\IndQuestResults.Extensions.Collections.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
+    <PackageReference Include="IndQuestResults" />
+    <PackageReference Include="IndQuestResults.Extensions.Collections" />
+  </ItemGroup>
+
+</Project>

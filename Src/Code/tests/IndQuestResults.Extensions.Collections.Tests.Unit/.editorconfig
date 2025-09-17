@@ -1,0 +1,6 @@
+# Allow underscores in test method names for this test project only
+
+[*.cs]
+dotnet_diagnostic.CA1707.severity = none
+
+

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>IndQuestResults.Tests.Mutation</RootNamespace>
+    <AssemblyName>IndQuestResults.Tests.Mutation</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">false</UseLocalRefs>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(UseLocalRefs)' == 'true'">
+    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
+    <PackageReference Include="IndQuestResults" />
+  </ItemGroup>
+
+  <!-- Mutation Testing Configuration -->
+  <ItemGroup>
+    <None Include="stryker-config.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="MutationTests\ResultMutationTests.cs" />
+    <Compile Include="MutationTests\ResultExtensionsMutationTests.cs" />
+    <Compile Include="MutationTests\ValidationMutationTests.cs" />
+  </ItemGroup>
+
+</Project>

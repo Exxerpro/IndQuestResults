@@ -1,0 +1,66 @@
+<Project>
+  <!-- Enable Central Package Management -->
+  <PropertyGroup>
+    <!-- Enable Central Package Management so version-less PackageReference work -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- Production Dependencies -->
+  <ItemGroup>
+    <!-- No production dependencies for core library - maintaining zero dependencies -->
+  </ItemGroup>
+
+  <!-- Internal Packages (local dev consumption via local feed) -->
+  <ItemGroup>
+    <PackageVersion Include="IndQuestResults" Version="1.0.0" />
+    <PackageVersion Include="IndQuestResults.Extensions.Collections" Version="1.0.0" />
+    <PackageVersion Include="IndQuestResults.Extensions.Functional" Version="$(VersionPrefix)" />
+    <PackageVersion Include="IndQuestResults.Extensions.Async" Version="$(VersionPrefix)" />
+    <PackageVersion Include="IndQuestResults.Extensions.Observables" Version="$(VersionPrefix)" />
+  </ItemGroup>
+
+  <!-- Test Dependencies -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageVersion Include="xunit.analyzers" Version="1.6.0" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="Moq" Version="4.20.69" />
+    <PackageVersion Include="AutoFixture" Version="4.18.1" />
+    <PackageVersion Include="AutoFixture.Xunit2" Version="4.18.1" />
+  </ItemGroup>
+
+  <!-- Mutation Testing Dependencies -->
+  <ItemGroup>
+    <!-- Stryker is installed as a global tool, not as package references -->
+  </ItemGroup>
+
+  <!-- Benchmarking Dependencies -->
+  <ItemGroup>
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.3" />
+    <PackageVersion Include="BenchmarkDotNet.Annotations" Version="0.13.12" />
+  </ItemGroup>
+
+  <!-- Sample Project Dependencies -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.9" />
+  </ItemGroup>
+
+  <!-- Documentation/Tools -->
+  <ItemGroup>
+    <PackageVersion Include="Verify.Xunit" Version="22.11.4" />
+    <PackageVersion Include="DiffEngine" Version="11.3.0" />
+  </ItemGroup>
+
+  <!-- Analyzers (use PackageReference instead of GlobalPackageReference) -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" />
+    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.15.0.81779" />
+  </ItemGroup>
+</Project>
