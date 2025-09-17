@@ -23,10 +23,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\IndQuestResults\IndQuestResults.csproj" />
   </ItemGroup>
-
 
 </Project>

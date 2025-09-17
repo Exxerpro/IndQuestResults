@@ -1,6 +1,5 @@
 using System.Reflection;
 using IndQuestResults.Operations;
-#pragma warning disable CS1570 // XML comment has badly formed XML
 
 namespace IndQuestResults.Tests.Unit.Operations;
 
@@ -10,9 +9,10 @@ namespace IndQuestResults.Tests.Unit.Operations;
 /// </summary>
 public class ResultMutationKillerTests
 {
+    private static readonly string[] ErrorsForValid = new[] { "", "  ", "Valid Error", "Another" };
     /// <summary>
     /// Kill boundary condition mutations in Span optimization paths.
-    /// Target: collection.Count <= 16 mutations to collection.Count < 16, >= 16, etc.
+    /// Target: collection.Count &lt;= 16 mutations to collection.Count &lt; 16, &gt;= 16, etc.
     /// </summary>
     [Theory]
     [InlineData(15)] // Just under threshold
@@ -45,7 +45,7 @@ public class ResultMutationKillerTests
 
     /// <summary>
     /// Kill logical operator mutations in Result constructor.
-    /// Target: succeeded && !hasAnyErrors mutations to ||, individual negations.
+    /// Target: succeeded &amp;&amp; !hasAnyErrors mutations to ||, individual negations.
     /// </summary>
     [Theory]
     [InlineData(true, false, true)]   // succeeded=true, hasErrors=false -> IsSuccess=true
@@ -92,7 +92,7 @@ public class ResultMutationKillerTests
 
     /// <summary>
     /// Kill loop boundary mutations in BuildStringInSpan.
-    /// Target: i > 0 mutations to i >= 0, i < length mutations.
+    /// Target: i &gt; 0 mutations to i &gt;= 0, i &lt; length mutations.
     /// </summary>
     [Fact]
     public void FormatErrorsString_LoopBoundaryMutations_ShouldBeKilled()
@@ -127,10 +127,10 @@ public class ResultMutationKillerTests
     public void FormatErrorsString_NullHandling_ShouldKillNullCoalescingMutations()
     {
         // Arrange - Mix of null and non-null errors
-        var errors = new[] { "Valid", null, "", "  ", "Another" };
+        var errors = new string?[] { "Valid", null, "", "  ", "Another" };
         
         // Act
-        var result = Result.FormatErrorsString(errors, "Null");
+        var result = Result.FormatErrorsString(errors.Select(s => s ?? string.Empty).ToArray(), "Null");
         
         // Assert - Kill null coalescing mutations
         result.ShouldContain("Valid");
@@ -139,13 +139,13 @@ public class ResultMutationKillerTests
         result.ShouldBe("Null: Valid, , ,   , Another"); // Exact format with empty strings
         
         // Kill string.IsNullOrWhiteSpace mutations in Error property
-        var resultObj = Result.WithFailure(errors);
+        var resultObj = Result.WithFailure(errors.Select(s => s ?? string.Empty).ToArray());
         resultObj.Error.ShouldBe("Valid"); // Should skip null/empty/whitespace
     }
 
     /// <summary>
     /// Kill comparison mutations in stackalloc threshold.
-    /// Target: estimatedLength <= 512 mutations to <, >=, >, etc.
+    /// Target: estimatedLength &lt;= 512 mutations to &lt;, &gt;=, &gt;, etc.
     /// </summary>
     [Theory]
     [InlineData(510)] // Just under threshold
@@ -211,7 +211,7 @@ public class ResultMutationKillerTests
         successResult.IsFailure.ShouldBeFalse(); // Kill !IsSuccess mutations
         
         // Arrange & Act - Failure result with specific error pattern
-        var failureResult = Result.WithFailure(new[] { "", "  ", "Valid Error", "Another" });
+        var failureResult = Result.WithFailure(ErrorsForValid);
         
         // Assert - Kill Error property LINQ mutations
         failureResult.Error.ShouldBe("Valid Error"); // Should be first non-whitespace
@@ -255,7 +255,8 @@ public class ResultMutationKillerTests
         // Arrange - Different collection types to test type checking mutations
         string[] array = { "Array1", "Array2" };
         ICollection<string> collection = new List<string> { "List1", "List2" };
-        IEnumerable<string> enumerable = new[] { "Enum1", "Enum2" }.Where(x => x.Length > 0);
+        var enumSource = new List<string> { "Enum1", "Enum2" };
+        IEnumerable<string> enumerable = enumSource.Where(x => x.Length > 0);
         
         // Act & Assert - Array path
         var arrayResult = Result.FormatErrorsString(array, "Arr");
@@ -295,7 +296,9 @@ public class ResultMutationKillerTests
         emptyResult.Error.ShouldNotBeNull();
         emptyResult.Error.ShouldNotBeEmpty();
         
-        var nullResult = Result.WithFailure((IEnumerable<string>)null);
+        #pragma warning disable CS8600, CS8625 // Justified: exercising SUT null-handling behavior
+        var nullResult = Result.WithFailure((IEnumerable<string>)null!);
+        #pragma warning restore CS8600, CS8625
         nullResult.Error.ShouldNotBeNull();
         nullResult.Error.ShouldNotBeEmpty();
         
@@ -363,6 +366,9 @@ public class ResultMutationKillerTests
     /// Kill mutations in capacity estimation and string operations.
     /// Target: estimatedLength calculations, buffer operations.
     /// </summary>
+    /// <summary>
+    /// Verifies boundary behavior for stackalloc threshold around 512 characters.
+    /// </summary>
     [Fact]
     public void FormatErrorsString_CapacityMutations_ShouldBeKilled()
     {
@@ -396,7 +402,7 @@ public class ResultMutationKillerTests
         // Arrange - Different enumerable types that may behave differently
         var arrayErrors = new[] { "A1", "A2" };
         var listErrors = new List<string> { "L1", "L2" };
-        var queryErrors = new[] { "Q1", "Q2", "Q3" }.Where(x => x != "Q3").ToArray(); // Q1, Q2
+        var queryErrors = new[] { "Q1", "Q2" }; // Q1, Q2
         var rangeErrors = Enumerable.Range(1, 3).Select(i => $"R{i}"); // R1, R2, R3
         
         // Act & Assert - Array path
@@ -437,11 +443,11 @@ public class ResultMutationKillerTests
         result.ShouldBe("Span: First, Second, Third, Fourth");
         
         // Verify exact character positions (kill position increment mutations)
-        result.IndexOf("Span").ShouldBe(0);
-        result.IndexOf(":").ShouldBe(4);
-        result.IndexOf("First").ShouldBe(6);
-        result.IndexOf(",").ShouldBe(11); // First comma
-        result.IndexOf("Second").ShouldBe(13);
+        result.IndexOf("Span", StringComparison.Ordinal).ShouldBe(0);
+        result.IndexOf(':').ShouldBe(4);
+        result.IndexOf("First", StringComparison.Ordinal).ShouldBe(6);
+        result.IndexOf(',').ShouldBe(11); // First comma
+        result.IndexOf("Second", StringComparison.Ordinal).ShouldBe(13);
         
         // Kill length calculation mutations
         var expectedLength = "Span: First, Second, Third, Fourth".Length;
@@ -456,21 +462,21 @@ public class ResultMutationKillerTests
     public void FormatErrorsString_NullPropagationMutations_ShouldBeKilled()
     {
         // Arrange - Mix of null, empty, and whitespace strings
-        var mixedErrors = new[] { null, "", "Valid", "  ", null, "Another", "" };
+        var mixedErrors = new string?[] { null, "", "Valid", "  ", null, "Another", "" };
         
         // Act
-        var result = Result.FormatErrorsString(mixedErrors, "Null");
+        var result = Result.FormatErrorsString(mixedErrors.Select(s => s ?? string.Empty).ToArray(), "Null");
         
         // Assert - Kill null coalescing mutations (error?.Length ?? 0)
         result.ShouldBe("Null: , , Valid,   , , Another, ");
         
         // Kill null handling in Error property
-        var failureResult = Result.WithFailure(mixedErrors);
+        var failureResult = Result.WithFailure(mixedErrors.Select(s => s ?? string.Empty).ToArray());
         failureResult.Error.ShouldBe("Valid"); // First non-null/whitespace
         
         // Edge case: only nulls and empty strings
-        var onlyNullsAndEmpty = new[] { null, "", "   ", null };
-        var onlyNullsResult = Result.WithFailure(onlyNullsAndEmpty);
+        var onlyNullsAndEmpty = new string?[] { null, "", "   ", null };
+        var onlyNullsResult = Result.WithFailure(onlyNullsAndEmpty.Select(s => s ?? string.Empty).ToArray());
         onlyNullsResult.Error.ShouldBeNull(); // Skips null/empty/whitespace
     }
 }

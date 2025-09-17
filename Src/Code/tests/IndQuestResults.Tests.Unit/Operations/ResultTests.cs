@@ -23,6 +23,9 @@ public class ResultTests
         Assert.Null(result.Error);
     }
 
+    /// <summary>
+    /// Verifies IsCancelled extension returns false when the non-generic result is null.
+    /// </summary>
     [Fact]
     public void IsCancelled_ShouldBeFalse_ForNullResult_NonGeneric()
     {
@@ -71,6 +74,9 @@ public class ResultTests
         Assert.Contains("Error 3", result.Errors);
     }
 
+    /// <summary>
+    /// Ensures combining two empty collections returns the default no-errors message.
+    /// </summary>
     [Fact]
     public void CombineErrors_BothEmptyCollections_ShouldReturnDefaultMessage()
     {

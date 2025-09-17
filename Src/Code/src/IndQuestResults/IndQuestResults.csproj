@@ -25,6 +25,8 @@
     <!-- Enable performance optimizations -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
+    <!-- Force treat warnings as errors for this production package -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
 </Project>

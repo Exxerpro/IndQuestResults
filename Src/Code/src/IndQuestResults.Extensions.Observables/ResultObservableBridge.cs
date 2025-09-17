@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IndQuestResults;
@@ -90,7 +89,7 @@ public static class ResultObservableBridge
         Action? onCompleted = null)
     {
         ArgumentNullException.ThrowIfNull(source);
-        if (selector == null) throw new ArgumentNullException(nameof(selector));
+        ArgumentNullException.ThrowIfNull(selector);
         ArgumentNullException.ThrowIfNull(onNext);
 
         var observer = new SelectResultObserver<TSource, TResult>(selector, onNext, onCompleted);
@@ -124,8 +123,8 @@ public static class ResultObservableBridge
         Action? onCompleted = null)
     {
         ArgumentNullException.ThrowIfNull(source);
-        if (selector == null) throw new ArgumentNullException(nameof(selector));
-        if (onSuccess == null) throw new ArgumentNullException(nameof(onSuccess));
+        ArgumentNullException.ThrowIfNull(selector);
+        ArgumentNullException.ThrowIfNull(onSuccess);
 
         return source.SelectResult(
             selector,
@@ -168,9 +167,9 @@ public static class ResultObservableBridge
         Action? onCompleted = null)
     {
         ArgumentNullException.ThrowIfNull(source);
-        if (selector == null) throw new ArgumentNullException(nameof(selector));
-        if (onSuccess == null) throw new ArgumentNullException(nameof(onSuccess));
-        if (onFailure == null) throw new ArgumentNullException(nameof(onFailure));
+        ArgumentNullException.ThrowIfNull(selector);
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
 
         return source.SelectResult(
             selector,
@@ -263,8 +262,8 @@ public static class ResultObservableBridge
         IResultSubject<string> failureSubject)
     {
         ArgumentNullException.ThrowIfNull(source);
-        if (successSubject == null) throw new ArgumentNullException(nameof(successSubject));
-        if (failureSubject == null) throw new ArgumentNullException(nameof(failureSubject));
+        ArgumentNullException.ThrowIfNull(successSubject);
+        ArgumentNullException.ThrowIfNull(failureSubject);
 
         var observer = new RouteResultsObserver<T>(successSubject, failureSubject);
         return source.Subscribe(observer);
@@ -313,7 +312,7 @@ internal class ReplayResultSubject<T> : IResultSubject<T>
     private readonly ResultSubject<T> _innerSubject = new();
     private readonly Queue<Result<T>> _buffer = new();
     private readonly int _bufferSize;
-    private readonly object _lock = new object();
+    private readonly System.Threading.Lock _lock = new();
 
     public int SubscriberCount => _innerSubject.SubscriberCount;
     public bool IsCompleted => _innerSubject.IsCompleted;

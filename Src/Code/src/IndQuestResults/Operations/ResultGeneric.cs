@@ -458,7 +458,7 @@ public sealed class Result<T>
             return this;
         }
 
-        List<string> errorList = new List<string>();
+        List<string> errorList = [];
 
         // Add current result's errors if it's a failure
         if (IsFailure && Errors is not null)
@@ -498,7 +498,7 @@ public sealed class Result<T>
     {
         if (!_isSuccess)
         {
-            var errs = (Errors?.Any() == true) ? Errors : new[] { ResultConstants.DefaultErrorMessage };
+            IEnumerable<string> errs = (Errors?.Any() == true) ? Errors : [ResultConstants.DefaultErrorMessage];
             return Result<TOut>.Success(onFailure(errs));
         }
 
@@ -536,7 +536,7 @@ public sealed class Result<T>
         }
 
         // If types are incompatible, return a failure instead of throwing
-        return Result<TOut>.WithFailure(string.Format(System.Globalization.CultureInfo.InvariantCulture, ResultConstants.RecoverWithTypeConversionError, typeof(T).Name, typeof(TOut).Name));
+        return Result<TOut>.WithFailure(string.Format(System.Globalization.CultureInfo.InvariantCulture, ResultConstants.RecoverWithTypeConversionErrorFormat, typeof(T).Name, typeof(TOut).Name));
     }
 
     /// <summary>
@@ -550,7 +550,7 @@ public sealed class Result<T>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "This is a utility method that provides type-safe error combining for Result<T> types")]
     public static Result<TOut> CombineErrors<TOut>(IEnumerable<string>? primaryErrors, IEnumerable<string>? secondaryErrors, TOut? value = default)
     {
-        List<string> errorList = new List<string>();
+        List<string> errorList = [];
 
         if (primaryErrors is not null)
         {

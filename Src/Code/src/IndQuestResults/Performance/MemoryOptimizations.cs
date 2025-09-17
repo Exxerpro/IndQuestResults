@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace IndQuestResults.Performance;
 
 /// <summary>
@@ -14,12 +16,12 @@ public static class MemoryOptimizations
     /// <summary>
     /// Cache of commonly used single-item string arrays to reduce allocations.
     /// </summary>
-    private static readonly ConcurrentCache<string, string[]> SingleItemArrayCache = new(maxSize: 100);
+    private static readonly ConcurrentCache<string, string[]> _singleItemArrayCache = new(maxSize: 100);
 
     /// <summary>
     /// Cache of commonly used error message combinations.
     /// </summary>
-    private static readonly ConcurrentCache<string, string> FormattedErrorCache = new(maxSize: 500);
+    private static readonly ConcurrentCache<string, string> _formattedErrorCache = new(maxSize: 500);
 
     /// <summary>
     /// Gets a cached single-item string array or creates one if not cached.
@@ -30,9 +32,11 @@ public static class MemoryOptimizations
     public static string[] GetSingleItemArray(string item)
     {
         if (string.IsNullOrEmpty(item))
+        {
             return EmptyStringArray;
+        }
 
-        return SingleItemArrayCache.GetOrAdd(item, static key => new[] { key });
+        return _singleItemArrayCache.GetOrAdd(item, key => new[] { key });
     }
 
     /// <summary>
@@ -45,15 +49,19 @@ public static class MemoryOptimizations
     public static string GetFormattedError(string template, params object[] args)
     {
         if (string.IsNullOrEmpty(template))
+        {
             return string.Empty;
+        }
 
         if (args == null || args.Length == 0)
+        {
             return template;
+        }
 
         // Create cache key from template and args
-        var cacheKey = $"{template}|{string.Join("|", args.Select(a => a?.ToString() ?? "null"))}";
-        
-        return FormattedErrorCache.GetOrAdd(cacheKey, _ => string.Format(template, args), args);
+        string cacheKey = $"{template}|{string.Join("|", args.Select(a => a?.ToString() ?? "null"))}";
+
+        return _formattedErrorCache.GetOrAdd(cacheKey, _ => string.Format(CultureInfo.InvariantCulture, template, args));
     }
 
     /// <summary>
@@ -66,19 +74,25 @@ public static class MemoryOptimizations
     public static T[] ToArrayOptimized<T>(this IEnumerable<T> source)
     {
         if (source is null)
+        {
             return Array.Empty<T>();
+        }
 
         // Fast path: already an array
         if (source is T[] array)
+        {
             return array;
+        }
 
         // Fast path: collection with known count
         if (source is ICollection<T> collection)
         {
             if (collection.Count == 0)
+            {
                 return Array.Empty<T>();
+            }
 
-            var result = new T[collection.Count];
+            T[] result = new T[collection.Count];
             collection.CopyTo(result, 0);
             return result;
         }
@@ -97,21 +111,27 @@ public static class MemoryOptimizations
     public static T[] CombineArrays<T>(params T[][] arrays)
     {
         if (arrays is null || arrays.Length == 0)
+        {
             return Array.Empty<T>();
+        }
 
         // Filter out null arrays and calculate total length
-        var validArrays = arrays.Where(a => a is not null && a.Length > 0).ToArray();
+        T[][] validArrays = arrays.Where(a => a is not null && a.Length > 0).ToArray();
         if (validArrays.Length == 0)
+        {
             return Array.Empty<T>();
+        }
 
         if (validArrays.Length == 1)
+        {
             return validArrays[0];
+        }
 
-        var totalLength = validArrays.Sum(a => a.Length);
-        var result = new T[totalLength];
-        var position = 0;
+        int totalLength = validArrays.Sum(a => a.Length);
+        T[] result = new T[totalLength];
+        int position = 0;
 
-        foreach (var array in validArrays)
+        foreach (T[] array in validArrays)
         {
             Array.Copy(array, 0, result, position, array.Length);
             position += array.Length;
@@ -126,8 +146,8 @@ public static class MemoryOptimizations
     /// </summary>
     public static void ClearCaches()
     {
-        SingleItemArrayCache.Clear();
-        FormattedErrorCache.Clear();
+        _singleItemArrayCache.Clear();
+        _formattedErrorCache.Clear();
     }
 
     /// <summary>
@@ -138,10 +158,10 @@ public static class MemoryOptimizations
     {
         return new Dictionary<string, object>
         {
-            ["SingleItemArrayCache.Count"] = SingleItemArrayCache.Count,
-            ["SingleItemArrayCache.MaxSize"] = SingleItemArrayCache.MaxSize,
-            ["FormattedErrorCache.Count"] = FormattedErrorCache.Count,
-            ["FormattedErrorCache.MaxSize"] = FormattedErrorCache.MaxSize
+            ["SingleItemArrayCache.Count"] = _singleItemArrayCache.Count,
+            ["SingleItemArrayCache.MaxSize"] = _singleItemArrayCache.MaxSize,
+            ["FormattedErrorCache.Count"] = _formattedErrorCache.Count,
+            ["FormattedErrorCache.MaxSize"] = _formattedErrorCache.MaxSize
         };
     }
 }
@@ -151,12 +171,13 @@ public static class MemoryOptimizations
 /// </summary>
 /// <typeparam name="TKey">The type of the cache key.</typeparam>
 /// <typeparam name="TValue">The type of the cached value.</typeparam>
-internal sealed class ConcurrentCache<TKey, TValue> where TKey : notnull
+internal sealed class ConcurrentCache<TKey, TValue> : IDisposable where TKey : notnull
 {
     private readonly Dictionary<TKey, CacheItem> _cache = new();
     private readonly ReaderWriterLockSlim _lock = new();
     private readonly int _maxSize;
-    private long _accessCounter = 0;
+    private long _accessCounter;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentCache{TKey, TValue}"/> class.
@@ -196,17 +217,16 @@ internal sealed class ConcurrentCache<TKey, TValue> where TKey : notnull
     /// </summary>
     /// <param name="key">The cache key.</param>
     /// <param name="valueFactory">The factory to create the value if not cached.</param>
-    /// <param name="factoryArgs">Optional arguments for the factory.</param>
     /// <returns>The cached or newly created value.</returns>
-    public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory, params object[] factoryArgs)
+    public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
     {
         // Try to get existing value
         _lock.EnterReadLock();
         try
         {
-            if (_cache.TryGetValue(key, out var existingItem))
+            if (_cache.TryGetValue(key, out CacheItem? existingItem))
             {
-                existingItem.LastAccessed = Interlocked.Increment(ref _accessCounter);
+                existingItem!.LastAccessed = Interlocked.Increment(ref _accessCounter);
                 return existingItem.Value;
             }
         }
@@ -216,16 +236,16 @@ internal sealed class ConcurrentCache<TKey, TValue> where TKey : notnull
         }
 
         // Create new value outside of lock
-        var newValue = valueFactory(key);
+        TValue newValue = valueFactory(key);
 
         // Add to cache
         _lock.EnterWriteLock();
         try
         {
             // Double-check in case another thread added it
-            if (_cache.TryGetValue(key, out var existingItem))
+            if (_cache.TryGetValue(key, out CacheItem? existingItem))
             {
-                existingItem.LastAccessed = Interlocked.Increment(ref _accessCounter);
+                existingItem!.LastAccessed = Interlocked.Increment(ref _accessCounter);
                 return existingItem.Value;
             }
 
@@ -235,7 +255,7 @@ internal sealed class ConcurrentCache<TKey, TValue> where TKey : notnull
                 EvictLeastRecentlyUsed();
             }
 
-            var newItem = new CacheItem(newValue, Interlocked.Increment(ref _accessCounter));
+            CacheItem newItem = new(newValue, Interlocked.Increment(ref _accessCounter));
             _cache[key] = newItem;
             return newValue;
         }
@@ -267,19 +287,34 @@ internal sealed class ConcurrentCache<TKey, TValue> where TKey : notnull
     /// </summary>
     private void EvictLeastRecentlyUsed()
     {
-        var itemsToRemove = _cache.Count - _maxSize + 1;
-        if (itemsToRemove <= 0) return;
+        int itemsToRemove = _cache.Count - _maxSize + 1;
+        if (itemsToRemove <= 0)
+        {
+            return;
+        }
 
-        var lruItems = _cache
+        TKey[] lruItems = _cache
             .OrderBy(kvp => kvp.Value.LastAccessed)
             .Take(itemsToRemove)
             .Select(kvp => kvp.Key)
             .ToArray();
 
-        foreach (var key in lruItems)
+        foreach (TKey key in lruItems)
         {
             _cache.Remove(key);
         }
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _lock.Dispose();
+        _disposed = true;
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>

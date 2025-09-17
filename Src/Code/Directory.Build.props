@@ -80,15 +80,17 @@
     ==================================================================================
     -->
     
-    <!-- Treat warnings as errors only for production (packable) projects -->
+    <!-- Treat ALL warnings as errors for production (packable) projects -->
     <TreatWarningsAsErrors Condition="'$(IsPackable)' == 'true'">true</TreatWarningsAsErrors>
     <TreatWarningsAsErrors Condition="'$(IsPackable)' != 'true'">false</TreatWarningsAsErrors>
-    <!-- Only treat critical warnings as errors for packable projects -->
-    <WarningsAsErrors Condition="'$(IsPackable)' == 'true'">CS1591</WarningsAsErrors>
     <WarningsNotAsErrors>NU1605;NU1902;DV2001</WarningsNotAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!-- Suppress style warnings that don't affect functionality -->
-    <NoWarn>$(NoWarn);IDE0007;IDE0008;IDE0011;IDE0028;IDE0032;IDE0046;IDE0055;IDE0058;IDE0060;IDE0130;IDE0300;IDE0301;IDE0305;IDE1006;CA1000;CA1001;CA1305;CA1805;CA1863</NoWarn>
+    <!-- Suppress stylistic/perf suggestions to keep builds clean; behavior is enforced by tests/mutation -->
+    <NoWarn>$(NoWarn);
+      IDE0005;IDE0007;IDE0008;IDE0011;IDE0028;IDE0032;IDE0046;IDE0055;IDE0058;IDE0060;IDE0130;
+      IDE0300;IDE0301;IDE0305;IDE1006;
+      CA1000;CA1001;CA1305;CA1805;CA1863
+    </NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

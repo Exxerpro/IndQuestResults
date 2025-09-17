@@ -32,6 +32,9 @@ public class ResultGenericTests
         Assert.Null(result.Error);
     }
 
+    /// <summary>
+    /// Verifies OnSuccess executes for nullable value type T? even when Value is null.
+    /// </summary>
     [Fact]
     public void OnSuccess_ShouldInvoke_ForNullableValueType_WhenValueIsNull()
     {
@@ -41,6 +44,9 @@ public class ResultGenericTests
         invoked.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// Verifies Map executes for nullable value type T? even when Value is null.
+    /// </summary>
     [Fact]
     public void Map_ShouldInvoke_ForNullableValueType_WhenValueIsNull()
     {
@@ -50,6 +56,9 @@ public class ResultGenericTests
         mapped.Value.ShouldBe(1);
     }
 
+    /// <summary>
+    /// Verifies Bind executes for nullable value type T? even when Value is null.
+    /// </summary>
     [Fact]
     public void Bind_ShouldInvoke_ForNullableValueType_WhenValueIsNull()
     {
@@ -59,6 +68,10 @@ public class ResultGenericTests
         bound.Value.ShouldBe("0");
     }
 
+    /// <summary>
+    /// Verifies the failure branch hands DefaultErrorMessage to the onFailure function when
+    /// Errors is null or empty.
+    /// </summary>
     [Fact]
     public void Match_ShouldPassDefaultErrorArray_WhenErrorsIsNull()
     {
@@ -525,6 +538,9 @@ public class ResultGenericTests
         Assert.Contains("Cannot convert", recoveredResult.Error);
     }
 
+    /// <summary>
+    /// Verifies IsCancelled extension returns false for null generic result.
+    /// </summary>
     [Fact]
     public void IsCancelled_ShouldBeFalse_ForNullResult_Generic()
     {

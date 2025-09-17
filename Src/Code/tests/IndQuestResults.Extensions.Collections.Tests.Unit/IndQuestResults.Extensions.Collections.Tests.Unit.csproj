@@ -8,10 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
+
     <ProjectReference Include="..\..\src\IndQuestResults.Extensions.Collections\IndQuestResults.Extensions.Collections.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+
+
+  <PackageReference Include="IndQuestResults" />
+  </ItemGroup>
 </Project>
 
 

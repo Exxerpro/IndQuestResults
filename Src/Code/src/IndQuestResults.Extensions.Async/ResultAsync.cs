@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -50,8 +51,8 @@ public static class ResultAsync
         Func<TInput, Task<Result<TOutput>>> func,
         CancellationToken cancellationToken = default)
     {
-        if (resultTask == null) throw new ArgumentNullException(nameof(resultTask));
-        if (func == null) throw new ArgumentNullException(nameof(func));
+        ArgumentNullException.ThrowIfNull(resultTask);
+        ArgumentNullException.ThrowIfNull(func);
 
         try
         {
@@ -95,8 +96,8 @@ public static class ResultAsync
         Func<TInput, Task<TOutput>> func,
         CancellationToken cancellationToken = default)
     {
-        if (resultTask == null) throw new ArgumentNullException(nameof(resultTask));
-        if (func == null) throw new ArgumentNullException(nameof(func));
+        ArgumentNullException.ThrowIfNull(resultTask);
+        ArgumentNullException.ThrowIfNull(func);
 
         try
         {
@@ -144,8 +145,8 @@ public static class ResultAsync
         Func<T, Task> action,
         CancellationToken cancellationToken = default)
     {
-        if (resultTask == null) throw new ArgumentNullException(nameof(resultTask));
-        if (action == null) throw new ArgumentNullException(nameof(action));
+        ArgumentNullException.ThrowIfNull(resultTask);
+        ArgumentNullException.ThrowIfNull(action);
 
         try
         {
@@ -192,8 +193,8 @@ public static class ResultAsync
         Func<Task<Result<T>>> recoveryFunc,
         CancellationToken cancellationToken = default)
     {
-        if (resultTask == null) throw new ArgumentNullException(nameof(resultTask));
-        if (recoveryFunc == null) throw new ArgumentNullException(nameof(recoveryFunc));
+        ArgumentNullException.ThrowIfNull(resultTask);
+        ArgumentNullException.ThrowIfNull(recoveryFunc);
 
         try
         {
@@ -238,8 +239,8 @@ public static class ResultAsync
         Func<TInput, Task<Result<TOutput>>> func,
         CancellationToken cancellationToken = default)
     {
-        if (inputs == null) throw new ArgumentNullException(nameof(inputs));
-        if (func == null) throw new ArgumentNullException(nameof(func));
+        ArgumentNullException.ThrowIfNull(inputs);
+        ArgumentNullException.ThrowIfNull(func);
 
         try
         {
@@ -277,8 +278,8 @@ public static class ResultAsync
         int maxDegreeOfParallelism = 4,
         CancellationToken cancellationToken = default)
     {
-        if (inputs == null) throw new ArgumentNullException(nameof(inputs));
-        if (func == null) throw new ArgumentNullException(nameof(func));
+        ArgumentNullException.ThrowIfNull(inputs);
+        ArgumentNullException.ThrowIfNull(func);
         if (maxDegreeOfParallelism <= 0) throw new ArgumentException("Max degree of parallelism must be positive", nameof(maxDegreeOfParallelism));
 
         try
@@ -325,7 +326,7 @@ public static class ResultAsync
         IEnumerable<Task<Result<T>>> resultTasks,
         CancellationToken cancellationToken = default)
     {
-        if (resultTasks == null) throw new ArgumentNullException(nameof(resultTasks));
+        ArgumentNullException.ThrowIfNull(resultTasks);
 
         try
         {

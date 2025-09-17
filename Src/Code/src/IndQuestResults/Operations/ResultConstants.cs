@@ -41,6 +41,12 @@ public static class ResultConstants
     /// Use with string.Format(template, sourceType, targetType).
     /// </summary>
     public const string RecoverWithTypeConversionError = "Cannot convert value of type '{0}' to '{1}' in RecoverWith operation";
+    
+    /// <summary>
+    /// Cached CompositeFormat for RecoverWith type conversion error message to improve performance.
+    /// </summary>
+    public static readonly System.Text.CompositeFormat RecoverWithTypeConversionErrorFormat = 
+        System.Text.CompositeFormat.Parse(RecoverWithTypeConversionError);
 
     /// <summary>
     /// Error message when a null value is encountered in a successful result where a value is expected.

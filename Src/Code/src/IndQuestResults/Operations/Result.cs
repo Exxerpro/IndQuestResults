@@ -271,7 +271,7 @@ public sealed class Result
     /// <returns>A failed <see cref="Result"/> instance.</returns>
     public static Result WithFailure(string error)
     {
-        return new Result(false, new List<string>() { error });
+        return new Result(false, [error]);
     }
 
     /// <summary>
@@ -449,7 +449,7 @@ public sealed class Result
             var totalCount = primaryCount + secondaryCount;
             if (totalCount <= 32) // Reasonable stackalloc limit
             {
-                return CombineErrorsSpan(primaryErrors, secondaryErrors, primaryCount, secondaryCount, totalCount);
+                return CombineErrorsSpan(primaryErrors, secondaryErrors, totalCount);
             }
         }
 
@@ -501,15 +501,11 @@ public sealed class Result
     /// </summary>
     /// <param name="primaryErrors">Primary error collection.</param>
     /// <param name="secondaryErrors">Secondary error collection.</param>
-    /// <param name="primaryCount">Count of primary errors.</param>
-    /// <param name="secondaryCount">Count of secondary errors.</param>
     /// <param name="totalCount">Total error count.</param>
     /// <returns>A failed Result with combined errors.</returns>
     private static Result CombineErrorsSpan(
         IEnumerable<string> primaryErrors,
         IEnumerable<string> secondaryErrors,
-        int primaryCount,
-        int secondaryCount,
         int totalCount)
     {
         var errorArray = new string[totalCount];

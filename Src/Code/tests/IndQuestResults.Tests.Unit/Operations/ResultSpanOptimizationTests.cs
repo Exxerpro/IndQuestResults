@@ -108,6 +108,9 @@ public class ResultSpanOptimizationTests
         }
     }
 
+    /// <summary>
+    /// Verifies exact formatting with a large collection to force fallback path and kill separator mutants.
+    /// </summary>
     [Fact]
     public void FormatErrorsString_LargeCollection_ShouldMatchExactFormatting()
     {

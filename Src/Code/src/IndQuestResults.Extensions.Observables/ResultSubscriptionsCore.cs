@@ -78,7 +78,7 @@ public static class ResultSubscriptionsCore
     /// <returns>Safe subscription wrapper</returns>
     public static Action<T> CreateSafeHandler<T>(Action<T> onNext, Action<Exception>? onError = null)
     {
-        if (onNext == null) throw new ArgumentNullException(nameof(onNext));
+        ArgumentNullException.ThrowIfNull(onNext);
 
         return value =>
         {
@@ -104,7 +104,7 @@ public static class ResultSubscriptionsCore
         Func<T, Task> onNextAsync,
         CancellationToken cancellationToken = default)
     {
-        if (onNextAsync == null) throw new ArgumentNullException(nameof(onNextAsync));
+        ArgumentNullException.ThrowIfNull(onNextAsync);
 
         return async value =>
         {
@@ -143,8 +143,8 @@ public interface IResultSubject<T> : IDisposable
     /// <summary>
     /// Notifies all subscribers that an error occurred.
     /// </summary>
-    /// <param name="error">Error that occurred</param>
-    void OnError(Exception error);
+    /// <param name="exception">Error that occurred</param>
+    void OnError(Exception exception);
 
     /// <summary>
     /// Notifies all subscribers that the stream is complete.
@@ -191,7 +191,7 @@ public interface IResultSubject<T> : IDisposable
 internal class ResultSubject<T> : IResultSubject<T>
 {
     private readonly ConcurrentDictionary<int, IResultObserver<T>> _observers = new();
-    private readonly object _lock = new object();
+    private readonly System.Threading.Lock _lock = new();
     private int _nextId = 0;
     private bool _isCompleted = false;
     private bool _disposed = false;
@@ -201,9 +201,9 @@ internal class ResultSubject<T> : IResultSubject<T>
 
     public void OnNext(Result<T> result)
     {
-        if (_disposed) throw new ObjectDisposedException(nameof(ResultSubject<T>));
+        ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
         if (_isCompleted) return;
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
 
         foreach (var observer in _observers.Values)
         {
@@ -218,11 +218,11 @@ internal class ResultSubject<T> : IResultSubject<T>
         }
     }
 
-    public void OnError(Exception error)
+    public void OnError(Exception exception)
     {
-        if (_disposed) throw new ObjectDisposedException(nameof(ResultSubject<T>));
+        ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
         if (_isCompleted) return;
-        if (error == null) throw new ArgumentNullException(nameof(error));
+        ArgumentNullException.ThrowIfNull(exception);
 
         lock (_lock)
         {
@@ -234,7 +234,7 @@ internal class ResultSubject<T> : IResultSubject<T>
         {
             try
             {
-                observer.OnError(error);
+                observer.OnError(exception);
             }
             catch (Exception)
             {
@@ -247,7 +247,7 @@ internal class ResultSubject<T> : IResultSubject<T>
 
     public void OnCompleted()
     {
-        if (_disposed) throw new ObjectDisposedException(nameof(ResultSubject<T>));
+        ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
         if (_isCompleted) return;
 
         lock (_lock)
@@ -276,8 +276,8 @@ internal class ResultSubject<T> : IResultSubject<T>
         Action<IEnumerable<string>>? onFailure = null,
         Action? onCompleted = null)
     {
-        if (_disposed) throw new ObjectDisposedException(nameof(ResultSubject<T>));
-        if (onSuccess == null) throw new ArgumentNullException(nameof(onSuccess));
+        ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
+        ArgumentNullException.ThrowIfNull(onSuccess);
 
         var observer = new ResultObserver<T>(onSuccess, onFailure, onCompleted);
         var id = Interlocked.Increment(ref _nextId);
@@ -291,8 +291,8 @@ internal class ResultSubject<T> : IResultSubject<T>
         Action<Result<T>> onResult,
         Action? onCompleted = null)
     {
-        if (_disposed) throw new ObjectDisposedException(nameof(ResultSubject<T>));
-        if (onResult == null) throw new ArgumentNullException(nameof(onResult));
+        ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
+        ArgumentNullException.ThrowIfNull(onResult);
 
         var observer = new ResultObserver<T>(onResult, onCompleted);
         var id = Interlocked.Increment(ref _nextId);
@@ -319,7 +319,7 @@ internal class ResultSubject<T> : IResultSubject<T>
 internal interface IResultObserver<T>
 {
     void OnNext(Result<T> result);
-    void OnError(Exception error);
+    void OnError(Exception exception);
     void OnCompleted();
 }
 
@@ -368,15 +368,15 @@ internal class ResultObserver<T> : IResultObserver<T>
         }
     }
 
-    public void OnError(Exception error)
+    public void OnError(Exception exception)
     {
         if (_onResult != null)
         {
-            _onResult(Result<T>.WithFailure($"Stream error: {error.Message}"));
+            _onResult(Result<T>.WithFailure($"Stream error: {exception.Message}"));
         }
         else
         {
-            _onFailure?.Invoke(new[] { $"Stream error: {error.Message}" });
+            _onFailure?.Invoke(new[] { $"Stream error: {exception.Message}" });
         }
     }
 
@@ -450,16 +450,16 @@ internal class SubscriptionManager : ISubscriptionManager
 
     public void Add(IDisposable subscription)
     {
-        if (_disposed) throw new ObjectDisposedException(nameof(SubscriptionManager));
-        if (subscription == null) throw new ArgumentNullException(nameof(subscription));
+        ObjectDisposedException.ThrowIf(_disposed, nameof(SubscriptionManager));
+        ArgumentNullException.ThrowIfNull(subscription);
 
         _subscriptions.Add(subscription);
     }
 
     public bool Remove(IDisposable subscription)
     {
-        if (_disposed) throw new ObjectDisposedException(nameof(SubscriptionManager));
-        if (subscription == null) throw new ArgumentNullException(nameof(subscription));
+        ObjectDisposedException.ThrowIf(_disposed, nameof(SubscriptionManager));
+        ArgumentNullException.ThrowIfNull(subscription);
 
         // Note: ConcurrentBag doesn't support removal, so we dispose it directly
         subscription.Dispose();
@@ -468,7 +468,7 @@ internal class SubscriptionManager : ISubscriptionManager
 
     public void Clear()
     {
-        if (_disposed) throw new ObjectDisposedException(nameof(SubscriptionManager));
+        ObjectDisposedException.ThrowIf(_disposed, nameof(SubscriptionManager));
 
         while (_subscriptions.TryTake(out var subscription))
         {
