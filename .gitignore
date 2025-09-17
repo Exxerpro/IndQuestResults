@@ -1,0 +1,87 @@
+####################
+# Visual Studio
+####################
+.vs/
+*.user
+*.suo
+*.cache
+*.dbmdl
+*.VC.db
+*.pdb
+*.opendb
+*.tlog
+*.log
+
+# Build results
+bin/
+obj/
+out/
+[Bb]uild/
+[Bb]uilds/
+*.dll
+*.exe
+*.app
+*.lib
+*.x86
+*.x64
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+
+# VS Code
+.vscode/
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# Logs
+*.log
+*.tmp
+
+# User-specific files
+*.userprefs
+*.userosscache
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# EF Migrations
+Migrations/
+
+####################
+# SQL Server / Scripts
+####################
+*.bak
+*.sql~              # temp or backup SQL files
+*.db                # local SQLite/SQL Compact
+*.mdf
+*.ldf
+
+####################
+# Python
+####################
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+env/
+venv/
+ENV/
+.venv/
+.ipynb_checkpoints/
+
+# pipenv, poetry
+Pipfile.lock
+poetry.lock
