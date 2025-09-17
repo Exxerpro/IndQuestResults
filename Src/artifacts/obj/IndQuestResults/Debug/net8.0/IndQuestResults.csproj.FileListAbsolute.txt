@@ -1,0 +1,13 @@
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\obj\IndQuestResults\Debug\net8.0\IndQuestResults.GeneratedMSBuildEditorConfig.editorconfig
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\obj\IndQuestResults\Debug\net8.0\IndQuestResults.AssemblyInfoInputs.cache
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\obj\IndQuestResults\Debug\net8.0\IndQuestResults.AssemblyInfo.cs
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\obj\IndQuestResults\Debug\net8.0\IndQuestResults.csproj.CoreCompileInputs.cache
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\bin\IndQuestResults\Debug\net8.0\IndQuestResults.deps.json
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\bin\IndQuestResults\Debug\net8.0\IndQuestResults.dll
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\bin\IndQuestResults\Debug\net8.0\IndQuestResults.pdb
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\bin\IndQuestResults\Debug\net8.0\IndQuestResults.xml
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\obj\IndQuestResults\Debug\net8.0\IndQuestResults.dll
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\obj\IndQuestResults\Debug\net8.0\refint\IndQuestResults.dll
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\obj\IndQuestResults\Debug\net8.0\IndQuestResults.xml
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\obj\IndQuestResults\Debug\net8.0\IndQuestResults.pdb
+F:\Dynamic\IndFusion\IndQuestResults\Src\artifacts\obj\IndQuestResults\Debug\net8.0\ref\IndQuestResults.dll

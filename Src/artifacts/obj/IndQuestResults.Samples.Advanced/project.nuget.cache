@@ -1,0 +1,53 @@
+{
+  "version": 2,
+  "dgSpecHash": "beLBK53aeDY=",
+  "success": false,
+  "projectFilePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Advanced\\IndQuestResults.Samples.Advanced.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.Extensions.Hosting. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Advanced\\IndQuestResults.Samples.Advanced.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Advanced\\IndQuestResults.Samples.Advanced.csproj",
+      "libraryId": "Microsoft.Extensions.Hosting",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.Extensions.Logging.Console. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Advanced\\IndQuestResults.Samples.Advanced.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Advanced\\IndQuestResults.Samples.Advanced.csproj",
+      "libraryId": "Microsoft.Extensions.Logging.Console",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.Extensions.DependencyInjection. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Advanced\\IndQuestResults.Samples.Advanced.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Advanced\\IndQuestResults.Samples.Advanced.csproj",
+      "libraryId": "Microsoft.Extensions.DependencyInjection",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Text.Json. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Advanced\\IndQuestResults.Samples.Advanced.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Advanced\\IndQuestResults.Samples.Advanced.csproj",
+      "libraryId": "System.Text.Json",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}

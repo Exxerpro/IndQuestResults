@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>AutoFixture.Xunit2</id>
+    <version>4.18.1</version>
+    <title>AutoFixture with xUnit.net v2 data theories</title>
+    <authors>Mark Seemann,AutoFixture</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>icon.png</icon>
+    <projectUrl>https://github.com/AutoFixture/AutoFixture</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/AutoFixture/AutoFixture/79c882c3f4af3cf52ad43e5c95851f25d217ac17/AutoFixtureLogo200x200.png</iconUrl>
+    <description>By leveraging the data theory feature of xUnit.net, this extension turns AutoFixture into a declarative framework for writing unit tests. In many ways it becomes a unit testing DSL (Domain Specific Language).</description>
+    <copyright>Copyright © Ploeh 2011</copyright>
+    <repository type="git" url="https://github.com/AutoFixture/AutoFixture.git" commit="fd842903f3da074080191e23f5dd3db6b7a58156" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.5.2">
+        <dependency id="AutoFixture" version="4.18.1" exclude="Build,Analyzers" />
+        <dependency id="xunit.extensibility.core" version="[2.0.0, 3.0.0)" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard1.5">
+        <dependency id="AutoFixture" version="4.18.1" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="xunit.extensibility.core" version="[2.2.0, 3.0.0)" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="AutoFixture" version="4.18.1" exclude="Build,Analyzers" />
+        <dependency id="xunit.extensibility.core" version="[2.2.0, 3.0.0)" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

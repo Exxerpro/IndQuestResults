@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>xunit.v3.assert</id>
+    <version>1.0.0</version>
+    <title>xUnit.net v3 [Assertion Library]</title>
+    <authors>jnewkirk,bradwilson</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/Apache-2.0</licenseUrl>
+    <icon>_content/logo-128-transparent.png</icon>
+    <readme>_content/README.md</readme>
+    <description>Includes the assertion library from xUnit.net (xunit.v3.assert.dll). Supports .NET Standard 2.0 and .NET 6.</description>
+    <releaseNotes>https://xunit.net/releases/v3/1.0.0</releaseNotes>
+    <copyright>Copyright (C) .NET Foundation</copyright>
+    <repository type="git" url="https://github.com/xunit/xunit" commit="5b41c61aa173b9f17ecedfd886891917b8528a87" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Collections.Immutable" version="6.0.0" />
+      </group>
+      <group targetFramework="net6.0" />
+    </dependencies>
+  </metadata>
+</package>

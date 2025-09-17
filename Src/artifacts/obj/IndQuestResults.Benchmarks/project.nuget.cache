@@ -1,0 +1,117 @@
+{
+  "version": 2,
+  "dgSpecHash": "Zj5++XaxD2A=",
+  "success": false,
+  "projectFilePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+  "expectedPackageFiles": [
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\benchmarkdotnet\\0.13.12\\benchmarkdotnet.0.13.12.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\benchmarkdotnet.annotations\\0.13.12\\benchmarkdotnet.annotations.0.13.12.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\commandlineparser\\2.9.1\\commandlineparser.2.9.1.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\gee.external.capstone\\2.3.0\\gee.external.capstone.2.3.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\iced\\1.17.0\\iced.1.17.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\microsoft.diagnostics.netcore.client\\0.2.251802\\microsoft.diagnostics.netcore.client.0.2.251802.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\microsoft.diagnostics.runtime\\2.2.332302\\microsoft.diagnostics.runtime.2.2.332302.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\perfolizer\\0.2.1\\perfolizer.0.2.1.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1103",
+      "level": "Error",
+      "message": "Unable to find a stable package Microsoft.CodeAnalysis.CSharp with version (>= 4.1.0)\r\n  - Found 2586 version(s) in dotnet-tools [ Nearest version: 4.2.0-1.22072.1 ]\r\n  - Versions from C:\\Program Files\\dotnet\\library-packs were not considered\r\n  - Versions from nuget.org were not considered",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "libraryId": "Microsoft.CodeAnalysis.CSharp",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1102",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.Diagnostics.Tracing.TraceEvent with version (>= 3.0.2)\r\n  - Found 1 version(s) in dotnet-tools [ Nearest version: 1.0.3-alpha-experimental ]\r\n  - Versions from C:\\Program Files\\dotnet\\library-packs were not considered\r\n  - Versions from nuget.org were not considered",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "libraryId": "Microsoft.Diagnostics.Tracing.TraceEvent",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.DotNet.PlatformAbstractions. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "libraryId": "Microsoft.DotNet.PlatformAbstractions",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Management. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "libraryId": "System.Management",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1102",
+      "level": "Error",
+      "message": "Unable to find package System.Collections.Immutable with version (>= 5.0.0)\r\n  - Found 1 version(s) in dotnet-tools [ Nearest version: 1.5.0-preview2-26401-03 ]\r\n  - Versions from C:\\Program Files\\dotnet\\library-packs were not considered\r\n  - Versions from nuget.org were not considered",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "libraryId": "System.Collections.Immutable",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Runtime.CompilerServices.Unsafe. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "libraryId": "System.Runtime.CompilerServices.Unsafe",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Memory. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "libraryId": "System.Memory",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.Bcl.AsyncInterfaces. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "libraryId": "Microsoft.Bcl.AsyncInterfaces",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.Extensions.Logging. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\benchmarks\\IndQuestResults.Benchmarks\\IndQuestResults.Benchmarks.csproj",
+      "libraryId": "Microsoft.Extensions.Logging",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}

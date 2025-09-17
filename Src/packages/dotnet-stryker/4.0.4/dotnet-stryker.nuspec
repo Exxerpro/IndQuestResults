@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>dotnet-stryker</id>
+    <version>4.0.4</version>
+    <authors>Richard Werkman, Rouke Broersma</authors>
+    <license type="file">LICENSE</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>stryker-80x80.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://stryker-mutator.io/</projectUrl>
+    <description>The Stryker.NET CLI tool. Install this tool to run stryker from the commandline.</description>
+    <packageTypes>
+      <packageType name="DotnetTool" />
+    </packageTypes>
+    <repository type="git" url="https://github.com/stryker-mutator/stryker-net" commit="a93b620d0e12618d2c13a0466810e09adf0c5f15" />
+  </metadata>
+</package>

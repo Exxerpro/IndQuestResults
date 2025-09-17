@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "dgSpecHash": "rb87cnJMkUY=",
+  "success": false,
+  "projectFilePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Basic\\IndQuestResults.Samples.Basic.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.Extensions.Hosting. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Basic\\IndQuestResults.Samples.Basic.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Basic\\IndQuestResults.Samples.Basic.csproj",
+      "libraryId": "Microsoft.Extensions.Hosting",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.Extensions.Logging.Console. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Basic\\IndQuestResults.Samples.Basic.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\samples\\IndQuestResults.Samples.Basic\\IndQuestResults.Samples.Basic.csproj",
+      "libraryId": "Microsoft.Extensions.Logging.Console",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}

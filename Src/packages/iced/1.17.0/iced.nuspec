@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Iced</id>
+    <version>1.17.0</version>
+    <title>x86/x64 disassembler, assembler, instruction decoder</title>
+    <authors>iced project and contributors &lt;https://github.com/icedland&gt;</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>logo.png</icon>
+    <projectUrl>https://github.com/icedland/iced</projectUrl>
+    <description>iced is a blazing fast and correct x86 (16/32/64-bit) instruction decoder, disassembler and assembler written in C#.
+
+- 👍 Supports all Intel and AMD instructions
+- 👍 Correct: All instructions are tested and iced has been tested against other disassemblers/assemblers (xed, gas, objdump, masm, dumpbin, nasm, ndisasm) and fuzzed
+- 👍 100% C# code
+- 👍 The formatter supports masm, nasm, gas (AT&amp;T), Intel (XED) and there are many options to customize the output
+- 👍 The decoder is 2x+ faster than other similar libraries and doesn't allocate any memory
+- 👍 Small decoded instructions, only 32 bytes
+- 👍 Create instructions with code assembler, eg. `asm.mov(eax, edx)`
+- 👍 The encoder can be used to re-encode decoded instructions at any address
+- 👍 API to get instruction info, eg. read/written registers, memory and rflags bits; CPUID feature flag, control flow info, etc
+- 👍 Supports `.NET Standard 2.0/2.1+` and `.NET Framework 4.5+`
+- 👍 License: MIT</description>
+    <copyright>Copyright (C) 2018-present iced project and contributors</copyright>
+    <tags>disassembler x86 x64 assembler encoder decoder formatter</tags>
+    <repository type="git" url="https://github.com/icedland/iced" commit="c7aa5116314e90d391a3350878f9fb99192aafb6" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.5" />
+      <group targetFramework=".NETStandard2.0" />
+      <group targetFramework=".NETStandard2.1" />
+    </dependencies>
+  </metadata>
+</package>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>BenchmarkDotNet.Annotations</id>
+    <version>0.13.12</version>
+    <authors>.NET Foundation and contributors</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>package-icon.png</icon>
+    <projectUrl>https://github.com/dotnet/BenchmarkDotNet</projectUrl>
+    <description>Powerful .NET library for benchmarking</description>
+    <copyright>.NET Foundation and contributors</copyright>
+    <tags>benchmark benchmarking performance</tags>
+    <repository type="git" url="https://github.com/dotnet/BenchmarkDotNet" commit="cdce32ffa123467d928488e5c15bf20f1119aa06" />
+    <dependencies>
+      <group targetFramework=".NETStandard1.0">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
+  </metadata>
+</package>

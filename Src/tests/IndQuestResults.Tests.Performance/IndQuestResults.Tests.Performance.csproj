@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>IndQuestResults.Tests.Performance</RootNamespace>
+    <AssemblyName>IndQuestResults.Tests.Performance</AssemblyName>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
+  </ItemGroup>
+
+  <!-- Performance Testing -->
+  <ItemGroup>
+    <Compile Include="Benchmarks\ResultCreationBenchmarks.cs" />
+    <Compile Include="Benchmarks\ErrorFormattingBenchmarks.cs" />
+    <Compile Include="Benchmarks\FluentChainBenchmarks.cs" />
+    <Compile Include="Benchmarks\SpanOptimizationBenchmarks.cs" />
+    <Compile Include="Benchmarks\ConcurrencyBenchmarks.cs" />
+    <Compile Include="Program.cs" />
+  </ItemGroup>
+
+</Project>

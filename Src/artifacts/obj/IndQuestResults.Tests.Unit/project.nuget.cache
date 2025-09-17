@@ -1,0 +1,548 @@
+{
+  "version": 2,
+  "dgSpecHash": "TjCsqjDnCzM=",
+  "success": false,
+  "projectFilePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+  "expectedPackageFiles": [
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\autofixture\\4.18.1\\autofixture.4.18.1.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\coverlet.collector\\6.0.0\\coverlet.collector.6.0.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\diffengine\\11.3.0\\diffengine.11.3.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\emptyfiles\\4.4.0\\emptyfiles.4.4.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\fare\\2.1.1\\fare.2.1.1.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\microsoft.codecoverage\\17.8.0\\microsoft.codecoverage.17.8.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\microsoft.net.test.sdk\\17.8.0\\microsoft.net.test.sdk.17.8.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\microsoft.testplatform.objectmodel\\17.8.0\\microsoft.testplatform.objectmodel.17.8.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\microsoft.testplatform.testhost\\17.8.0\\microsoft.testplatform.testhost.17.8.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\nuget.frameworks\\6.5.0\\nuget.frameworks.6.5.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\shouldly\\4.2.1\\shouldly.4.2.1.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\xunit\\2.6.2\\xunit.2.6.2.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\xunit.abstractions\\2.0.3\\xunit.abstractions.2.0.3.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\xunit.analyzers\\1.6.0\\xunit.analyzers.1.6.0.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\xunit.assert\\2.6.2\\xunit.assert.2.6.2.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\xunit.core\\2.6.2\\xunit.core.2.6.2.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\xunit.extensibility.core\\2.6.2\\xunit.extensibility.core.2.6.2.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\xunit.extensibility.execution\\2.6.2\\xunit.extensibility.execution.2.6.2.nupkg.sha512",
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\xunit.runner.visualstudio\\2.5.3\\xunit.runner.visualstudio.2.5.3.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.ComponentModel.Annotations. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.ComponentModel.Annotations",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Management. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Management",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Reflection.Metadata. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Reflection.Metadata",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.NETCore.Platforms. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "Microsoft.NETCore.Platforms",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Microsoft.Win32.Primitives. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "Microsoft.Win32.Primitives",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.AppContext. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.AppContext",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Collections. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Collections",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Collections.Concurrent. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Collections.Concurrent",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Console. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Console",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Diagnostics.Debug. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Diagnostics.Debug",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Diagnostics.Tools. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Diagnostics.Tools",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Diagnostics.Tracing. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Diagnostics.Tracing",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Globalization. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Globalization",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Globalization.Calendars. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Globalization.Calendars",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.IO. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.IO",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.IO.Compression. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.IO.Compression",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.IO.Compression.ZipFile. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.IO.Compression.ZipFile",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.IO.FileSystem. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.IO.FileSystem",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.IO.FileSystem.Primitives. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.IO.FileSystem.Primitives",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Linq. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Linq",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Linq.Expressions. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Linq.Expressions",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Net.Http. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Net.Http",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Net.Primitives. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Net.Primitives",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Net.Sockets. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Net.Sockets",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.ObjectModel. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.ObjectModel",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Reflection. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Reflection",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Reflection.Extensions. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Reflection.Extensions",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Reflection.Primitives. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Reflection.Primitives",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Resources.ResourceManager. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Resources.ResourceManager",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Runtime. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Runtime",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Runtime.Extensions. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Runtime.Extensions",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Runtime.Handles. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Runtime.Handles",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Runtime.InteropServices. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Runtime.InteropServices",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Runtime.InteropServices.RuntimeInformation. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Runtime.InteropServices.RuntimeInformation",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Runtime.Numerics. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Runtime.Numerics",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Security.Cryptography.Algorithms. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Security.Cryptography.Algorithms",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Security.Cryptography.Encoding. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Security.Cryptography.Encoding",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Security.Cryptography.Primitives. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Security.Cryptography.Primitives",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Security.Cryptography.X509Certificates. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Security.Cryptography.X509Certificates",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Text.Encoding. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Text.Encoding",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Text.Encoding.Extensions. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Text.Encoding.Extensions",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Text.RegularExpressions. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Text.RegularExpressions",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Threading. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Threading",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Threading.Tasks. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Threading.Tasks",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Threading.Timer. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Threading.Timer",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Xml.ReaderWriter. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Xml.ReaderWriter",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package System.Xml.XDocument. No packages exist with this id in source(s): dotnet-tools. PackageSourceMapping is enabled, the following source(s) were not considered: C:\\Program Files\\dotnet\\library-packs, nuget.org.",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Unit\\IndQuestResults.Tests.Unit.csproj",
+      "libraryId": "System.Xml.XDocument",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}

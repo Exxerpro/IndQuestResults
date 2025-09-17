@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiffEngine</name>
+    </assembly>
+    <members>
+        <member name="M:PolyfillExtensions.Nanoseconds(System.TimeSpan)">
+            <summary>
+            Gets the nanosecond component of the time represented by the current <see cref="T:System.TimeSpan"/> object.
+            </summary>
+        </member>
+        <member name="M:PolyfillExtensions.Nanosecond(System.DateTime)">
+            <summary>
+            Gets the nanosecond component of the time represented by the current <see cref="T:System.DateTime"/> object.
+            </summary>
+        </member>
+        <member name="M:PolyfillExtensions.Nanosecond(System.DateTimeOffset)">
+            <summary>
+            Gets the nanosecond component of the time represented by the current <see cref="T:System.DateTimeOffset"/> object.
+            </summary>
+        </member>
+        <member name="M:PolyfillExtensions.Microseconds(System.TimeSpan)">
+            <summary>
+            Gets the microsecond component of the time represented by the current <see cref="T:System.TimeSpan"/> object.
+            </summary>
+        </member>
+        <member name="M:PolyfillExtensions.Microsecond(System.DateTime)">
+            <summary>
+            Gets the microsecond component of the time represented by the current <see cref="T:System.DateTime"/> object.
+            </summary>
+        </member>
+        <member name="M:PolyfillExtensions.Microsecond(System.DateTimeOffset)">
+            <summary>
+            Gets the microsecond component of the time represented by the current <see cref="T:System.DateTimeOffset"/> object.
+            </summary>
+        </member>
+        <member name="M:PolyfillExtensions.AddMicroseconds(System.DateTime,System.Double)">
+            <summary>
+            Returns a new <see cref="T:System.DateTime"/> object that adds a specified number of microseconds to the value of this instance..
+            </summary>
+        </member>
+        <member name="M:PolyfillExtensions.AddMicroseconds(System.DateTimeOffset,System.Double)">
+            <summary>
+            Returns a new <see cref="T:System.DateTimeOffset"/> object that adds a specified number of microseconds to the value of this instance..
+            </summary>
+        </member>
+        <member name="T:DiffEngine.DiffRunner">
+            <summary>
+            Manages diff tools processes.
+            </summary>
+        </member>
+        <member name="M:DiffEngine.DiffRunner.Launch(System.String,System.String)">
+            <summary>
+            Launch a diff tool for the given paths.
+            </summary>
+        </member>
+        <member name="M:DiffEngine.DiffRunner.LaunchAsync(System.String,System.String)">
+            <summary>
+            Launch a diff tool for the given paths.
+            </summary>
+        </member>
+        <member name="M:DiffEngine.DiffRunner.Kill(System.String,System.String)">
+            <summary>
+            Find and kill a diff tool process.
+            </summary>
+        </member>
+        <member name="M:DiffEngine.ProcessCleanup.Kill(System.String)">
+            <summary>
+            Find a process with the matching command line and kill it.
+            </summary>
+        </member>
+        <member name="M:DiffEngine.ProcessCleanup.FindAll">
+            <summary>
+            Find all processes with `% %.%.%` in the command line.
+            </summary>
+        </member>
+        <member name="P:DiffEngine.ProcessCommand.Command">
+            <summary>
+            The command line used to launch the process.
+            </summary>
+        </member>
+        <member name="P:DiffEngine.ProcessCommand.Process">
+            <summary>
+            The process Id.
+            </summary>
+        </member>
+    </members>
+</doc>

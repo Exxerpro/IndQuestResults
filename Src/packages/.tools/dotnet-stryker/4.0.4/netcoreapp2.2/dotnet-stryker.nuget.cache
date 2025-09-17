@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "dgSpecHash": "x3CFeJrAvNE=",
+  "success": false,
+  "projectFilePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Mutation\\IndQuestResults.Tests.Mutation.csproj",
+  "expectedPackageFiles": [
+    "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\packages\\dotnet-stryker\\4.0.4\\dotnet-stryker.4.0.4.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1212",
+      "level": "Error",
+      "message": "Invalid project-package combination for dotnet-stryker 4.0.4. DotnetToolReference project style can only contain references of the DotnetTool type ",
+      "projectPath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Mutation\\IndQuestResults.Tests.Mutation.csproj",
+      "filePath": "F:\\Dynamic\\IndFusion\\IndQuestResults\\Src\\tests\\IndQuestResults.Tests.Mutation\\IndQuestResults.Tests.Mutation.csproj",
+      "libraryId": "dotnet-stryker",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v2.2"
+      ]
+    }
+  ]
+}
