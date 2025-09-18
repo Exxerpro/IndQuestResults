@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using IndQuestResults.Extensions.Async;
-using IndQuestResults.Extensions.Collections;
-using IndQuestResults.Extensions.Functional;
+using IndQuestResults.Async;
+using IndQuestResults.Collections;
+using IndQuestResults.Functional;
 using IndQuestResults.Operations;
 
 namespace IndQuestResults.Tests.Performance.Benchmarks;
