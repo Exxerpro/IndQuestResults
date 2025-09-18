@@ -1,5 +1,5 @@
 <Project>
-  
+
   <!-- Import common properties -->
   <Import Project="$(MSBuildThisFileDirectory)Common.props" />
 
@@ -8,19 +8,21 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    
-    <!-- 
+
+    <!--
     ==================================================================================
     WARNING CONFIGURATION - Detailed Warning Explanations
     ==================================================================================
-    
+
     ENABLED AS ERROR:
     - CS1591: Missing XML comment for publicly visible type or member
       * This ensures all public APIs have documentation
-    
+
     SUPPRESSED WARNINGS (NoWarn):
-    
+
     Code Style (IDE Rules):
+    - IDE0055: Fix formatting
+      * Code formatting suggestions (whitespace, indentation, etc.)
     - IDE0007: Use 'var' instead of explicit type
       * Example: string name = "test" vs var name = "test"
     - IDE0008: Use explicit type instead of 'var'
@@ -43,15 +45,13 @@
       * Additional collection initialization simplifications
     - IDE0300: Collection initialization can be simplified
       * Newer C# collection syntax suggestions
-    - IDE0055: Fix formatting
-      * Code formatting suggestions (whitespace, indentation, etc.)
     - IDE0058: Expression value is never used
       * Suggests using discard (_) for unused return values
-    
+
     Naming (IDE Rules):
     - IDE1006: Naming rule violation: Missing prefix: '_'
       * Private fields should start with underscore according to style rules
-    
+
     Code Quality (CA Rules):
     - CA1000: Do not declare static members on generic types
       * Design rule for generic type static members
@@ -63,33 +63,31 @@
       * Example: private int _count = 0; (0 is default for int)
     - CA1863: Cache a 'CompositeFormat' for repeated use in formatting
       * Performance suggestion for string.Format operations
-    
+
     ALLOWED AS WARNINGS (WarningsNotAsErrors):
     - NU1605: Package downgrade warnings in NuGet
     - NU1902: Package vulnerability warnings
     - DV2001: Dependency validation warnings
-    
+
     STRATEGY RATIONALE:
-    This configuration focuses on functional correctness (ensuring all public APIs are documented) 
+    This configuration focuses on functional correctness (ensuring all public APIs are documented)
     while treating style preferences as warnings rather than build-breaking errors. This approach:
-    
+
     1. Maintains documentation quality - CS1591 as error ensures no public API lacks documentation
     2. Allows flexible coding styles - Teams can have different preferences on var usage, bracing, etc.
     3. Prevents build failures from cosmetic issues - Style warnings don't stop development workflow
     4. Focuses on what matters - Documentation and functionality over formatting preferences
     ==================================================================================
     -->
-    
+
     <!-- Treat ALL warnings as errors for production (packable) projects -->
-    <TreatWarningsAsErrors Condition="'$(IsPackable)' == 'true'">true</TreatWarningsAsErrors>
-    <TreatWarningsAsErrors Condition="'$(IsPackable)' != 'true'">false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsNotAsErrors>NU1605;NU1902;DV2001</WarningsNotAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Suppress stylistic/perf suggestions to keep builds clean; behavior is enforced by tests/mutation -->
-    <NoWarn>$(NoWarn);
-      IDE0005;IDE0007;IDE0008;IDE0011;IDE0028;IDE0032;IDE0046;IDE0055;IDE0058;IDE0060;IDE0130;
-      IDE0300;IDE0301;IDE0305;IDE1006;
-      CA1000;CA1001;CA1305;CA1805;CA1863
+    <NoWarn>
+      $(NoWarn);
+      IDE0005;IDE0007;IDE0008;IDE0055;IDE0058;IDE0060;IDE0305;IDE1006;CA1000;CA1001;CA1305;CA1805;
     </NoWarn>
   </PropertyGroup>
 
@@ -174,5 +172,4 @@
     <!-- Include icon if it exists -->
     <None Include="$(MSBuildThisFileDirectory)src/IndQuestResults/IconIndQuestResult.png" Pack="true" PackagePath="/" />
   </ItemGroup>
-
 </Project>

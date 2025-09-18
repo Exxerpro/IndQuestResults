@@ -9,7 +9,7 @@ namespace IndQuestResults.Tests.Unit.Operations;
 /// </summary>
 public class ResultMutationKillerTests
 {
-    private static readonly string[] ErrorsForValid = new[] { "", "  ", "Valid Error", "Another" };
+    private static readonly string[] ErrorsForValid = ["", "  ", "Valid Error", "Another"];
     /// <summary>
     /// Kill boundary condition mutations in Span optimization paths.
     /// Target: collection.Count &lt;= 16 mutations to collection.Count &lt; 16, &gt;= 16, etc.
@@ -55,12 +55,12 @@ public class ResultMutationKillerTests
     public void Result_Constructor_LogicalOperatorMutations_ShouldBeKilled(bool succeeded, bool hasErrors, bool expectedIsSuccess)
     {
         // Arrange - Create precise conditions to test && logic
-        var errors = hasErrors ? new[] { "Test Error" } : Array.Empty<string>();
+        var errors = hasErrors ? ["Test Error"] : Array.Empty<string>();
         
         // Act - Use reflection to test private constructor directly
         var result = (Result)Activator.CreateInstance(typeof(Result), 
             BindingFlags.NonPublic | BindingFlags.Instance, null, 
-            new object[] { succeeded, errors }, null)!;
+            [succeeded, errors], null)!;
         
         // Assert - Kill && to || mutations and negation mutations
         result.IsSuccess.ShouldBe(expectedIsSuccess);
@@ -253,8 +253,8 @@ public class ResultMutationKillerTests
     public void FormatErrorsString_CollectionTypeMutations_ShouldBeKilled()
     {
         // Arrange - Different collection types to test type checking mutations
-        string[] array = { "Array1", "Array2" };
-        ICollection<string> collection = new List<string> { "List1", "List2" };
+        string[] array = ["Array1", "Array2"];
+        ICollection<string> collection = ["List1", "List2"];
         var enumSource = new List<string> { "Enum1", "Enum2" };
         IEnumerable<string> enumerable = enumSource.Where(x => x.Length > 0);
         
@@ -292,7 +292,7 @@ public class ResultMutationKillerTests
     public void ResultConstants_DefaultErrorMutations_ShouldBeKilled()
     {
         // Act & Assert - Test default error behavior
-        var emptyResult = Result.WithFailure(Array.Empty<string>());
+        var emptyResult = Result.WithFailure([]);
         emptyResult.Error.ShouldNotBeNull();
         emptyResult.Error.ShouldNotBeEmpty();
         

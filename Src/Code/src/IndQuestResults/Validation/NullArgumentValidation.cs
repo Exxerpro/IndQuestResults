@@ -15,10 +15,9 @@ public static class NullArgumentValidation
     /// <returns>A validation result indicating success or failure.</returns>
     public static ValidationResult ValidateSingle<T>(T? value, string parameterName) where T : class
     {
-        if (string.IsNullOrWhiteSpace(parameterName))
-            return ValidationResult.Invalid("Parameter name cannot be null or empty.");
-
-        return value is null
+        return string.IsNullOrWhiteSpace(parameterName)
+            ? ValidationResult.Invalid("Parameter name cannot be null or empty.")
+            : value is null
             ? ValidationResult.Invalid(new NullArgumentError(parameterName).ToString())
             : ValidationResult.Valid;
     }
@@ -32,10 +31,9 @@ public static class NullArgumentValidation
     /// <returns>A validation result indicating success or failure.</returns>
     public static ValidationResult ValidateSingle<T>(T? value, string parameterName) where T : struct
     {
-        if (string.IsNullOrWhiteSpace(parameterName))
-            return ValidationResult.Invalid("Parameter name cannot be null or empty.");
-
-        return value.HasValue
+        return string.IsNullOrWhiteSpace(parameterName)
+            ? ValidationResult.Invalid("Parameter name cannot be null or empty.")
+            : value.HasValue
             ? ValidationResult.Valid
             : ValidationResult.Invalid(new NullArgumentError(parameterName).ToString());
     }
@@ -48,7 +46,9 @@ public static class NullArgumentValidation
     public static ValidationResult ValidateMultiple(params (object? value, string parameterName)[] validations)
     {
         if (validations == null || validations.Length == 0)
+        {
             return ValidationResult.Invalid("Validations cannot be null or empty.");
+        }
 
         var nullParameters = validations
             .Where(v => v.value is null)
@@ -70,29 +70,26 @@ public static class NullArgumentValidation
 /// </summary>
 public readonly struct ValidationResult
 {
-    private readonly bool _isValid;
-    private readonly string? _errorMessage;
-
     private ValidationResult(bool isValid, string? errorMessage = null)
     {
-        _isValid = isValid;
-        _errorMessage = errorMessage;
+        IsValid = isValid;
+        ErrorMessage = errorMessage;
     }
 
     /// <summary>
     /// Gets a value indicating whether the validation passed.
     /// </summary>
-    public bool IsValid => _isValid;
+    public bool IsValid { get; }
 
     /// <summary>
     /// Gets a value indicating whether the validation failed.
     /// </summary>
-    public bool IsInvalid => !_isValid;
+    public bool IsInvalid => !IsValid;
 
     /// <summary>
     /// Gets the error message if validation failed.
     /// </summary>
-    public string? ErrorMessage => _errorMessage;
+    public string? ErrorMessage { get; }
 
     /// <summary>
     /// Creates a successful validation result.
@@ -112,6 +109,6 @@ public readonly struct ValidationResult
     /// <returns>A string describing the validation outcome.</returns>
     public override string ToString()
     {
-        return _isValid ? "Valid" : $"Invalid: {_errorMessage}";
+        return IsValid ? "Valid" : $"Invalid: {ErrorMessage}";
     }
 }

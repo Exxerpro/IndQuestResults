@@ -5,15 +5,15 @@ namespace IndQuestResults.Tests.Unit.Extensions.Collections;
 /// </summary>
 public class ResultCollectionsTests
 {
-    private static readonly string[] ErrorsE2E3 = new[] { "E2", "E3" };
-    private static readonly string[] ErrorsE2aE2b = new[] { "E2a", "E2b" };
-    private static readonly string[] ErrorsE3aE3b = new[] { "E3a", "E3b" };
-    private static readonly int[] Expected123 = new int[] { 1, 2, 3 };
-    private static readonly int[] Expected246 = new int[] { 2, 4, 6 };
-    private static readonly int[] Expected10_20 = new int[] { 10, 20 };
-    private static readonly int[] Expected1_2 = new int[] { 1, 2 };
-    private static readonly int[] Expected4_5 = new int[] { 4, 5 };
-    private static readonly string[] ExpectedAB = new string[] { "A", "B" };
+    private static readonly string[] ErrorsE2E3 = ["E2", "E3"];
+    private static readonly string[] ErrorsE2aE2b = ["E2a", "E2b"];
+    private static readonly string[] ErrorsE3aE3b = ["E3a", "E3b"];
+    private static readonly int[] Expected123 = [1, 2, 3];
+    private static readonly int[] Expected246 = [2, 4, 6];
+    private static readonly int[] Expected10_20 = [10, 20];
+    private static readonly int[] Expected1_2 = [1, 2];
+    private static readonly int[] Expected4_5 = [4, 5];
+    private static readonly string[] ExpectedAB = ["A", "B"];
     /// <summary>
     /// Ensures <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
     /// aggregates values when all inputs are successful.

@@ -20,11 +20,15 @@ public static class CancellationAwareResult
     {
         // Validate arguments
         if (operation is null)
+        {
             return Result<T>.WithFailure($"Operation was null name of {nameof(operation)} type Typeof {typeof(Func<CancellationToken, Task<T>>)}");
+        }
 
         // Early cancellation check
         if (cancellationToken.IsCancellationRequested)
+        {
             return ResultExtensions.Cancelled<T>();
+        }
 
         try
         {
@@ -54,11 +58,15 @@ public static class CancellationAwareResult
     {
         // Validate arguments
         if (operation is null)
+        {
             return Result<T>.WithFailure($"Operation was null name of {nameof(operation)} type Typeof {typeof(Func<CancellationToken, Task<Result<T>>>)}");
+        }
 
         // Early cancellation check
         if (cancellationToken.IsCancellationRequested)
+        {
             return ResultExtensions.Cancelled<T>();
+        }
 
         try
         {
@@ -86,11 +94,15 @@ public static class CancellationAwareResult
     {
         // Validate arguments
         if (operation is null)
+        {
             return Result.WithFailure($"Operation was null name of {nameof(operation)} type Typeof {typeof(Func<CancellationToken, Task>)}");
+        }
 
         // Early cancellation check
         if (cancellationToken.IsCancellationRequested)
+        {
             return ResultExtensions.Cancelled();
+        }
 
         try
         {
@@ -122,14 +134,18 @@ public static class CancellationAwareResult
     {
         // Validate arguments
         if (operation is null)
+        {
             return Result<T>.WithFailure($"Operation was null name of {nameof(operation)} type Typeof {typeof(Func<CancellationToken, Task<T>>)}");
+        }
 
         using var timeoutCts = new CancellationTokenSource(timeout);
         using var combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
         // Early cancellation check
         if (cancellationToken.IsCancellationRequested)
+        {
             return ResultExtensions.Cancelled<T>();
+        }
 
         try
         {

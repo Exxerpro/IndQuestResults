@@ -22,21 +22,21 @@ public class ResultIsCancelledTests
     [Fact]
     public void IsCancelled_Result_EmptyErrors_ReturnsFalse()
     {
-        var result = Result.WithFailure(Array.Empty<string>());
+        var result = Result.WithFailure([]);
         result.IsCancelled().ShouldBeFalse();
     }
 
     [Fact]
     public void IsCancelled_Result_OtherErrors_ReturnsFalse()
     {
-        var result = Result.WithFailure(new[] { "Some error", "Another" });
+        var result = Result.WithFailure(["Some error", "Another"]);
         result.IsCancelled().ShouldBeFalse();
     }
 
     [Fact]
     public void IsCancelled_Result_ContainsCancelledError_ReturnsTrue()
     {
-        var result = Result.WithFailure(new[] { "Some error", ResultErrors.OperationCancelled });
+        var result = Result.WithFailure(["Some error", ResultErrors.OperationCancelled]);
         result.IsCancelled().ShouldBeTrue();
     }
 
@@ -57,21 +57,21 @@ public class ResultIsCancelledTests
     [Fact]
     public void IsCancelled_GenericResult_EmptyErrors_ReturnsFalse()
     {
-        var result = Result<int>.WithFailure(Array.Empty<string>());
+        var result = Result<int>.WithFailure([]);
         result.IsCancelled().ShouldBeFalse();
     }
 
     [Fact]
     public void IsCancelled_GenericResult_OtherErrors_ReturnsFalse()
     {
-        var result = Result<int>.WithFailure(new[] { "Some error" });
+        var result = Result<int>.WithFailure(["Some error"]);
         result.IsCancelled().ShouldBeFalse();
     }
 
     [Fact]
     public void IsCancelled_GenericResult_ContainsCancelledError_ReturnsTrue()
     {
-        var result = Result<int>.WithFailure(new[] { ResultErrors.OperationCancelled });
+        var result = Result<int>.WithFailure([ResultErrors.OperationCancelled]);
         result.IsCancelled().ShouldBeTrue();
     }
 }

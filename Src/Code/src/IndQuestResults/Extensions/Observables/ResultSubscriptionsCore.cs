@@ -20,9 +20,9 @@ namespace IndQuestResults.Extensions.Observables;
 /// <item><strong>AsyncSubscription:</strong> Async subscription patterns with cancellation</item>
 /// <item><strong>ResourceSubscription:</strong> Automatic resource cleanup</item>
 /// </list>
-/// 
+///
 /// <para><strong>No External Dependencies:</strong> Uses only built-in .NET types for maximum compatibility.</para>
-/// 
+///
 /// <para><strong>Thread Safety:</strong> All subscription operations are thread-safe.</para>
 /// </remarks>
 public static class ResultSubscriptionsCore
@@ -40,7 +40,7 @@ public static class ResultSubscriptionsCore
     ///     onSuccess: user => Console.WriteLine($"User: {user.Name}"),
     ///     onFailure: errors => Console.WriteLine($"Error: {string.Join(", ", errors)}")
     /// );
-    /// 
+    ///
     /// subject.OnNext(Result&lt;User&gt;.Success(new User("John")));
     /// subject.OnNext(Result&lt;User&gt;.WithFailure("User not found"));
     /// </code>
@@ -57,7 +57,7 @@ public static class ResultSubscriptionsCore
     /// <example>
     /// <code>
     /// using var subscriptions = ResultSubscriptionsCore.CreateSubscriptionManager();
-    /// 
+    ///
     /// subscriptions.Add(subject1.Subscribe(onSuccess: HandleUser));
     /// subscriptions.Add(subject2.Subscribe(onSuccess: HandleOrder));
     /// // All subscriptions disposed when manager is disposed
@@ -108,7 +108,9 @@ public static class ResultSubscriptionsCore
         return async value =>
         {
             if (cancellationToken.IsCancellationRequested)
+            {
                 return;
+            }
 
             try
             {
@@ -192,16 +194,19 @@ internal class ResultSubject<T> : IResultSubject<T>
     private readonly ConcurrentDictionary<int, IResultObserver<T>> _observers = new();
     private readonly Lock _lock = new();
     private int _nextId = 0;
-    private bool _isCompleted = false;
     private bool _disposed = false;
 
     public int SubscriberCount => _observers.Count;
-    public bool IsCompleted => _isCompleted;
+    public bool IsCompleted { get; private set; } = false;
 
     public void OnNext(Result<T> result)
     {
         ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
-        if (_isCompleted) return;
+        if (IsCompleted)
+        {
+            return;
+        }
+
         ArgumentNullException.ThrowIfNull(result);
 
         foreach (var observer in _observers.Values)
@@ -220,13 +225,21 @@ internal class ResultSubject<T> : IResultSubject<T>
     public void OnError(Exception exception)
     {
         ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
-        if (_isCompleted) return;
+        if (IsCompleted)
+        {
+            return;
+        }
+
         ArgumentNullException.ThrowIfNull(exception);
 
         {
             using var _ = _lock.EnterScope();
-            if (_isCompleted) return;
-            _isCompleted = true;
+            if (IsCompleted)
+            {
+                return;
+            }
+
+            IsCompleted = true;
         }
 
         foreach (var observer in _observers.Values)
@@ -247,12 +260,19 @@ internal class ResultSubject<T> : IResultSubject<T>
     public void OnCompleted()
     {
         ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
-        if (_isCompleted) return;
+        if (IsCompleted)
+        {
+            return;
+        }
 
         {
             using var _ = _lock.EnterScope();
-            if (_isCompleted) return;
-            _isCompleted = true;
+            if (IsCompleted)
+            {
+                return;
+            }
+
+            IsCompleted = true;
         }
 
         foreach (var observer in _observers.Values)
@@ -280,7 +300,7 @@ internal class ResultSubject<T> : IResultSubject<T>
 
         var observer = new ResultObserver<T>(onSuccess, onFailure, onCompleted);
         var id = Interlocked.Increment(ref _nextId);
-        
+
         _observers[id] = observer;
 
         return new Subscription(() => _observers.TryRemove(id, out _));
@@ -295,7 +315,7 @@ internal class ResultSubject<T> : IResultSubject<T>
 
         var observer = new ResultObserver<T>(onResult, onCompleted);
         var id = Interlocked.Increment(ref _nextId);
-        
+
         _observers[id] = observer;
 
         return new Subscription(() => _observers.TryRemove(id, out _));
@@ -318,7 +338,9 @@ internal class ResultSubject<T> : IResultSubject<T>
 internal interface IResultObserver<T>
 {
     void OnNext(Result<T> result);
+
     void OnError(Exception exception);
+
     void OnCompleted();
 }
 
@@ -363,7 +385,7 @@ internal class ResultObserver<T> : IResultObserver<T>
         }
         else
         {
-            _onFailure?.Invoke(result.Errors ?? new[] { ResultConstants.DefaultErrorMessage });
+            _onFailure?.Invoke(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
         }
     }
 
@@ -375,7 +397,7 @@ internal class ResultObserver<T> : IResultObserver<T>
         }
         else
         {
-            _onFailure?.Invoke(new[] { $"Stream error: {exception.Message}" });
+            _onFailure?.Invoke([$"Stream error: {exception.Message}"]);
         }
     }
 
@@ -442,7 +464,7 @@ public interface ISubscriptionManager : IDisposable
 /// </summary>
 internal class SubscriptionManager : ISubscriptionManager
 {
-    private readonly ConcurrentBag<IDisposable> _subscriptions = new();
+    private readonly ConcurrentBag<IDisposable> _subscriptions = [];
     private bool _disposed = false;
 
     public int Count => _subscriptions.Count;

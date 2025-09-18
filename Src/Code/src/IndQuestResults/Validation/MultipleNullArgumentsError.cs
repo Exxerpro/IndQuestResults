@@ -13,12 +13,16 @@ public sealed class MultipleNullArgumentsError
     public MultipleNullArgumentsError(params string[] parameterNames)
     {
         if (parameterNames == null || parameterNames.Length == 0)
+        {
             throw new ArgumentException("At least one parameter name must be provided.", nameof(parameterNames));
+        }
 
         ParameterNames = parameterNames.Where(name => !string.IsNullOrWhiteSpace(name)).ToArray();
         
         if (ParameterNames.Length == 0)
+        {
             throw new ArgumentException("All parameter names cannot be null or whitespace.", nameof(parameterNames));
+        }
     }
 
     /// <summary>

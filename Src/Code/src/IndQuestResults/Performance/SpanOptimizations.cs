@@ -27,7 +27,9 @@ public static class SpanOptimizations
     public static string FormatCollection(IEnumerable<string> items, string prefix = "", string separator = ", ")
     {
         if (items is null)
+        {
             return prefix;
+        }
 
         // Fast path for arrays with known count
         if (items is string[] itemArray && itemArray.Length <= MaxSpanOptimizationItems)
@@ -62,7 +64,9 @@ public static class SpanOptimizations
     private static string FormatArraySpan(ReadOnlySpan<string> itemSpan, string prefix, string separator)
     {
         if (itemSpan.IsEmpty)
+        {
             return prefix;
+        }
 
         // Estimate capacity: prefix + items + separators
         var estimatedLength = prefix.Length;
@@ -73,7 +77,9 @@ public static class SpanOptimizations
 
         // Subtract one separator length (no separator after last item)
         if (itemSpan.Length > 0)
+        {
             estimatedLength -= separator.Length;
+        }
 
         // Use stackalloc for small strings
         if (estimatedLength <= MaxStackAllocSize)
@@ -141,10 +147,14 @@ public static class SpanOptimizations
         foreach (var item in items)
         {
             if (!isFirst && !string.IsNullOrEmpty(separator))
+            {
                 builder.Append(separator);
+            }
 
             if (!string.IsNullOrEmpty(item))
+            {
                 builder.Append(item);
+            }
 
             isFirst = false;
         }
@@ -161,11 +171,15 @@ public static class SpanOptimizations
     public static string[] CombineCollections(IEnumerable<IEnumerable<string>> collections, int? totalEstimatedCount = null)
     {
         if (collections is null)
-            return Array.Empty<string>();
+        {
+            return [];
+        }
 
         var collectionList = collections.ToList();
         if (collectionList.Count == 0)
-            return Array.Empty<string>();
+        {
+            return [];
+        }
 
         // Use provided estimate or calculate
         var estimatedCount = totalEstimatedCount ?? EstimateTotalCount(collectionList);
@@ -226,7 +240,9 @@ public static class SpanOptimizations
     public static string[] DeduplicatePreserveOrder(IEnumerable<string> items)
     {
         if (items is null)
-            return Array.Empty<string>();
+        {
+            return [];
+        }
 
         if (items is ICollection<string> collection && collection.Count <= MaxSpanOptimizationItems)
         {
@@ -258,7 +274,9 @@ public static class SpanOptimizations
     private static string[] DeduplicateSmallArray(string[] items)
     {
         if (items.Length <= 1)
+        {
             return items;
+        }
 
         var result = new List<string>(items.Length);
         

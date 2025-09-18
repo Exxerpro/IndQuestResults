@@ -34,9 +34,9 @@ public class ResultCreationBenchmarks
     public void Setup()
     {
         _singleError = "Operation failed due to invalid input";
-        _errorArray = ErrorCount > 0 
+        _errorArray = ErrorCount > 0
             ? Enumerable.Range(1, ErrorCount).Select(i => $"Error message number {i}").ToArray()
-            : Array.Empty<string>();
+            : [];
     }
 
     /// <summary>
@@ -155,8 +155,8 @@ public class ResultCreationBenchmarks
     [Benchmark]
     public Result<T> CreateGenericResult<T>() where T : new()
     {
-        return ErrorCount > 50 
-            ? Result<T>.WithFailure("Too many errors") 
+        return ErrorCount > 50
+            ? Result<T>.WithFailure("Too many errors")
             : Result<T>.Success(new T());
     }
 
@@ -187,7 +187,7 @@ public class ResultCreationBenchmarks
     [Benchmark]
     public Result CreateFailureEmptyErrors()
     {
-        return Result.WithFailure(Array.Empty<string>());
+        return Result.WithFailure([]);
     }
 
     /// <summary>
@@ -238,15 +238,15 @@ public class ResultCreationBenchmarks
     public Result BatchCreateResults()
     {
         Result finalResult = Result.Success();
-        
+
         for (int i = 0; i < 10; i++)
         {
-            var result = i < 5 
-                ? Result.Success() 
+            var result = i < 5
+                ? Result.Success()
                 : Result.WithFailure($"Batch error {i}");
             finalResult = finalResult.Combine(result);
         }
-        
+
         return finalResult;
     }
 }

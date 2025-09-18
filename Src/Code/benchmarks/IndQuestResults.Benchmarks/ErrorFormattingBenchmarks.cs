@@ -199,7 +199,7 @@ public class ErrorFormattingBenchmarks
     [Benchmark]
     public Result CombineErrors_EmptyCollections()
     {
-        return Result.CombineErrors(Array.Empty<string>(), Array.Empty<string>());
+        return Result.CombineErrors([], []);
     }
 
     /// <summary>

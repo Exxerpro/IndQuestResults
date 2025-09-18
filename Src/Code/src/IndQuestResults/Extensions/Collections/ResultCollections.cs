@@ -15,13 +15,13 @@ namespace IndQuestResults.Extensions.Collections;
 /// <item><strong>Partition:</strong> Separate successes and failures</item>
 /// <item><strong>Collect:</strong> Extract successful values, ignoring failures</item>
 /// </list>
-/// 
+///
 /// <para><strong>Error Handling:</strong></para>
 /// <list type="bullet">
 /// <item><strong>Fail-Fast:</strong> Stop at first error (default behavior)</item>
 /// <item><strong>Accumulate:</strong> Collect all errors before failing</item>
 /// </list>
-/// 
+///
 /// <para><strong>Performance:</strong> Optimized for small to medium collections with efficient enumeration.</para>
 /// </remarks>
 public static class ResultCollections
@@ -50,7 +50,10 @@ public static class ResultCollections
 
         foreach (var result in results)
         {
-            if (result == null) continue;
+            if (result == null)
+            {
+                continue;
+            }
 
             if (result.IsSuccess)
             {
@@ -82,7 +85,10 @@ public static class ResultCollections
 
         foreach (var result in results)
         {
-            if (result == null) continue;
+            if (result == null)
+            {
+                continue;
+            }
 
             if (result.IsSuccess)
             {
@@ -90,7 +96,7 @@ public static class ResultCollections
             }
             else
             {
-                return Result<IEnumerable<T>>.WithFailure(result.Errors ?? new[] { ResultConstants.DefaultErrorMessage });
+                return Result<IEnumerable<T>>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
             }
         }
 
@@ -163,7 +169,10 @@ public static class ResultCollections
 
         foreach (var result in results)
         {
-            if (result == null) continue;
+            if (result == null)
+            {
+                continue;
+            }
 
             if (result.IsSuccess)
             {
@@ -213,7 +222,7 @@ public static class ResultCollections
 
         return results
             .Where(result => result != null && result.IsFailure)
-            .SelectMany(result => result.Errors ?? Enumerable.Empty<string>());
+            .SelectMany(result => result.Errors ?? []);
     }
 
     /// <summary>

@@ -57,7 +57,7 @@ public sealed class Result
     /// <param name="errors">A collection of error messages.</param>
     private Result(bool succeeded, IEnumerable<string> errors)
     {
-        var errorArray = errors?.ToArray() ?? Array.Empty<string>();
+        var errorArray = errors?.ToArray() ?? [];
         var hasAnyErrors = errorArray.Length > 0;
 
         IsSuccess = succeeded && !hasAnyErrors;
@@ -70,7 +70,7 @@ public sealed class Result
     public Result()
     {
         IsSuccess = false;
-        Errors = Array.Empty<string>();
+        Errors = [];
     }
 
     /// <summary>
@@ -91,7 +91,9 @@ public sealed class Result
     public static string FormatErrorsString(IEnumerable<string> errors, string prefix)
     {
         if (errors is null || !errors.Any())
+        {
             return prefix;
+        }
 
         // Fast path for arrays/collections with known count
         if (errors is string[] errorArray)
@@ -125,7 +127,9 @@ public sealed class Result
     private static string FormatErrorsStringSpan(ReadOnlySpan<string> errorSpan, string prefix)
     {
         if (errorSpan.IsEmpty)
+        {
             return prefix;
+        }
 
         // Estimate capacity: prefix + ": " + errors + separators
         var estimatedLength = prefix.Length + 2; // ": "
@@ -196,7 +200,10 @@ public sealed class Result
         foreach (var error in errors)
         {
             if (!isFirst)
+            {
                 stringBuilder.Append(", ");
+            }
+
             stringBuilder.Append(error);
             isFirst = false;
         }
@@ -230,7 +237,7 @@ public sealed class Result
     /// <returns>A successful <see cref="Result"/> instance.</returns>
     public static Result Success()
     {
-        return new Result(true, Array.Empty<string>());
+        return new Result(true, []);
     }
 
     /// <summary>
@@ -339,11 +346,7 @@ public sealed class Result
     /// <returns>A <see cref="Result"/> representing the outcome.</returns>
     public Result Ensure(Func<bool> condition, string errorMessage)
     {
-        if (IsSuccess && !condition())
-        {
-            return WithFailure(errorMessage);
-        }
-        return this;
+        return IsSuccess && !condition() ? WithFailure(errorMessage) : this;
     }
 
     /// <summary>
@@ -368,7 +371,9 @@ public sealed class Result
     public Result Combine(params Result[] results)
     {
         if (results is null || results.Length == 0)
+        {
             return this;
+        }
 
         var errorList = new List<string>();
 

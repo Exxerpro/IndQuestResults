@@ -130,7 +130,9 @@ public static class ResultObservableBridge
             onNext: result =>
             {
                 if (result.IsSuccess)
+                {
                     onSuccess(result.Value!);
+                }
             },
             onCompleted
         );
@@ -175,9 +177,13 @@ public static class ResultObservableBridge
             onNext: result =>
             {
                 if (result.IsSuccess)
+                {
                     onSuccess(result.Value!);
+                }
                 else
-                    onFailure(result.Errors ?? new[] { ResultConstants.DefaultErrorMessage });
+                {
+                    onFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+                }
             },
             onCompleted
         );
@@ -291,7 +297,10 @@ public static class ResultObservableBridge
         int bufferSize = 1)
     {
         ArgumentNullException.ThrowIfNull(source);
-        if (bufferSize <= 0) throw new ArgumentException("Buffer size must be positive", nameof(bufferSize));
+        if (bufferSize <= 0)
+        {
+            throw new ArgumentException("Buffer size must be positive", nameof(bufferSize));
+        }
 
         var subject = new ReplayResultSubject<T>(bufferSize);
 
@@ -353,9 +362,13 @@ internal class ReplayResultSubject<T> : IResultSubject<T>
             foreach (var result in _buffer)
             {
                 if (result.IsSuccess)
+                {
                     onSuccess(result.Value!);
+                }
                 else
-                    onFailure?.Invoke(result.Errors ?? new[] { ResultConstants.DefaultErrorMessage });
+                {
+                    onFailure?.Invoke(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+                }
             }
         }
 
@@ -488,7 +501,7 @@ internal class RouteResultsObserver<T> : IObserver<Result<T>>
         }
         else
         {
-            var errorMessage = string.Join(", ", result.Errors ?? new[] { ResultConstants.DefaultErrorMessage });
+            var errorMessage = string.Join(", ", result.Errors ?? [ResultConstants.DefaultErrorMessage]);
             _failureSubject.OnNext(Result<string>.Success(errorMessage));
         }
     }

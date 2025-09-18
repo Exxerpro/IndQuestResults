@@ -23,14 +23,14 @@ public class ResultCombineAndCombineErrorsTests
     [Fact]
     public void Combine_AggregatesErrors_FromThisAndOthers()
     {
-        var thisFailure = Result.WithFailure(new[] { "E1" });
-        var otherFailure = Result.WithFailure(new[] { "E2", "E3" });
+        var thisFailure = Result.WithFailure(["E1"]);
+        var otherFailure = Result.WithFailure(["E2", "E3"]);
         var success = Result.Success();
 
         var combined = thisFailure.Combine(success, otherFailure);
 
         combined.IsFailure.ShouldBeTrue();
-        combined.Errors.ShouldBe(new[] { "E1", "E2", "E3" });
+        combined.Errors.ShouldBe(["E1", "E2", "E3"]);
     }
 
     [Fact]

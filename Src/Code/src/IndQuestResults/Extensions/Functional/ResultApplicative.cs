@@ -62,9 +62,14 @@ public static class ResultApplicative
         // Accumulate errors from both failures
         var errors = new List<string>();
         if (result1.IsFailure && result1.Errors != null)
+        {
             errors.AddRange(result1.Errors);
+        }
+
         if (result2.IsFailure && result2.Errors != null)
+        {
             errors.AddRange(result2.Errors);
+        }
 
         return errors.Count > 0
             ? Result<TResult>.WithFailure(errors)
@@ -94,11 +99,19 @@ public static class ResultApplicative
         // Accumulate errors from all failures
         var errors = new List<string>();
         if (result1.IsFailure && result1.Errors != null)
+        {
             errors.AddRange(result1.Errors);
+        }
+
         if (result2.IsFailure && result2.Errors != null)
+        {
             errors.AddRange(result2.Errors);
+        }
+
         if (result3.IsFailure && result3.Errors != null)
+        {
             errors.AddRange(result3.Errors);
+        }
 
         return errors.Count > 0
             ? Result<TResult>.WithFailure(errors)
@@ -130,13 +143,24 @@ public static class ResultApplicative
         // Accumulate errors from all failures
         var errors = new List<string>();
         if (result1.IsFailure && result1.Errors != null)
+        {
             errors.AddRange(result1.Errors);
+        }
+
         if (result2.IsFailure && result2.Errors != null)
+        {
             errors.AddRange(result2.Errors);
+        }
+
         if (result3.IsFailure && result3.Errors != null)
+        {
             errors.AddRange(result3.Errors);
+        }
+
         if (result4.IsFailure && result4.Errors != null)
+        {
             errors.AddRange(result4.Errors);
+        }
 
         return errors.Count > 0
             ? Result<TResult>.WithFailure(errors)
@@ -170,15 +194,29 @@ public static class ResultApplicative
         // Accumulate errors from all failures
         var errors = new List<string>();
         if (result1.IsFailure && result1.Errors != null)
+        {
             errors.AddRange(result1.Errors);
+        }
+
         if (result2.IsFailure && result2.Errors != null)
+        {
             errors.AddRange(result2.Errors);
+        }
+
         if (result3.IsFailure && result3.Errors != null)
+        {
             errors.AddRange(result3.Errors);
+        }
+
         if (result4.IsFailure && result4.Errors != null)
+        {
             errors.AddRange(result4.Errors);
+        }
+
         if (result5.IsFailure && result5.Errors != null)
+        {
             errors.AddRange(result5.Errors);
+        }
 
         return errors.Count > 0
             ? Result<TResult>.WithFailure(errors)
@@ -215,13 +253,18 @@ public static class ResultApplicative
 
         foreach (var result in results)
         {
-            if (result == null) continue;
-            
+            if (result == null)
+            {
+                continue;
+            }
+
             if (result.IsFailure)
             {
                 allSuccessful = false;
                 if (result.Errors != null)
+                {
                     errors.AddRange(result.Errors);
+                }
             }
         }
 

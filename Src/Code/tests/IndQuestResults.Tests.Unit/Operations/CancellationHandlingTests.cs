@@ -623,7 +623,9 @@ public class CancellationHandlingTests
             {
                 var firstResult = await task;
                 if (firstResult.IsCancelled())
+                {
                     return firstResult;
+                }
 
                 steps.Add(firstResult.Value!);
 

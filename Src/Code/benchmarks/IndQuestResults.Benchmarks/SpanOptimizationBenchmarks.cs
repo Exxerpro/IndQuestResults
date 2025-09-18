@@ -172,7 +172,7 @@ public class SpanOptimizationBenchmarks
     [Benchmark]
     public string FormatEmptyErrors()
     {
-        return Result.FormatErrorsString(Array.Empty<string>(), "Empty");
+        return Result.FormatErrorsString([], "Empty");
     }
 
     /// <summary>
@@ -181,7 +181,7 @@ public class SpanOptimizationBenchmarks
     [Benchmark]
     public string FormatSingleError()
     {
-        return Result.FormatErrorsString(new[] { "Single error" }, "Failed");
+        return Result.FormatErrorsString(["Single error"], "Failed");
     }
 
     /// <summary>
@@ -221,9 +221,9 @@ public class SpanOptimizationBenchmarks
     {
         var results = new[]
         {
-            Result.WithFailure(new[] { "A" }),
-            Result.WithFailure(new[] { "B1", "B2" }),
-            Result.WithFailure(new[] { "C1", "C2", "C3", "C4" }),
+            Result.WithFailure(["A"]),
+            Result.WithFailure(["B1", "B2"]),
+            Result.WithFailure(["C1", "C2", "C3", "C4"]),
             Result.WithFailure(_smallErrorArray),
             Result.Success()
         };
@@ -246,7 +246,10 @@ public class SpanOptimizationBenchmarks
         foreach (var error in errors)
         {
             if (!isFirst)
+            {
                 sb.Append(", ");
+            }
+
             sb.Append(error);
             isFirst = false;
         }

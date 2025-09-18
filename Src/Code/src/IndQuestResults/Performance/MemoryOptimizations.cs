@@ -11,7 +11,7 @@ public static class MemoryOptimizations
     /// <summary>
     /// Pre-allocated empty string array to avoid repeated allocations.
     /// </summary>
-    public static readonly string[] EmptyStringArray = Array.Empty<string>();
+    public static readonly string[] EmptyStringArray = [];
 
     /// <summary>
     /// Cache of commonly used single-item string arrays to reduce allocations.
@@ -31,12 +31,7 @@ public static class MemoryOptimizations
     /// <returns>A cached or new single-item string array.</returns>
     public static string[] GetSingleItemArray(string item)
     {
-        if (string.IsNullOrEmpty(item))
-        {
-            return EmptyStringArray;
-        }
-
-        return _singleItemArrayCache.GetOrAdd(item, key => new[] { key });
+        return string.IsNullOrEmpty(item) ? EmptyStringArray : _singleItemArrayCache.GetOrAdd(item, key => [key]);
     }
 
     /// <summary>
@@ -75,7 +70,7 @@ public static class MemoryOptimizations
     {
         if (source is null)
         {
-            return Array.Empty<T>();
+            return [];
         }
 
         // Fast path: already an array
@@ -89,7 +84,7 @@ public static class MemoryOptimizations
         {
             if (collection.Count == 0)
             {
-                return Array.Empty<T>();
+                return [];
             }
 
             T[] result = new T[collection.Count];
@@ -112,14 +107,14 @@ public static class MemoryOptimizations
     {
         if (arrays is null || arrays.Length == 0)
         {
-            return Array.Empty<T>();
+            return [];
         }
 
         // Filter out null arrays and calculate total length
         T[][] validArrays = arrays.Where(a => a is not null && a.Length > 0).ToArray();
         if (validArrays.Length == 0)
         {
-            return Array.Empty<T>();
+            return [];
         }
 
         if (validArrays.Length == 1)
@@ -173,9 +168,8 @@ public static class MemoryOptimizations
 /// <typeparam name="TValue">The type of the cached value.</typeparam>
 internal sealed class ConcurrentCache<TKey, TValue> : IDisposable where TKey : notnull
 {
-    private readonly Dictionary<TKey, CacheItem> _cache = new();
+    private readonly Dictionary<TKey, CacheItem> _cache = [];
     private readonly ReaderWriterLockSlim _lock = new();
-    private readonly int _maxSize;
     private long _accessCounter;
     private bool _disposed;
 
@@ -185,7 +179,7 @@ internal sealed class ConcurrentCache<TKey, TValue> : IDisposable where TKey : n
     /// <param name="maxSize">The maximum number of items to cache.</param>
     public ConcurrentCache(int maxSize)
     {
-        _maxSize = maxSize;
+        MaxSize = maxSize;
     }
 
     /// <summary>
@@ -210,7 +204,7 @@ internal sealed class ConcurrentCache<TKey, TValue> : IDisposable where TKey : n
     /// <summary>
     /// Gets the maximum cache size.
     /// </summary>
-    public int MaxSize => _maxSize;
+    public int MaxSize { get; }
 
     /// <summary>
     /// Gets a cached value or adds a new one using the provided factory.
@@ -250,7 +244,7 @@ internal sealed class ConcurrentCache<TKey, TValue> : IDisposable where TKey : n
             }
 
             // Evict least recently used items if at capacity
-            if (_cache.Count >= _maxSize)
+            if (_cache.Count >= MaxSize)
             {
                 EvictLeastRecentlyUsed();
             }
@@ -287,7 +281,7 @@ internal sealed class ConcurrentCache<TKey, TValue> : IDisposable where TKey : n
     /// </summary>
     private void EvictLeastRecentlyUsed()
     {
-        int itemsToRemove = _cache.Count - _maxSize + 1;
+        int itemsToRemove = _cache.Count - MaxSize + 1;
         if (itemsToRemove <= 0)
         {
             return;

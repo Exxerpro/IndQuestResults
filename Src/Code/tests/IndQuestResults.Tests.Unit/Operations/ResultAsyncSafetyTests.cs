@@ -237,7 +237,7 @@ public class ResultAsyncSafetyTests
             var result2 = Result<int>.WithFailure(errors, taskId);
             var str2 = result2.ToString();
 
-            var combined = Result.CombineErrors(errors, new[] { $"Combined{taskId}" });
+            var combined = Result.CombineErrors(errors, [$"Combined{taskId}"]);
             var str3 = combined.ToString();
 
             await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken: CancellationToken.None);

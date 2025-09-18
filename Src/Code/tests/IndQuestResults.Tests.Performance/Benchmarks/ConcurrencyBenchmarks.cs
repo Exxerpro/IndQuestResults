@@ -85,7 +85,7 @@ public static class ConcurrencyBenchmarks
     private static void RunConcurrentReadTest(int threadCount, int operationsPerThread)
     {
         var sharedSuccessResult = Result<string>.Success("Shared value");
-        var sharedFailureResult = Result<string>.WithFailure(new[] { "Error 1", "Error 2", "Error 3" });
+        var sharedFailureResult = Result<string>.WithFailure(["Error 1", "Error 2", "Error 3"]);
 
         var barrier = new Barrier(threadCount);
         var stopwatch = new Stopwatch();
@@ -240,7 +240,9 @@ public static class ConcurrencyBenchmarks
         foreach (var threads in threadCounts)
         {
             if (threads > Environment.ProcessorCount * 4)
+            {
                 continue; // Skip if too many threads
+            }
 
             var barrier = new Barrier(threads);
             var stopwatch = new Stopwatch();

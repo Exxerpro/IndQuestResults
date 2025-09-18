@@ -115,7 +115,7 @@ public class ResultTests
     public void WithFailure_EmptyErrors_ShouldUseDefaultErrorMessage()
     {
         // Act
-        var result = Result.WithFailure(Array.Empty<string>());
+        var result = Result.WithFailure([]);
 
         // Assert
         Assert.False(result.IsSuccess);

@@ -77,7 +77,7 @@ public class ResultGenericTests
     {
         // Errors null OR empty must supply DefaultErrorMessage to failure branch
         var rNull = new Result<int>(false, errors: null, value: 0);
-        var rEmpty = Result<int>.WithFailure(Array.Empty<string>());
+        var rEmpty = Result<int>.WithFailure([]);
 
         var outNull = rNull.Match(
             onSuccess: _ => "OK",

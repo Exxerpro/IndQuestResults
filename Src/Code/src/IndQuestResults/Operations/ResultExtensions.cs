@@ -57,7 +57,10 @@ public static class ResultExtensions
     public static Result<T> FailForNullArgument<T>(string parameterName, string? message = null)
     {
         if (string.IsNullOrEmpty(parameterName))
+        {
             return Result<T>.WithFailure("Parameter name cannot be null or empty.");
+        }
+
         var error = new NullArgumentError(parameterName, message);
         return Result<T>.WithFailure(error.ToString());
     }
@@ -71,7 +74,10 @@ public static class ResultExtensions
     public static Result<T> FailForNullArguments<T>(params string[] parameterNames)
     {
         if (parameterNames == null || parameterNames.Length == 0 || parameterNames.Any(string.IsNullOrEmpty))
+        {
             return Result<T>.WithFailure("Parameter names cannot be null, empty, or contain empty values.");
+        }
+
         var error = new MultipleNullArgumentsError(parameterNames);
         return Result<T>.WithFailure(error.ToString());
     }
@@ -85,7 +91,10 @@ public static class ResultExtensions
     public static Result FailForNullArgument(string parameterName, string? message = null)
     {
         if (string.IsNullOrEmpty(parameterName))
+        {
             return Result.WithFailure("Parameter name cannot be null or empty.");
+        }
+
         var error = new NullArgumentError(parameterName, message);
         return Result.WithFailure(error.ToString());
     }
@@ -98,7 +107,10 @@ public static class ResultExtensions
     public static Result FailForNullArguments(params string[] parameterNames)
     {
         if (parameterNames == null || parameterNames.Length == 0 || parameterNames.Any(string.IsNullOrEmpty))
+        {
             return Result.WithFailure("Parameter names cannot be null, empty, or contain empty values.");
+        }
+
         var error = new MultipleNullArgumentsError(parameterNames);
         return Result.WithFailure(error.ToString());
     }
@@ -112,9 +124,9 @@ public static class ResultExtensions
     /// <returns>Success result if not null, failure result if null</returns>
     public static Result<T> EnsureNotNull<T>(T? value, string parameterName) where T : class
     {
-        if (string.IsNullOrEmpty(parameterName))
-            return Result<T>.WithFailure("Parameter name cannot be null or empty.");
-        return value is null
+        return string.IsNullOrEmpty(parameterName)
+            ? Result<T>.WithFailure("Parameter name cannot be null or empty.")
+            : value is null
             ? FailForNullArgument<T>(parameterName)
             : Result<T>.Success(value);
     }
@@ -128,9 +140,9 @@ public static class ResultExtensions
     /// <returns>Success result if has value, failure result if null</returns>
     public static Result<T> EnsureNotNull<T>(T? value, string parameterName) where T : struct
     {
-        if (string.IsNullOrEmpty(parameterName))
-            return Result<T>.WithFailure("Parameter name cannot be null or empty.");
-        return value.HasValue
+        return string.IsNullOrEmpty(parameterName)
+            ? Result<T>.WithFailure("Parameter name cannot be null or empty.")
+            : value.HasValue
             ? Result<T>.Success(value.Value)
             : FailForNullArgument<T>(parameterName);
     }
@@ -143,7 +155,10 @@ public static class ResultExtensions
     public static Result ValidateNotNull(params (object? value, string parameterName)[] validations)
     {
         if (validations == null || validations.Length == 0)
+        {
             return Result.WithFailure("Validations cannot be null or empty.");
+        }
+
         var nullParameters = validations
             .Where(v => v.value is null)
             .Select(v => v.parameterName)
@@ -168,9 +183,15 @@ public static class ResultExtensions
     public static Result<T> CreateIfValid<T>(Func<T> factory, params (object? value, string parameterName)[] validations)
     {
         if (factory == null)
+        {
             return Result<T>.WithFailure("Factory function cannot be null.");
+        }
+
         if (validations == null)
+        {
             return Result<T>.WithFailure("Validations cannot be null.");
+        }
+
         var nullParameters = validations
             .Where(v => v.value is null)
             .Select(v => v.parameterName)

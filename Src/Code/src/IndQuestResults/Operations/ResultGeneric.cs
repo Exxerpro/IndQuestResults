@@ -38,11 +38,11 @@ public sealed class Result<T>
     [JsonConstructor]
     public Result(bool isSuccess, IEnumerable<string>? errors, T? value = default)
     {
-        _isSuccess = isSuccess;
-        var errorArray = errors?.ToArray() ?? Array.Empty<string>();
-        _hasErrors = errorArray.Length > 0;
+        IsRecoverable = isSuccess;
+        var errorArray = errors?.ToArray() ?? [];
+        HasErrors = errorArray.Length > 0;
         Errors = errorArray;
-        _value = value;
+        Value = value;
 
         // Validate state consistency after deserialization
         ValidateInternalState();
@@ -56,11 +56,11 @@ public sealed class Result<T>
     /// <param name="value">The value returned by the operation.</param>
     public Result(bool isSuccess, List<string>? errors, T? value = default)
     {
-        _isSuccess = isSuccess;
-        var errorArray = errors?.ToArray() ?? Array.Empty<string>();
-        _hasErrors = errorArray.Length > 0;
+        IsRecoverable = isSuccess;
+        var errorArray = errors?.ToArray() ?? [];
+        HasErrors = errorArray.Length > 0;
         Errors = errorArray;
-        _value = value;
+        Value = value;
     }
 
     /// <summary>
@@ -71,21 +71,17 @@ public sealed class Result<T>
         // Check for inconsistent states that could indicate deserialization issues
         var actualHasErrors = Errors?.Any() == true;
 
-        if (_hasErrors != actualHasErrors)
+        if (HasErrors != actualHasErrors)
         {
             // Log warning but don't throw - fix the inconsistency
-            _hasErrors = actualHasErrors;
+            HasErrors = actualHasErrors;
         }
     }
 
     /// <summary>
     /// Gets the value associated with the result, or null if the operation failed.
     /// </summary>
-    public T? Value => _value;
-
-    private readonly T? _value;
-    private readonly bool _isSuccess;
-    private bool _hasErrors; // Made non-readonly to allow validation fixes
+    public T? Value { get; }
 
     /// <summary>
     /// Gets a value indicating whether the result is a success.
@@ -94,43 +90,43 @@ public sealed class Result<T>
     /// A Success result can still have a null Value, which is valid in the Result{T} pattern.
     /// Null defense: Result{T} allows null values as valid success results when T is nullable.
     /// </summary>
-    public bool IsSuccessMayBeNull => _isSuccess;
+    public bool IsSuccessMayBeNull => IsRecoverable;
 
     /// <summary>
     /// Gets a value indicating whether the result is a success and the value is not null.
     /// </summary>
-    public bool IsSuccess => _isSuccess && (Value is not null);
+    public bool IsSuccess => IsRecoverable && (Value is not null);
 
     /// <summary>
     /// Gets a value indicating whether the result is a success and the value is not null.
     /// </summary>
-    public bool IsSuccessNotNull => _isSuccess && (Value is not null);
+    public bool IsSuccessNotNull => IsRecoverable && (Value is not null);
 
     /// <summary>
     /// Gets a value indicating whether the result is a success but the value is null.
     /// </summary>
-    public bool IsSuccessValueNull => _isSuccess && (Value is null);
+    public bool IsSuccessValueNull => IsRecoverable && (Value is null);
 
     /// <summary>
     /// Gets a value indicating whether the result has warnings or error messages.
     /// This includes both diagnostic warnings (for successful operations) and error messages (for failures).
     /// </summary>
-    public bool HasErrors => _hasErrors;
+    public bool HasErrors { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the result has warnings (i.e., is successful but contains diagnostic messages).
     /// </summary>
-    public bool HasWarnings => _isSuccess && _hasErrors;
+    public bool HasWarnings => IsRecoverable && HasErrors;
 
     /// <summary>
     /// Gets a value indicating whether the result is recoverable (successful operations, even with warnings).
     /// </summary>
-    public bool IsRecoverable => _isSuccess;
+    public bool IsRecoverable { get; }
 
     /// <summary>
     /// Gets a value indicating whether the result is a failure.
     /// </summary>
-    public bool IsFailure => !_isSuccess;
+    public bool IsFailure => !IsRecoverable;
 
     /// <summary>
     /// Gets the collection of error messages associated with the result.
@@ -169,7 +165,7 @@ public sealed class Result<T>
     /// </summary>
     public override string ToString()
     {
-        return _isSuccess
+        return IsRecoverable
             ? $"{ResultConstants.SuccessPrefix}: {Value?.ToString()}"
             : Result.FormatErrorsString(Errors, ResultConstants.FailurePrefix);
     }
@@ -267,7 +263,7 @@ public sealed class Result<T>
     /// <param name="result">The result to convert.</param>
     public static implicit operator Result(Result<T> result)
     {
-        return result._isSuccess ? Result.Success() : Result.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+        return result.IsRecoverable ? Result.Success() : Result.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
     }
 
     /// <summary>
@@ -278,7 +274,7 @@ public sealed class Result<T>
     /// <param name="errors">The collection of error messages.</param>
     public void Deconstruct(out bool succeeded, out T? data, out IEnumerable<string> errors)
     {
-        succeeded = _isSuccess;
+        succeeded = IsRecoverable;
         data = Value;
         errors = Errors ?? [];
     }
@@ -292,13 +288,13 @@ public sealed class Result<T>
     /// <returns>The current <see cref="Result{T}"/> instance.</returns>
     public Result<T> OnSuccess(Action<T> action)
     {
-        if (!_isSuccess)
+        if (!IsRecoverable)
         {
             return this;
         }
 
         // Check if T is nullable
-        bool isNullableType = typeof(T).IsClass || 
+        bool isNullableType = typeof(T).IsClass ||
                            Nullable.GetUnderlyingType(typeof(T)) != null ||
                            !typeof(T).IsValueType;
 
@@ -322,7 +318,7 @@ public sealed class Result<T>
     {
         if (IsFailure)
         {
-            if (Errors is not null && _hasErrors)
+            if (Errors is not null && HasErrors)
             {
                 action(Errors);
             }
@@ -343,10 +339,13 @@ public sealed class Result<T>
     /// <returns>A <see cref="Result{TOut}"/> representing the outcome.</returns>
     public Result<TOut> Map<TOut>(Func<T, TOut> func)
     {
-        if (!_isSuccess) return Result<TOut>.WithFailure(Errors);
+        if (!IsRecoverable)
+        {
+            return Result<TOut>.WithFailure(Errors);
+        }
 
         // Check if T is nullable
-        bool isNullableType = typeof(T).IsClass || 
+        bool isNullableType = typeof(T).IsClass ||
                            Nullable.GetUnderlyingType(typeof(T)) != null ||
                            !typeof(T).IsValueType;
 
@@ -371,10 +370,13 @@ public sealed class Result<T>
     /// <returns>A <see cref="Result{TOut}"/> representing the outcome.</returns>
     public Result<TOut> Bind<TOut>(Func<T, Result<TOut>> func)
     {
-        if (!_isSuccess) return Result<TOut>.WithFailure(Errors);
+        if (!IsRecoverable)
+        {
+            return Result<TOut>.WithFailure(Errors);
+        }
 
         // Check if T is nullable
-        bool isNullableType = typeof(T).IsClass || 
+        bool isNullableType = typeof(T).IsClass ||
                            Nullable.GetUnderlyingType(typeof(T)) != null ||
                            !typeof(T).IsValueType;
 
@@ -398,22 +400,11 @@ public sealed class Result<T>
     /// <returns>A <see cref="Result{T}"/> representing the outcome.</returns>
     public Result<T> Ensure(Func<T, bool> condition, string errorMessage)
     {
-        if (!_isSuccess)
-        {
-            return this;
-        }
-
-        if (Value is null)
-        {
-            return WithFailure(ResultConstants.ConditionEvaluationWithNullValue);
-        }
-
-        if (!condition(Value))
-        {
-            return WithFailure(errorMessage);
-        }
-
-        return this;
+        return !IsRecoverable
+            ? this
+            : Value is null
+            ? WithFailure(ResultConstants.ConditionEvaluationWithNullValue)
+            : !condition(Value) ? WithFailure(errorMessage) : this;
     }
 
     /// <summary>
@@ -425,13 +416,13 @@ public sealed class Result<T>
     /// <returns>The current <see cref="Result{T}"/> instance.</returns>
     public Result<T> Tap(Action<T> action)
     {
-        if (!_isSuccess)
+        if (!IsRecoverable)
         {
             return this;
         }
 
         // Check if T is nullable
-        bool isNullableType = typeof(T).IsClass || 
+        bool isNullableType = typeof(T).IsClass ||
                            Nullable.GetUnderlyingType(typeof(T)) != null ||
                            !typeof(T).IsValueType;
 
@@ -481,7 +472,7 @@ public sealed class Result<T>
         }
 
         // All operations succeeded - return the current successful result (null values are valid)
-        return _isSuccess && Value is not null
+        return IsRecoverable && Value is not null
             ? Result<T>.Success(Value)
             : this;
     }
@@ -496,7 +487,7 @@ public sealed class Result<T>
     /// <returns>The result of the executed function.</returns>
     public Result<TOut> Match<TOut>(Func<T, TOut> onSuccess, Func<IEnumerable<string>, TOut> onFailure)
     {
-        if (!_isSuccess)
+        if (!IsRecoverable)
         {
             IEnumerable<string> errs = (Errors?.Any() == true) ? Errors : [ResultConstants.DefaultErrorMessage];
             return Result<TOut>.Success(onFailure(errs));

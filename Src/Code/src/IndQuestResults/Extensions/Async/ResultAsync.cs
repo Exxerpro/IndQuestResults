@@ -21,9 +21,9 @@ namespace IndQuestResults.Extensions.Async;
 /// <item><strong>RecoverAsync:</strong> Async error recovery patterns</item>
 /// <item><strong>TraverseAsync:</strong> Async collection processing</item>
 /// </list>
-/// 
+///
 /// <para><strong>Cancellation Support:</strong> All async operations support CancellationToken for proper cancellation handling.</para>
-/// 
+///
 /// <para><strong>Error Handling:</strong> Preserves Result semantics while properly handling async exceptions.</para>
 /// </remarks>
 public static class ResultAsync
@@ -55,13 +55,12 @@ public static class ResultAsync
         try
         {
             var result = await resultTask.ConfigureAwait(false);
-            
-            if (cancellationToken.IsCancellationRequested)
-                return ResultExtensions.Cancelled<TOutput>();
 
-            return result.IsSuccess
+            return cancellationToken.IsCancellationRequested
+                ? ResultExtensions.Cancelled<TOutput>()
+                : result.IsSuccess
                 ? await func(result.Value!).ConfigureAwait(false)
-                : Result<TOutput>.WithFailure(result.Errors ?? new[] { ResultConstants.DefaultErrorMessage });
+                : Result<TOutput>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
         }
         catch (OperationCanceledException)
         {
@@ -100,9 +99,11 @@ public static class ResultAsync
         try
         {
             var result = await resultTask.ConfigureAwait(false);
-            
+
             if (cancellationToken.IsCancellationRequested)
+            {
                 return ResultExtensions.Cancelled<TOutput>();
+            }
 
             if (result.IsSuccess)
             {
@@ -110,7 +111,7 @@ public static class ResultAsync
                 return Result<TOutput>.Success(transformedValue);
             }
 
-            return Result<TOutput>.WithFailure(result.Errors ?? new[] { ResultConstants.DefaultErrorMessage });
+            return Result<TOutput>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
         }
         catch (OperationCanceledException)
         {
@@ -149,9 +150,11 @@ public static class ResultAsync
         try
         {
             var result = await resultTask.ConfigureAwait(false);
-            
+
             if (cancellationToken.IsCancellationRequested)
+            {
                 return ResultExtensions.Cancelled<T>();
+            }
 
             if (result.IsSuccess)
             {
@@ -197,11 +200,10 @@ public static class ResultAsync
         try
         {
             var result = await resultTask.ConfigureAwait(false);
-            
-            if (cancellationToken.IsCancellationRequested)
-                return ResultExtensions.Cancelled<T>();
 
-            return result.IsSuccess
+            return cancellationToken.IsCancellationRequested
+                ? ResultExtensions.Cancelled<T>()
+                : result.IsSuccess
                 ? result
                 : await recoveryFunc().ConfigureAwait(false);
         }
@@ -228,7 +230,7 @@ public static class ResultAsync
     /// <example>
     /// <code>
     /// var userIds = new[] { 1, 2, 3 };
-    /// Task&lt;Result&lt;IEnumerable&lt;User&gt;&gt;&gt; usersTask = 
+    /// Task&lt;Result&lt;IEnumerable&lt;User&gt;&gt;&gt; usersTask =
     ///     ResultAsync.TraverseAsync(userIds, LoadUserAsync);
     /// </code>
     /// </example>
@@ -244,11 +246,10 @@ public static class ResultAsync
         {
             var tasks = inputs.Select(input => func(input));
             var results = await Task.WhenAll(tasks).ConfigureAwait(false);
-            
-            if (cancellationToken.IsCancellationRequested)
-                return ResultExtensions.Cancelled<IEnumerable<TOutput>>();
 
-            return Collections.ResultCollections.Sequence(results);
+            return cancellationToken.IsCancellationRequested
+                ? ResultExtensions.Cancelled<IEnumerable<TOutput>>()
+                : Collections.ResultCollections.Sequence(results);
         }
         catch (OperationCanceledException)
         {
@@ -278,7 +279,10 @@ public static class ResultAsync
     {
         ArgumentNullException.ThrowIfNull(inputs);
         ArgumentNullException.ThrowIfNull(func);
-        if (maxDegreeOfParallelism <= 0) throw new ArgumentException("Max degree of parallelism must be positive", nameof(maxDegreeOfParallelism));
+        if (maxDegreeOfParallelism <= 0)
+        {
+            throw new ArgumentException("Max degree of parallelism must be positive", nameof(maxDegreeOfParallelism));
+        }
 
         try
         {
@@ -297,11 +301,10 @@ public static class ResultAsync
             });
 
             var results = await Task.WhenAll(tasks).ConfigureAwait(false);
-            
-            if (cancellationToken.IsCancellationRequested)
-                return ResultExtensions.Cancelled<IEnumerable<TOutput>>();
 
-            return Collections.ResultCollections.Sequence(results);
+            return cancellationToken.IsCancellationRequested
+                ? ResultExtensions.Cancelled<IEnumerable<TOutput>>()
+                : Collections.ResultCollections.Sequence(results);
         }
         catch (OperationCanceledException)
         {
@@ -329,11 +332,10 @@ public static class ResultAsync
         try
         {
             var results = await Task.WhenAll(resultTasks).ConfigureAwait(false);
-            
-            if (cancellationToken.IsCancellationRequested)
-                return ResultExtensions.Cancelled<IEnumerable<T>>();
 
-            return Collections.ResultCollections.Sequence(results);
+            return cancellationToken.IsCancellationRequested
+                ? ResultExtensions.Cancelled<IEnumerable<T>>()
+                : Collections.ResultCollections.Sequence(results);
         }
         catch (OperationCanceledException)
         {

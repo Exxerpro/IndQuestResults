@@ -30,7 +30,7 @@ public static class ErrorFormattingBenchmarks
         Console.WriteLine("Warming up...");
         TestFormatErrorsSpan(smallErrors, WarmupIterations);
         TestFormatErrorsStringBuilder(smallErrors, WarmupIterations);
-        
+
         Console.WriteLine("Running benchmarks...");
         Console.WriteLine();
 
@@ -38,27 +38,27 @@ public static class ErrorFormattingBenchmarks
         RunFormattingComparison("Small errors (3 items)", smallErrors);
         RunFormattingComparison("Medium errors (10 items)", mediumErrors);
         RunFormattingComparison("Large errors (50 items)", largeErrors);
-        
+
         // Test Result.ToString performance
         RunToStringPerformance();
-        
+
         Console.WriteLine();
     }
 
     private static void RunFormattingComparison(string testName, string[] errors)
     {
         Console.WriteLine($"{testName}:");
-        
+
         // Test Span optimization (IndQuestResults implementation)
         var spanTime = TestFormatErrorsSpan(errors, IterationCount);
         var spanOpsPerSec = IterationCount / spanTime.TotalSeconds;
-        
+
         // Test StringBuilder baseline
         var stringBuilderTime = TestFormatErrorsStringBuilder(errors, IterationCount);
         var stringBuilderOpsPerSec = IterationCount / stringBuilderTime.TotalSeconds;
-        
+
         var improvement = ((stringBuilderTime.TotalMilliseconds / spanTime.TotalMilliseconds) - 1) * 100;
-        
+
         Console.WriteLine($"  Span Optimized: {spanTime.TotalMilliseconds:F1} ms, {spanOpsPerSec:N0} ops/sec");
         Console.WriteLine($"  StringBuilder: {stringBuilderTime.TotalMilliseconds:F1} ms, {stringBuilderOpsPerSec:N0} ops/sec");
         Console.WriteLine($"  Performance Improvement: {improvement:F1}% faster");
@@ -68,13 +68,13 @@ public static class ErrorFormattingBenchmarks
     private static TimeSpan TestFormatErrorsSpan(string[] errors, int iterations)
     {
         var stopwatch = Stopwatch.StartNew();
-        
+
         for (int i = 0; i < iterations; i++)
         {
             var result = Result.FormatErrorsString(errors, "Operation Failed");
             _ = result.Length; // Prevent optimization
         }
-        
+
         stopwatch.Stop();
         return stopwatch.Elapsed;
     }
@@ -82,13 +82,13 @@ public static class ErrorFormattingBenchmarks
     private static TimeSpan TestFormatErrorsStringBuilder(string[] errors, int iterations)
     {
         var stopwatch = Stopwatch.StartNew();
-        
+
         for (int i = 0; i < iterations; i++)
         {
             var result = FormatErrorsWithStringBuilder(errors, "Operation Failed");
             _ = result.Length; // Prevent optimization
         }
-        
+
         stopwatch.Stop();
         return stopwatch.Elapsed;
     }
@@ -96,13 +96,18 @@ public static class ErrorFormattingBenchmarks
     private static string FormatErrorsWithStringBuilder(string[] errors, string prefix)
     {
         if (errors == null || errors.Length == 0)
+        {
             return prefix;
+        }
 
         var sb = new StringBuilder($"{prefix}: ");
         for (int i = 0; i < errors.Length; i++)
         {
             if (i > 0)
+            {
                 sb.Append(", ");
+            }
+
             sb.Append(errors[i]);
         }
         return sb.ToString();
@@ -111,11 +116,11 @@ public static class ErrorFormattingBenchmarks
     private static void RunToStringPerformance()
     {
         Console.WriteLine("Result.ToString() Performance:");
-        
+
         var successResult = Result.Success();
         var singleErrorResult = Result.WithFailure("Single error");
-        var multipleErrorResult = Result.WithFailure(new[] { "Error 1", "Error 2", "Error 3", "Error 4", "Error 5" });
-        
+        var multipleErrorResult = Result.WithFailure(["Error 1", "Error 2", "Error 3", "Error 4", "Error 5"]);
+
         // Test success toString
         var stopwatch = Stopwatch.StartNew();
         for (int i = 0; i < IterationCount; i++)

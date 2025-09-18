@@ -9,6 +9,7 @@ public class ResultExtensionsValidationTests
         string? value = null;
         var res = ResultExtensions.EnsureNotNull(value, "name");
         res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
         res.Error.ShouldContain("name");
     }
 
@@ -26,6 +27,7 @@ public class ResultExtensionsValidationTests
     {
         var res = ResultExtensions.EnsureNotNull("v", "");
         res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
         res.Error.ShouldContain("Parameter name cannot be null or empty");
     }
 
@@ -36,6 +38,8 @@ public class ResultExtensionsValidationTests
         int? value = null;
         var res = ResultExtensions.EnsureNotNull(value, "count");
         res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
+        res.Error.ShouldNotBeNull();
         res.Error.ShouldContain("count");
     }
 
@@ -54,6 +58,7 @@ public class ResultExtensionsValidationTests
         int? value = 1;
         var res = ResultExtensions.EnsureNotNull(value, "");
         res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
         res.Error.ShouldContain("Parameter name cannot be null or empty");
     }
 
@@ -63,14 +68,16 @@ public class ResultExtensionsValidationTests
     {
         var res = ResultExtensions.ValidateNotNull(null!);
         res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
         res.Error.ShouldContain("Validations cannot be null or empty");
     }
 
     [Fact]
     public void ValidateNotNull_EmptyArray_ReturnsFailure()
     {
-        var res = ResultExtensions.ValidateNotNull(Array.Empty<(object? value, string parameterName)>());
+        var res = ResultExtensions.ValidateNotNull([]);
         res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
         res.Error.ShouldContain("Validations cannot be null or empty");
     }
 
@@ -86,6 +93,7 @@ public class ResultExtensionsValidationTests
     {
         var res = ResultExtensions.ValidateNotNull((null, "missing"));
         res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
         res.Error.ShouldContain("missing");
     }
 
@@ -105,6 +113,7 @@ public class ResultExtensionsValidationTests
     {
         var res = ResultExtensions.CreateIfValid<string>(null!, (new object(), "a"));
         res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
         res.Error.ShouldContain("Factory function cannot be null");
     }
 
@@ -113,6 +122,7 @@ public class ResultExtensionsValidationTests
     {
         var res = ResultExtensions.CreateIfValid(() => 42, null!);
         res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
         res.Error.ShouldContain("Validations cannot be null");
     }
 
@@ -129,6 +139,7 @@ public class ResultExtensionsValidationTests
     {
         var res = ResultExtensions.CreateIfValid(() => "v", ((object?)null, "p"));
         res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
         res.Error.ShouldContain("p");
     }
 
@@ -141,4 +152,3 @@ public class ResultExtensionsValidationTests
         res.Errors.First().ShouldContain("b");
     }
 }
-

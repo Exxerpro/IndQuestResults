@@ -20,11 +20,11 @@ public class ConcurrencyBenchmarks
 {
     private const int ThreadCount = 8;
     private const int OperationsPerThread = 10000;
-    
+
     private Result _sharedSuccessResult = null!;
     private Result<int> _sharedSuccessResultWithValue = null!;
     private Result _sharedFailureResult = null!;
-    
+
     /// <summary>
     /// Initializes shared Result instances for concurrent access testing.
     /// Creates immutable Result objects that will be safely accessed from multiple threads.
@@ -50,14 +50,14 @@ public class ConcurrencyBenchmarks
             {
                 for (int i = 0; i < OperationsPerThread; i++)
                 {
-                    var result = i % 2 == 0 
-                        ? Result.Success() 
+                    var result = i % 2 == 0
+                        ? Result.Success()
                         : Result.WithFailure($"Error {i}");
                     var isSuccess = result.IsSuccess;
                 }
             }))
             .ToArray();
-            
+
         await Task.WhenAll(tasks);
     }
 
@@ -80,7 +80,7 @@ public class ConcurrencyBenchmarks
                 }
             }))
             .ToArray();
-            
+
         await Task.WhenAll(tasks);
     }
 
@@ -98,11 +98,14 @@ public class ConcurrencyBenchmarks
                 for (int i = 0; i < OperationsPerThread; i++)
                 {
                     var result = _sharedSuccessResult.Map(() => i * 2);
-                    if (result.IsSuccess) _ = result.Value;
+                    if (result.IsSuccess)
+                    {
+                        _ = result.Value;
+                    }
                 }
             }))
             .ToArray();
-            
+
         await Task.WhenAll(tasks);
     }
 
@@ -119,13 +122,16 @@ public class ConcurrencyBenchmarks
             {
                 for (int i = 0; i < OperationsPerThread; i++)
                 {
-                    var result = _sharedSuccessResultWithValue.Bind(value => 
+                    var result = _sharedSuccessResultWithValue.Bind(value =>
                         Result<int>.Success(value + i));
-                    if (result.IsSuccess) _ = result.Value;
+                    if (result.IsSuccess)
+                    {
+                        _ = result.Value;
+                    }
                 }
             }))
             .ToArray();
-            
+
         await Task.WhenAll(tasks);
     }
 
@@ -140,7 +146,7 @@ public class ConcurrencyBenchmarks
         var results = Enumerable.Range(0, 10)
             .Select(i => i % 2 == 0 ? Result.Success() : Result.WithFailure($"Error {i}"))
             .ToArray();
-            
+
         var tasks = Enumerable.Range(0, ThreadCount)
             .Select(_ => Task.Run(() =>
             {
@@ -151,7 +157,7 @@ public class ConcurrencyBenchmarks
                 }
             }))
             .ToArray();
-            
+
         await Task.WhenAll(tasks);
     }
 
@@ -168,14 +174,14 @@ public class ConcurrencyBenchmarks
             {
                 for (int i = 0; i < OperationsPerThread; i++)
                 {
-                    var value = _sharedSuccessResultWithValue.IsSuccess 
-                        ? _sharedSuccessResultWithValue.Value + i 
+                    var value = _sharedSuccessResultWithValue.IsSuccess
+                        ? _sharedSuccessResultWithValue.Value + i
                         : -1;
                     _ = value; // Use value to prevent optimization
                 }
             }))
             .ToArray();
-            
+
         await Task.WhenAll(tasks);
     }
 
@@ -190,7 +196,7 @@ public class ConcurrencyBenchmarks
         var multiErrorResult = Result.WithFailure(
             Enumerable.Range(1, 100).Select(i => $"Error {i}").ToArray()
         );
-        
+
         var tasks = Enumerable.Range(0, ThreadCount)
             .Select(_ => Task.Run(() =>
             {
@@ -203,7 +209,7 @@ public class ConcurrencyBenchmarks
                 }
             }))
             .ToArray();
-            
+
         await Task.WhenAll(tasks);
     }
 
@@ -226,11 +232,14 @@ public class ConcurrencyBenchmarks
                         .Map(x => x.ToString())
                         .Bind(x => Result<double>.Success(double.Parse(x)))
                         .Map(x => (int)x);
-                    if (result.IsSuccess) _ = result.Value;
+                    if (result.IsSuccess)
+                    {
+                        _ = result.Value;
+                    }
                 }
             }))
             .ToArray();
-            
+
         await Task.WhenAll(tasks);
     }
 
@@ -242,11 +251,11 @@ public class ConcurrencyBenchmarks
     public void ParallelResultProcessing()
     {
         var results = Enumerable.Range(0, 10000)
-            .Select(i => i % 3 == 0 
-                ? Result<int>.Success(i) 
+            .Select(i => i % 3 == 0
+                ? Result<int>.Success(i)
                 : Result<int>.WithFailure($"Failed at {i}"))
             .ToArray();
-            
+
         Parallel.ForEach(results, result =>
         {
             var processedValue = result.IsSuccess ? result.Value * 2 : result.Errors.Count();
@@ -271,7 +280,7 @@ public class ConcurrencyBenchmarks
                 }
             }))
             .ToArray();
-            
+
         await Task.WhenAll(tasks);
     }
 }
