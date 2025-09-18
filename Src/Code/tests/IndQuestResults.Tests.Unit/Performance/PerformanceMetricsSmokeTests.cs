@@ -1,12 +1,13 @@
-using IndQuestResults.Extensions.Performance;
+using IndQuestResults.Performance;
 
-namespace IndQuestResults.Tests.Unit.Extensions.Performance;
+namespace IndQuestResults.Tests.Unit.Performance;
 
 public class PerformanceMetricsSmokeTests
 {
     private sealed class TestProcessor : IMetricsProcessor
     {
         public List<MetricEntry> Entries { get; } = new();
+
         public Task ProcessAsync(MetricEntry metric, CancellationToken cancellationToken)
         {
             // Simulate lightweight processing
@@ -95,8 +96,3 @@ public class PerformanceMetricsSmokeTests
         entry.Timestamp.ShouldBeInRange(now.AddSeconds(-1), now.AddSeconds(1));
     }
 }
-
-
-
-
-

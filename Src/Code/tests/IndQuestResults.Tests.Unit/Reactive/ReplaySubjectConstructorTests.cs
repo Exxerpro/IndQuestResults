@@ -1,6 +1,6 @@
-using IndQuestResults.Extensions.Observables;
+using IndQuestResults.Reactive;
 
-namespace IndQuestResults.Tests.Unit.Extensions.Observables;
+namespace IndQuestResults.Tests.Unit.Reactive;
 
 public class ReplaySubjectConstructorTests
 {

@@ -5,6 +5,7 @@
     <IsTestProject>true</IsTestProject>
     <RootNamespace>IndQuestResults.Tests.Unit</RootNamespace>
     <AssemblyName>IndQuestResults.Tests.Unit</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <PropertyGroup>

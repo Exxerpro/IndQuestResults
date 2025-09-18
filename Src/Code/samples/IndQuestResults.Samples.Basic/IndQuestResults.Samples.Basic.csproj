@@ -5,6 +5,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>IndQuestResults.Samples.Basic</RootNamespace>
     <AssemblyName>IndQuestResults.Samples.Basic</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <!-- Toggle between local project references and NuGet package consumption -->

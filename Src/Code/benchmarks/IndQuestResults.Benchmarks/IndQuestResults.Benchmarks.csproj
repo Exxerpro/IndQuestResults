@@ -6,6 +6,7 @@
     <RootNamespace>IndQuestResults.Benchmarks</RootNamespace>
     <AssemblyName>IndQuestResults.Benchmarks</AssemblyName>
     <ServerGarbageCollection>true</ServerGarbageCollection>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <PropertyGroup>

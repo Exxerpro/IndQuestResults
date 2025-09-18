@@ -1,17 +1,19 @@
-using IndQuestResults.Extensions.Observables;
+using IndQuestResults.Reactive;
 
-namespace IndQuestResults.Tests.Unit.Extensions.Observables;
+namespace IndQuestResults.Tests.Unit.Reactive;
 
 public class ObserversEdgeCasesTests
 {
     private sealed class TestObservable<T> : IObservable<T>
     {
         private readonly List<IObserver<T>> _observers = [];
+
         public IDisposable Subscribe(IObserver<T> observer)
         {
             _observers.Add(observer);
             return new Subscription(() => _observers.Remove(observer));
         }
+
         public void OnNext(T value)
         {
             foreach (var o in _observers.ToArray())
@@ -19,6 +21,7 @@ public class ObserversEdgeCasesTests
                 o.OnNext(value);
             }
         }
+
         public void OnError(Exception ex)
         {
             foreach (var o in _observers.ToArray())
@@ -26,6 +29,7 @@ public class ObserversEdgeCasesTests
                 o.OnError(ex);
             }
         }
+
         public void OnCompleted()
         {
             foreach (var o in _observers.ToArray())
@@ -88,9 +92,3 @@ public class ObserversEdgeCasesTests
         receivedErrors.Any(x => x.Contains("e3")).ShouldBeTrue();
     }
 }
-
-
-
-
-
-

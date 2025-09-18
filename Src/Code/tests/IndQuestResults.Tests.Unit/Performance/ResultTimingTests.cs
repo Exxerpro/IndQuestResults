@@ -2,11 +2,11 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using IndQuestResults.Extensions.Performance;
+using IndQuestResults.Performance;
 using Shouldly;
 using Xunit;
 
-namespace IndQuestResults.Tests.Unit.Extensions.Performance;
+namespace IndQuestResults.Tests.Unit.Performance;
 
 public class ResultTimingTests
 {

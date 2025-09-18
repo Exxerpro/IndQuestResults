@@ -1,4 +1,4 @@
-namespace IndQuestResults.Tests.Unit.Operations;
+namespace IndQuestResults.Tests.Unit;
 
 /// <summary>
 /// Unit tests for the generic Result&lt;T&gt; class.

@@ -1,10 +1,10 @@
-using IndQuestResults.Extensions.Functional;
+using IndQuestResults.Functional;
 using IndQuestResults.Operations;
 using Shouldly;
 using System.Linq;
 using Xunit;
 
-namespace IndQuestResults.Tests.Unit.Extensions.Functional;
+namespace IndQuestResults.Tests.Unit.Functional;
 
 /// <summary>
 /// Tests for ResultApplicative functionality covering all Apply overloads,
@@ -19,7 +19,7 @@ public class ResultApplicativeTests
     private record UserDetails(string Name, string Email, int Age, string Address);
     private record FullUser(string Name, string Email, int Age, string Address, string Phone);
 
-    #endregion
+    #endregion Test Data Classes
 
     #region Apply Two Results Tests
 
@@ -107,7 +107,7 @@ public class ResultApplicativeTests
         result.Errors.ShouldContain("Email too long");
     }
 
-    #endregion
+    #endregion Apply Two Results Tests
 
     #region Apply Three Results Tests
 
@@ -170,7 +170,7 @@ public class ResultApplicativeTests
         result.Errors.ShouldNotContain("Invalid name");
     }
 
-    #endregion
+    #endregion Apply Three Results Tests
 
     #region Apply Four Results Tests
 
@@ -211,7 +211,7 @@ public class ResultApplicativeTests
         result.Errors!.Count().ShouldBe(4);
     }
 
-    #endregion
+    #endregion Apply Four Results Tests
 
     #region Apply Five Results Tests
 
@@ -253,7 +253,7 @@ public class ResultApplicativeTests
         result.Errors!.Count().ShouldBe(5);
     }
 
-    #endregion
+    #endregion Apply Five Results Tests
 
     #region Validate Method Tests
 
@@ -331,7 +331,7 @@ public class ResultApplicativeTests
         result.Errors.ShouldContain("Error 1");
     }
 
-    #endregion
+    #endregion Validate Method Tests
 
     #region ApplyWith Extension Method Tests
 
@@ -386,7 +386,7 @@ public class ResultApplicativeTests
         result.Errors.ShouldContain("Invalid email");
     }
 
-    #endregion
+    #endregion ApplyWith Extension Method Tests
 
     #region Null Argument Tests
 
@@ -445,7 +445,7 @@ public class ResultApplicativeTests
             ResultApplicative.Validate(() => "test", null!));
     }
 
-    #endregion
+    #endregion Null Argument Tests
 
     #region Edge Cases
 
@@ -475,7 +475,7 @@ public class ResultApplicativeTests
             ResultApplicative.Apply<string, string, User>(nameResult, emailResult, (name, email) => throw new InvalidOperationException("Function failed")));
     }
 
-    #endregion
+    #endregion Edge Cases
 
     #region Real-world Scenarios
 
@@ -516,7 +516,7 @@ public class ResultApplicativeTests
         configResult.Errors!.Count().ShouldBe(3);
     }
 
-    #endregion
+    #endregion Real-world Scenarios
 
     #region Helper Methods
 
@@ -562,9 +562,5 @@ public class ResultApplicativeTests
             : Result<int>.Success(timeout);
     }
 
-    #endregion
+    #endregion Helper Methods
 }
-
-
-
-

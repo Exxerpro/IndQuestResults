@@ -1,4 +1,4 @@
-namespace IndQuestResults.Tests.Unit.Operations;
+namespace IndQuestResults.Tests.Unit;
 
 /// <summary>
 /// Tests for basic Result functionality including constructors, properties, and simple operations.

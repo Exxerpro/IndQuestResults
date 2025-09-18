@@ -1,4 +1,4 @@
-namespace IndQuestResults.Tests.Unit.Operations;
+namespace IndQuestResults.Tests.Unit;
 
 public class ResultGenericMoreTests
 {

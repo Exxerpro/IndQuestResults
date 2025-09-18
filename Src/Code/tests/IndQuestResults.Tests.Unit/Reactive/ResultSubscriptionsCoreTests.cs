@@ -1,5 +1,5 @@
-using IndQuestResults.Extensions.Observables;
 using IndQuestResults.Operations;
+using IndQuestResults.Reactive;
 using Shouldly;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace IndQuestResults.Tests.Unit.Extensions.Observables;
+namespace IndQuestResults.Tests.Unit.Reactive;
 
 /// <summary>
 /// Tests for ResultSubscriptionsCore functionality covering factory methods,
@@ -52,7 +52,7 @@ public class ResultSubscriptionsCoreTests
         receivedErrors.ShouldBe(["Error"]);
     }
 
-    #endregion
+    #endregion CreateResultSubject Tests
 
     #region CreateSubscriptionManager Tests
 
@@ -141,7 +141,7 @@ public class ResultSubscriptionsCoreTests
         subject.SubscriberCount.ShouldBeLessThan(initialCount);
     }
 
-    #endregion
+    #endregion CreateSubscriptionManager Tests
 
     #region CreateSafeHandler Tests
 
@@ -201,7 +201,7 @@ public class ResultSubscriptionsCoreTests
         Should.NotThrow(() => handler(42));
     }
 
-    #endregion
+    #endregion CreateSafeHandler Tests
 
     #region CreateAsyncHandler Tests
 
@@ -282,7 +282,7 @@ public class ResultSubscriptionsCoreTests
         await Should.ThrowAsync<InvalidOperationException>(async () => await handler(42));
     }
 
-    #endregion
+    #endregion CreateAsyncHandler Tests
 
     #region ResultSubject Lifecycle Tests
 
@@ -424,7 +424,7 @@ public class ResultSubscriptionsCoreTests
         completed.ShouldBeTrue();
     }
 
-    #endregion
+    #endregion ResultSubject Lifecycle Tests
 
     #region Exception Safety Tests
 
@@ -491,7 +491,7 @@ public class ResultSubscriptionsCoreTests
         goodObserverCalled.ShouldBeTrue();
     }
 
-    #endregion
+    #endregion Exception Safety Tests
 
     #region Thread Safety Tests
 
@@ -510,7 +510,7 @@ public class ResultSubscriptionsCoreTests
             {
                 var subscription = subject.Subscribe(onSuccess: _ => { });
                 subscriptions.Add(subscription);
-                
+
                 // Randomly dispose some subscriptions
                 if (Random.Shared.Next(2) == 0)
                 {
@@ -576,7 +576,7 @@ public class ResultSubscriptionsCoreTests
         subject.IsCompleted.ShouldBeTrue();
     }
 
-    #endregion
+    #endregion Thread Safety Tests
 
     #region ResultObserver Subscribe Patterns Tests
 
@@ -644,7 +644,7 @@ public class ResultSubscriptionsCoreTests
         // Failure should be handled gracefully with null handler
     }
 
-    #endregion
+    #endregion ResultObserver Subscribe Patterns Tests
 
     #region Error Handling Edge Cases
 
@@ -727,9 +727,5 @@ public class ResultSubscriptionsCoreTests
         Should.Throw<ArgumentNullException>(() => manager.Remove(null!));
     }
 
-    #endregion
+    #endregion Error Handling Edge Cases
 }
-
-
-
-

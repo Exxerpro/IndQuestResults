@@ -11,9 +11,9 @@ public class MetricsExample
     private readonly ILogger<MetricsExample> _logger;
 
     /// <summary>
-    /// ?
+    /// Initializes a new instance of the <see cref="MetricsExample"/> class.
     /// </summary>
-    /// <param name="logger"></param>
+    /// <param name="logger">The logger used to emit diagnostic information during samples.</param>
     public MetricsExample(ILogger<MetricsExample> logger)
     {
         _logger = logger;
@@ -22,6 +22,7 @@ public class MetricsExample
     /// <summary>
     /// Example of setting up metrics collection for an API application.
     /// </summary>
+    /// <param name="logger">Logger used by the sample <see cref="LoggingMetricsProcessor"/>.</param>
     public static void ConfigureMetrics(ILogger logger)
     {
         // Create a metrics processor that logs to your monitoring system
@@ -37,6 +38,9 @@ public class MetricsExample
     /// <summary>
     /// Example API endpoint maintaining 200-300ms response time with metrics.
     /// </summary>
+    /// <param name="userId">The user identifier to load.</param>
+    /// <param name="ct">Cancellation token for the asynchronous operations.</param>
+    /// <returns>A <see cref="Result{T}"/> containing the <see cref="UserDto"/> or errors.</returns>
     public async Task<Result<UserDto>> GetUserWithMetrics(int userId, CancellationToken ct)
     {
         // Create a scope for this request
@@ -84,6 +88,8 @@ public class MetricsExample
     /// <summary>
     /// Example showing direct usage without scopes.
     /// </summary>
+    /// <param name="order">Order to validate and process.</param>
+    /// <returns>A <see cref="Result{T}"/> with the computed <see cref="OrderSummary"/> or errors.</returns>
     public async Task<Result<OrderSummary>> ProcessOrderWithMetrics(Order order)
     {
         // Direct metrics collection - fire and forget
@@ -118,6 +124,9 @@ public class MetricsExample
     /// <summary>
     /// Example of hot path optimization with selective metrics.
     /// </summary>
+    /// <param name="product">The product to price.</param>
+    /// <param name="quantity">The requested quantity.</param>
+    /// <returns>A <see cref="Result{T}"/> with the calculated price or errors when invalid.</returns>
     public Result<decimal> CalculatePriceHotPath(Product product, int quantity)
     {
         // For ultra-hot paths, you might skip metrics entirely
@@ -215,11 +224,21 @@ public class LoggingMetricsProcessor : IMetricsProcessor
 {
     private readonly ILogger _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LoggingMetricsProcessor"/> class.
+    /// </summary>
+    /// <param name="logger">The logger used to emit metric entries.</param>
     public LoggingMetricsProcessor(ILogger logger)
     {
         _logger = logger;
     }
 
+    /// <summary>
+    /// Processes a metric entry asynchronously.
+    /// </summary>
+    /// <param name="metric">The metric entry to process.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task ProcessAsync(MetricEntry metric, CancellationToken cancellationToken)
     {
         // In production, batch these and send to your metrics system
@@ -260,38 +279,92 @@ public class LoggingMetricsProcessor : IMetricsProcessor
 }
 
 // Example DTOs for the samples
+/// <summary>
+/// Represents a domain user in the sample.
+/// </summary>
 public class User
 {
+    /// <summary>
+    /// Gets or sets the unique identifier of the user.
+    /// </summary>
     public int Id { get; set; }
+    /// <summary>
+    /// Gets or sets the display name of the user.
+    /// </summary>
     public string Name { get; set; } = "";
 }
 
+/// <summary>
+/// Represents a data transfer object for <see cref="User"/>.
+/// </summary>
 public class UserDto
 {
+    /// <summary>
+    /// Gets or sets the unique identifier of the user.
+    /// </summary>
     public int Id { get; set; }
+    /// <summary>
+    /// Gets or sets the display name of the user.
+    /// </summary>
     public string Name { get; set; } = "";
 }
 
+/// <summary>
+/// Represents an order in the sample domain.
+/// </summary>
 public class Order
 {
+    /// <summary>
+    /// Gets or sets the unique identifier of the order.
+    /// </summary>
     public int Id { get; set; }
+    /// <summary>
+    /// Gets or sets the collection of items included in the order.
+    /// </summary>
     public List<OrderItem> Items { get; set; } = new();
 }
 
+/// <summary>
+/// Represents an individual item within an order.
+/// </summary>
 public class OrderItem
 {
+    /// <summary>
+    /// Gets or sets the unit price of the item.
+    /// </summary>
     public decimal Price { get; set; }
+    /// <summary>
+    /// Gets or sets the quantity of the item.
+    /// </summary>
     public int Quantity { get; set; }
 }
 
+/// <summary>
+/// Represents a summary of an order total and status.
+/// </summary>
 public class OrderSummary
 {
+    /// <summary>
+    /// Gets or sets the order identifier.
+    /// </summary>
     public int OrderId { get; set; }
+    /// <summary>
+    /// Gets or sets the total amount for the order.
+    /// </summary>
     public decimal Total { get; set; }
+    /// <summary>
+    /// Gets or sets the processing status of the order.
+    /// </summary>
     public string Status { get; set; } = "";
 }
 
+/// <summary>
+/// Represents a product that can be priced.
+/// </summary>
 public class Product
 {
+    /// <summary>
+    /// Gets or sets the unit base price of the product.
+    /// </summary>
     public decimal BasePrice { get; set; }
 }

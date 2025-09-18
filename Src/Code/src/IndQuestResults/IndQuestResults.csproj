@@ -10,14 +10,12 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     
-    <!-- Minimal package info for now -->
-    <Title>IndQuestResults - Enterprise Result&lt;T&gt; Library</Title>
-    <Description>Enterprise-grade Result&lt;T&gt; library for functional error handling in .NET applications.</Description>
-    <Version>1.0.1</Version>
-    <Authors>Exxerpro Engineering Team</Authors>
-    <Company>Exxerpro Solutions SA de CV</Company>
-    <Copyright>Copyright © Exxerpro Solutions SA de CV 2025</Copyright>
+    <!-- Package metadata only -->
+    <PackageDescription>Enterprise-grade Result&lt;T&gt; library for functional error handling in .NET applications.</PackageDescription>
+    <PackageVersion>1.0.1.2</PackageVersion>
   </PropertyGroup>
 
 

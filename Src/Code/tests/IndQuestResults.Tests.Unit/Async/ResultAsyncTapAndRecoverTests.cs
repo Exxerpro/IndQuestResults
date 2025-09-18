@@ -1,4 +1,4 @@
-namespace IndQuestResults.Tests.Unit.Extensions.Async;
+namespace IndQuestResults.Tests.Unit.Async;
 
 public class ResultAsyncTapAndRecoverTests
 {

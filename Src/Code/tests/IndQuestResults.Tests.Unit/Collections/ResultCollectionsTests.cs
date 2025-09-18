@@ -1,4 +1,4 @@
-namespace IndQuestResults.Tests.Unit.Extensions.Collections;
+namespace IndQuestResults.Tests.Unit.Collections;
 
 /// <summary>
 /// Unit tests for <see cref="ResultCollections"/> operations.
