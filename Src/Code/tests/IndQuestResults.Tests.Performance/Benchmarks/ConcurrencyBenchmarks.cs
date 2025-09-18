@@ -12,7 +12,7 @@ namespace IndQuestResults.Tests.Performance.Benchmarks;
 /// </summary>
 public static class ConcurrencyBenchmarks
 {
-    private const int ThreadCount = Environment.ProcessorCount;
+    private static readonly int ThreadCount = Environment.ProcessorCount;
     private const int OperationsPerThread = 50_000;
     private const int WarmupOperations = 1_000;
 

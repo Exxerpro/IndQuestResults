@@ -7,6 +7,11 @@ using System.Linq;
 
 namespace IndQuestResults.Benchmarks;
 
+/// <summary>
+/// Benchmarks testing the performance of fluent API operations and method chaining in Results.
+/// Measures the overhead of functional composition patterns and railway-oriented programming constructs
+/// including Map, Bind, Ensure, Tap, Match, and Recover operations.
+/// </summary>
 [SimpleJob(RuntimeMoniker.Net80)]
 [MemoryDiagnoser]
 [RPlotExporter]
@@ -16,6 +21,10 @@ public class FluentApiPerformanceBenchmarks
     private Result _baseResult;
     private List<Result<int>> _resultCollection;
 
+    /// <summary>
+    /// Initializes test data including successful Results and mixed success/failure collections.
+    /// Sets up baseline values for measuring fluent API operation overhead.
+    /// </summary>
     [GlobalSetup]
     public void Setup()
     {
@@ -28,6 +37,11 @@ public class FluentApiPerformanceBenchmarks
             .ToList();
     }
 
+    /// <summary>
+    /// Benchmarks a simple chain of Map operations transforming values through a pipeline.
+    /// Tests the baseline performance overhead of fluent API chaining.
+    /// </summary>
+    /// <returns>Result containing the final transformed string value.</returns>
     [Benchmark]
     public Result<string> SimpleChain()
     {
@@ -37,6 +51,11 @@ public class FluentApiPerformanceBenchmarks
             .Map(x => x.ToString());
     }
 
+    /// <summary>
+    /// Benchmarks a complex chain mixing Map, Bind, Ensure, and Tap operations.
+    /// Tests performance of comprehensive functional composition with conditional logic.
+    /// </summary>
+    /// <returns>Result containing the final computed double value or aggregated errors.</returns>
     [Benchmark]
     public Result<double> ComplexChain()
     {
@@ -50,6 +69,11 @@ public class FluentApiPerformanceBenchmarks
             .Map(x => Math.Sqrt(x));
     }
 
+    /// <summary>
+    /// Benchmarks chain execution when an early failure occurs, testing short-circuit behavior.
+    /// Measures performance when subsequent operations are skipped due to initial failure.
+    /// </summary>
+    /// <returns>Result containing the initial failure that bypassed all subsequent operations.</returns>
     [Benchmark]
     public Result<string> ChainWithEarlyFailure()
     {
@@ -61,6 +85,11 @@ public class FluentApiPerformanceBenchmarks
             .Tap(x => { /* Never executed */ });
     }
 
+    /// <summary>
+    /// Benchmarks multiple consecutive Ensure operations for validation chaining.
+    /// Tests performance of multiple validation steps in sequence.
+    /// </summary>
+    /// <returns>Result after all validation checks pass or first failure occurs.</returns>
     [Benchmark]
     public Result MultipleEnsures()
     {
@@ -72,6 +101,11 @@ public class FluentApiPerformanceBenchmarks
             .Ensure(() => true, "Check 5");
     }
 
+    /// <summary>
+    /// Benchmarks conditional chains using Bind for business logic branching.
+    /// Tests performance of conditional execution patterns within Result chains.
+    /// </summary>
+    /// <returns>Result after conditional processing with range validations.</returns>
     [Benchmark]
     public Result<int> ConditionalChain()
     {
@@ -85,6 +119,11 @@ public class FluentApiPerformanceBenchmarks
             .Map(x => x - 5);
     }
 
+    /// <summary>
+    /// Benchmarks Match operation with complex processing logic in success and failure branches.
+    /// Tests performance of pattern matching with computationally intensive operations.
+    /// </summary>
+    /// <returns>String result from either success processing or error aggregation.</returns>
     [Benchmark]
     public string MatchWithComplexLogic()
     {
@@ -107,6 +146,11 @@ public class FluentApiPerformanceBenchmarks
             );
     }
 
+    /// <summary>
+    /// Benchmarks Recover operation for error handling and fallback logic.
+    /// Tests performance of error recovery patterns with multiple recovery attempts.
+    /// </summary>
+    /// <returns>Result after recovery operations with final transformed value.</returns>
     [Benchmark]
     public Result<int> RecoverChain()
     {
@@ -119,6 +163,11 @@ public class FluentApiPerformanceBenchmarks
             .Recover(() => Result<int>.Success(15));
     }
 
+    /// <summary>
+    /// Benchmarks Combine operation for aggregating multiple Results.
+    /// Tests performance of error accumulation when combining success and failure Results.
+    /// </summary>
+    /// <returns>Combined Result containing all errors from failed input Results.</returns>
     [Benchmark]
     public Result CombineChain()
     {
@@ -131,6 +180,11 @@ public class FluentApiPerformanceBenchmarks
             .Tap(() => { /* Process combined result */ });
     }
 
+    /// <summary>
+    /// Benchmarks LINQ integration with Result collections for aggregation operations.
+    /// Tests performance when processing collections of Results with functional operations.
+    /// </summary>
+    /// <returns>Aggregated integer value from successful Results in the collection.</returns>
     [Benchmark]
     public int AggregateResults()
     {
@@ -144,6 +198,11 @@ public class FluentApiPerformanceBenchmarks
                 ));
     }
 
+    /// <summary>
+    /// Benchmarks collection processing with OnSuccess and OnFailure callbacks.
+    /// Tests performance of side-effect patterns for Result collection processing.
+    /// </summary>
+    /// <returns>Result containing successful values or aggregated errors from collection processing.</returns>
     [Benchmark]
     public Result<List<int>> CollectSuccessfulResults()
     {
@@ -162,6 +221,11 @@ public class FluentApiPerformanceBenchmarks
             : Result<List<int>>.Success(successfulValues);
     }
 
+    /// <summary>
+    /// Benchmarks deeply nested Bind operations for monadic composition.
+    /// Tests performance characteristics of complex nested functional compositions.
+    /// </summary>
+    /// <returns>Result containing formatted string with all intermediate computation values.</returns>
     [Benchmark]
     public Result<string> DeepNesting()
     {
@@ -172,6 +236,11 @@ public class FluentApiPerformanceBenchmarks
                         Result<string>.Success($"Result: {a},{b},{c},{d}")))));
     }
 
+    /// <summary>
+    /// Benchmarks multiple Tap operations for side-effect performance measurement.
+    /// Tests the overhead of side-effect operations in fluent chains.
+    /// </summary>
+    /// <returns>Result with final value incorporating side-effect counter.</returns>
     [Benchmark]
     public Result<int> TapPerformance()
     {
@@ -186,6 +255,11 @@ public class FluentApiPerformanceBenchmarks
             .Map(x => x + sideEffectCount);
     }
 
+    /// <summary>
+    /// Benchmarks string transformation pipeline with multiple Map operations.
+    /// Tests performance of sequential transformations on string data through Result chains.
+    /// </summary>
+    /// <returns>Result containing final transformed string after all pipeline operations.</returns>
     [Benchmark]
     public Result<string> TransformationPipeline()
     {
@@ -197,6 +271,11 @@ public class FluentApiPerformanceBenchmarks
             .Ensure(x => x.Length == 5, "Invalid length after transformations");
     }
 
+    /// <summary>
+    /// Benchmarks conditional recovery logic with retry-like behavior.
+    /// Tests performance of complex recovery patterns with stateful conditions.
+    /// </summary>
+    /// <returns>Result after conditional recovery attempts with final value transformation.</returns>
     [Benchmark]
     public Result<int> ConditionalRecovery()
     {

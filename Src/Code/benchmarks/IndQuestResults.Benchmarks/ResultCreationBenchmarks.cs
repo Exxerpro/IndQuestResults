@@ -6,6 +6,11 @@ using System.Linq;
 
 namespace IndQuestResults.Benchmarks;
 
+/// <summary>
+/// Benchmarks focused on Result creation performance across different scenarios.
+/// Tests construction costs for successful and failed Results with varying error collection sizes.
+/// Validates performance characteristics of Result instantiation patterns.
+/// </summary>
 [SimpleJob(RuntimeMoniker.Net80)]
 [MemoryDiagnoser]
 [RPlotExporter]
@@ -14,9 +19,17 @@ public class ResultCreationBenchmarks
     private string[] _errorArray;
     private string _singleError;
 
+    /// <summary>
+    /// Gets or sets the number of error messages used in parameterized creation benchmarks.
+    /// Tests how Result creation performance scales with error collection size.
+    /// </summary>
     [Params(0, 1, 5, 10, 50, 100)]
     public int ErrorCount { get; set; }
 
+    /// <summary>
+    /// Initializes test data including error messages and collections for creation benchmarks.
+    /// Sets up error arrays of varying sizes to test scaling characteristics.
+    /// </summary>
     [GlobalSetup]
     public void Setup()
     {
@@ -75,9 +88,9 @@ public class ResultCreationBenchmarks
     }
 
     [Benchmark]
-    public Result<int> CreateFailureWithDefaultValue()
+    public Result<int> CreateFailureWithSingleError()
     {
-        return Result<int>.WithFailure(_singleError, defaultValue: -1);
+        return Result<int>.WithFailure(_singleError);
     }
 
     [Benchmark]

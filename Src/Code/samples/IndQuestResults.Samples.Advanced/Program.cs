@@ -1,7 +1,6 @@
 using IndQuestResults;
-using IndQuestResults.Extensions.Async;
 using IndQuestResults.Extensions.Collections;
-using IndQuestResults.Extensions.Functional;
+using IndQuestResults.Operations;
 
 namespace IndQuestResults.Samples.Advanced;
 
@@ -10,27 +9,33 @@ namespace IndQuestResults.Samples.Advanced;
 /// </summary>
 public class Program
 {
+    /// <summary>
+    /// Main entry point for the advanced samples.
+    /// </summary>
+    /// <param name="args"></param>
+    /// <returns></returns>
     public static async Task Main(string[] args)
     {
         Console.WriteLine("IndQuestResults Advanced Samples");
         Console.WriteLine("================================");
-        
+
         // Async chain example
-        var asyncResult = await Task.FromResult(Result<int>.Success(42))
-            .MapAsync(async x => 
+        var asyncResult = (await Task.FromResult(Result<int>.Success(42)))
+            .Map(x =>
             {
-                await Task.Delay(10);
+                // Simulate async work synchronously for demonstration.
+                Thread.Sleep(10);
                 return x * 2;
             });
-            
+
         Console.WriteLine($"Async result: {asyncResult.Value}");
-        
+
         // Collection example
         var numbers = new[] { 1, 2, 3, 4, 5 };
-        var collectionResult = numbers.TraverseResults(x => 
+        var collectionResult = numbers.TraverseResults(x =>
             x % 2 == 0 ? Result<int>.Success(x * 2) : Result<int>.WithFailure($"Odd number: {x}"));
-            
-        if (collectionResult.IsSuccess)
+
+        if (collectionResult.IsSuccess && collectionResult.Value is not null)
         {
             Console.WriteLine($"Collection success: {string.Join(", ", collectionResult.Value)}");
         }
@@ -38,7 +43,7 @@ public class Program
         {
             Console.WriteLine($"Collection failure: {collectionResult.Error}");
         }
-        
+
         Console.WriteLine("Advanced samples completed!");
     }
 }

@@ -4,8 +4,18 @@ using System.Linq;
 
 namespace IndQuestResults.Benchmarks;
 
+/// <summary>
+/// Main program entry point for running IndQuestResults performance benchmarks.
+/// Provides an interactive menu for selecting individual benchmark suites or running all benchmarks.
+/// Supports both interactive mode and command-line argument execution for CI/CD integration.
+/// </summary>
 public class Program
 {
+    /// <summary>
+    /// Main entry point for the benchmark application.
+    /// Provides interactive selection of benchmark suites or processes command-line arguments.
+    /// </summary>
+    /// <param name="args">Command-line arguments for automated benchmark execution.</param>
     public static void Main(string[] args)
     {
         Console.WriteLine("IndQuestResults Benchmarks");

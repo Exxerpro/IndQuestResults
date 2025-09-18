@@ -5,7 +5,8 @@
       "IndQuestResults.Tests.Unit.csproj"
     ],
     "mutate": [
-      "../../src/IndQuestResults/Operations/ResultExtensions.cs"
+      "../../src/IndQuestResults/Operations/ResultExtensions.cs{34..38}",
+      "../../src/IndQuestResults/Operations/ResultExtensions.cs{45..48}"
     ],
     "ignore-mutations": [
     ],

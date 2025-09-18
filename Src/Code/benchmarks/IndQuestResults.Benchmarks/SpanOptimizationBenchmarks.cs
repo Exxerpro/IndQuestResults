@@ -8,6 +8,11 @@ using System.Text;
 
 namespace IndQuestResults.Benchmarks;
 
+/// <summary>
+/// Benchmarks specifically testing Span&lt;T&gt; optimizations and their performance impact.
+/// Validates the claimed 70% reduction in allocations through stack-allocated Span usage
+/// for small error collections (≤16 items) versus traditional heap-allocated approaches.
+/// </summary>
 [SimpleJob(RuntimeMoniker.Net80)]
 [MemoryDiagnoser]
 [RPlotExporter]
@@ -20,9 +25,17 @@ public class SpanOptimizationBenchmarks
     private List<string> _mediumErrorList;
     private List<string> _largeErrorList;
 
+    /// <summary>
+    /// Gets or sets the error collection size for parameterized Span optimization tests.
+    /// Tests performance across the Span optimization threshold (16 items) and beyond.
+    /// </summary>
     [Params(4, 8, 16, 32, 64, 128)]
     public int ErrorSize { get; set; }
 
+    /// <summary>
+    /// Initializes test data with error collections of various sizes for Span optimization testing.
+    /// Creates arrays and lists to compare Span-optimized vs. traditional collection processing.
+    /// </summary>
     [GlobalSetup]
     public void Setup()
     {

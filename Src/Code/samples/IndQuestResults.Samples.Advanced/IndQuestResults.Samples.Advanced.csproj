@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,7 +9,7 @@
 
   <!-- Toggle between local project references and NuGet package consumption -->
   <PropertyGroup>
-    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">false</UseLocalRefs>
+    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">true</UseLocalRefs>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(UseLocalRefs)' == 'true'">
@@ -23,6 +23,10 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
   </ItemGroup>
 
 

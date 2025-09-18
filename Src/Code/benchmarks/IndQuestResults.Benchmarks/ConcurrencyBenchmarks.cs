@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace IndQuestResults.Benchmarks;
 
+/// <summary>
+/// Benchmarks testing the thread-safety and performance characteristics of Result operations under concurrent load.
+/// Validates the immutable design's performance in multi-threaded scenarios and measures contention effects.
+/// </summary>
 [SimpleJob(RuntimeMoniker.Net80)]
 [MemoryDiagnoser]
 [ThreadingDiagnoser]
@@ -21,6 +25,10 @@ public class ConcurrencyBenchmarks
     private Result<int> _sharedSuccessResultWithValue;
     private Result _sharedFailureResult;
     
+    /// <summary>
+    /// Initializes shared Result instances for concurrent access testing.
+    /// Creates immutable Result objects that will be safely accessed from multiple threads.
+    /// </summary>
     [GlobalSetup]
     public void Setup()
     {
@@ -29,6 +37,11 @@ public class ConcurrencyBenchmarks
         _sharedFailureResult = Result.WithFailure("Shared error");
     }
 
+    /// <summary>
+    /// Benchmarks concurrent creation of new Result instances across multiple threads.
+    /// Tests the performance of Result construction under high concurrency.
+    /// </summary>
+    /// <returns>Task representing the asynchronous benchmark operation.</returns>
     [Benchmark]
     public async Task ConcurrentResultCreation()
     {
@@ -48,6 +61,11 @@ public class ConcurrencyBenchmarks
         await Task.WhenAll(tasks);
     }
 
+    /// <summary>
+    /// Benchmarks concurrent read access to shared Result instances.
+    /// Tests thread-safety and contention effects when multiple threads read the same immutable Results.
+    /// </summary>
+    /// <returns>Task representing the asynchronous benchmark operation.</returns>
     [Benchmark]
     public async Task ConcurrentResultReading()
     {
@@ -66,6 +84,11 @@ public class ConcurrencyBenchmarks
         await Task.WhenAll(tasks);
     }
 
+    /// <summary>
+    /// Benchmarks concurrent Map operations creating new Results from a shared source.
+    /// Tests performance of functional transformations under concurrent load.
+    /// </summary>
+    /// <returns>Task representing the asynchronous benchmark operation.</returns>
     [Benchmark]
     public async Task ConcurrentMapOperations()
     {
@@ -83,6 +106,11 @@ public class ConcurrencyBenchmarks
         await Task.WhenAll(tasks);
     }
 
+    /// <summary>
+    /// Benchmarks concurrent Bind operations creating chained Results from a shared source.
+    /// Tests performance of monadic composition under concurrent load.
+    /// </summary>
+    /// <returns>Task representing the asynchronous benchmark operation.</returns>
     [Benchmark]
     public async Task ConcurrentBindOperations()
     {
@@ -101,6 +129,11 @@ public class ConcurrencyBenchmarks
         await Task.WhenAll(tasks);
     }
 
+    /// <summary>
+    /// Benchmarks concurrent Combine operations merging multiple Results.
+    /// Tests performance of error aggregation when multiple threads perform combinations.
+    /// </summary>
+    /// <returns>Task representing the asynchronous benchmark operation.</returns>
     [Benchmark]
     public async Task ConcurrentCombineOperations()
     {
@@ -122,6 +155,11 @@ public class ConcurrencyBenchmarks
         await Task.WhenAll(tasks);
     }
 
+    /// <summary>
+    /// Benchmarks concurrent Match operations for pattern matching on Results.
+    /// Tests performance of conditional execution based on Result state under concurrent load.
+    /// </summary>
+    /// <returns>Task representing the asynchronous benchmark operation.</returns>
     [Benchmark]
     public async Task ConcurrentMatchOperations()
     {
@@ -142,6 +180,11 @@ public class ConcurrencyBenchmarks
         await Task.WhenAll(tasks);
     }
 
+    /// <summary>
+    /// Benchmarks concurrent access to error collections in failed Results.
+    /// Tests thread-safety and performance when multiple threads iterate over shared error collections.
+    /// </summary>
+    /// <returns>Task representing the asynchronous benchmark operation.</returns>
     [Benchmark]
     public async Task ConcurrentErrorAccess()
     {
@@ -165,6 +208,11 @@ public class ConcurrencyBenchmarks
         await Task.WhenAll(tasks);
     }
 
+    /// <summary>
+    /// Benchmarks concurrent execution of complex chained Result operations.
+    /// Tests performance of functional composition pipelines under concurrent load.
+    /// </summary>
+    /// <returns>Task representing the asynchronous benchmark operation.</returns>
     [Benchmark]
     public async Task ConcurrentChainedOperations()
     {
@@ -187,6 +235,10 @@ public class ConcurrencyBenchmarks
         await Task.WhenAll(tasks);
     }
 
+    /// <summary>
+    /// Benchmarks parallel processing of Result collections using Parallel.ForEach.
+    /// Tests scalability of Result operations when processed in parallel batches.
+    /// </summary>
     [Benchmark]
     public void ParallelResultProcessing()
     {
@@ -205,6 +257,11 @@ public class ConcurrencyBenchmarks
         });
     }
 
+    /// <summary>
+    /// Benchmarks concurrent string conversion operations on shared Results.
+    /// Tests performance of ToString() method under concurrent access patterns.
+    /// </summary>
+    /// <returns>Task representing the asynchronous benchmark operation.</returns>
     [Benchmark]
     public async Task ConcurrentToStringOperations()
     {

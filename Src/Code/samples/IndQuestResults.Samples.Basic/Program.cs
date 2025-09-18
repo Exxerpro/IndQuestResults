@@ -1,4 +1,5 @@
 using IndQuestResults;
+using IndQuestResults.Operations;
 
 namespace IndQuestResults.Samples.Basic;
 
@@ -7,19 +8,23 @@ namespace IndQuestResults.Samples.Basic;
 /// </summary>
 public class Program
 {
+    /// <summary>
+    ///  Main entry point for the basic samples.
+    /// </summary>
+    /// <param name="args"></param>
     public static void Main(string[] args)
     {
         Console.WriteLine("IndQuestResults Basic Samples");
         Console.WriteLine("=============================");
-        
+
         // Basic success case
         var successResult = Result<string>.Success("Hello, World!");
         Console.WriteLine($"Success: {successResult.Value}");
-        
+
         // Basic failure case
         var failureResult = Result<string>.WithFailure("Something went wrong");
         Console.WriteLine($"Failure: {failureResult.Error}");
-        
+
         Console.WriteLine("Basic samples completed!");
     }
 }

@@ -1,0 +1,16 @@
+{
+  "stryker-config": {
+    "mutate": [
+      "Operations/ResultExtensions.cs"
+    ],
+    "ignore-mutations": [
+      "Block"
+    ],
+    "mutation-level": "Basic",
+    "coverage-analysis": "perTestInIsolation",
+    "reporters": ["html", "progress", "json"],
+    "verbosity": "info",
+    "concurrency": 4,
+    "language-version": "latest"
+  }
+}
