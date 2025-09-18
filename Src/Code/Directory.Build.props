@@ -9,7 +9,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 
-    <!--
+    <!-- WARNING
     ==================================================================================
     WARNING CONFIGURATION - Detailed Warning Explanations
     ==================================================================================
@@ -45,8 +45,7 @@
     <!-- Suppress stylistic/perf suggestions to keep builds clean; behavior is enforced by tests/mutation -->
     <NoWarn>
       $(NoWarn);
-      IDE0005;IDE0008;IDE0055;IDE0058;IDE0060;IDE0305;IDE1006;CA1000;CA1305;
-    </NoWarn>
+      IDE0005;IDE0008;IDE0055;IDE0058;IDE0060;IDE0305;IDE1006;CA1000;CA1305; CA1822</NoWarn>
   </PropertyGroup>
   <!-- SUPPRESSED WARNINGS (NoWarn):
 

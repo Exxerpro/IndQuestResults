@@ -566,3 +566,5 @@ public class ResultApplicativeTests
 }
 
 
+
+

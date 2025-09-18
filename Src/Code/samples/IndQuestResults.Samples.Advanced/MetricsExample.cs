@@ -1,4 +1,4 @@
-using IndQuestResults.Performance;
+using IndQuestResults;
 
 namespace IndQuestResults.Samples.Advanced;
 
@@ -10,6 +10,10 @@ public class MetricsExample
 {
     private readonly ILogger<MetricsExample> _logger;
 
+    /// <summary>
+    /// ?
+    /// </summary>
+    /// <param name="logger"></param>
     public MetricsExample(ILogger<MetricsExample> logger)
     {
         _logger = logger;
