@@ -29,4 +29,9 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <!-- Relax warnings during mutation testing runs (opt-in via env var) -->
+  <PropertyGroup Condition="'$(STRYKER_MUTATION_TEST)' == 'true'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
 </Project>
