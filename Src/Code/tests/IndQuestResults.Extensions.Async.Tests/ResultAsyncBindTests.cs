@@ -72,6 +72,7 @@ public class ResultAsyncBindTests
 
         // Assert
         boundResult.IsFailure.ShouldBeTrue();
+        boundResult.Error.ShouldNotBeNull();
         boundResult.Error.ShouldContain("Async bind operation failed");
         boundResult.Error.ShouldContain("Test exception");
     }
@@ -132,14 +133,11 @@ public class ResultAsyncBindTests
         Task<Result<int>>? nullTask = null;
 
         // Act & Assert
-        await Should.ThrowAsync<ArgumentNullException>(async () =>
-        {
-            await nullTask!.BindAsync(async value =>
+        await Should.ThrowAsync<ArgumentNullException>(async () => await nullTask!.BindAsync(async value =>
             {
                 await Task.Delay(10);
                 return Result<string>.Success($"Value: {value}");
-            });
-        });
+            }));
     }
 
     /// <summary>
@@ -153,10 +151,7 @@ public class ResultAsyncBindTests
         var resultTask = Task.FromResult(initialResult);
 
         // Act & Assert
-        await Should.ThrowAsync<ArgumentNullException>(async () =>
-        {
-            await resultTask.BindAsync<int, string>(null!);
-        });
+        await Should.ThrowAsync<ArgumentNullException>(async () => await resultTask.BindAsync<int, string>(null!));
     }
 
     /// <summary>
@@ -220,7 +215,7 @@ public class ResultAsyncBindTests
         {
             await Task.Delay(10).ConfigureAwait(false);
             return Result<string>.Success($"Value: {value}");
-        }).ConfigureAwait(false);
+        });
 
         // Assert
         boundResult.IsSuccess.ShouldBeTrue();

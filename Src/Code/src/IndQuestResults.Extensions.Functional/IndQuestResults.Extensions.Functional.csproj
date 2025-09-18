@@ -24,17 +24,11 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
 
-  <!-- Toggle between local project references and NuGet package consumption -->
-  <PropertyGroup>
-    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">false</UseLocalRefs>
-  </PropertyGroup>
+  
 
-  <ItemGroup Condition="'$(UseLocalRefs)' == 'true'">
-    <ProjectReference Include="..\IndQuestResults\IndQuestResults.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
+  <ItemGroup>
     <PackageReference Include="IndQuestResults" />
-    <PackageReference Include="IndQuestResults.Extensions.Collections" />
+
   </ItemGroup>
 
 </Project>
