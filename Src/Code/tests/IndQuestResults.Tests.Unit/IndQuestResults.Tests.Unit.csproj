@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">false</UseLocalRefs>
+    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">true</UseLocalRefs>
   </PropertyGroup>
   <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
     <PackageReference Include="IndQuestResults" />

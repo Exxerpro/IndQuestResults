@@ -311,7 +311,7 @@ internal class ReplayResultSubject<T> : IResultSubject<T>
     private readonly ResultSubject<T> _innerSubject = new();
     private readonly Queue<Result<T>> _buffer = new();
     private readonly int _bufferSize;
-    private readonly object _lock = new();
+    private readonly Lock _lock = new();
 
     public int SubscriberCount => _innerSubject.SubscriberCount;
     public bool IsCompleted => _innerSubject.IsCompleted;
@@ -323,8 +323,8 @@ internal class ReplayResultSubject<T> : IResultSubject<T>
 
     public void OnNext(Result<T> result)
     {
-        lock (_lock)
         {
+            using var _ = _lock.EnterScope();
             _buffer.Enqueue(result);
             while (_buffer.Count > _bufferSize)
             {
@@ -348,8 +348,8 @@ internal class ReplayResultSubject<T> : IResultSubject<T>
     public IDisposable Subscribe(Action<T> onSuccess, Action<IEnumerable<string>>? onFailure = null, Action? onCompleted = null)
     {
         // Replay buffered values to new subscriber
-        lock (_lock)
         {
+            using var _ = _lock.EnterScope();
             foreach (var result in _buffer)
             {
                 if (result.IsSuccess)
@@ -365,8 +365,8 @@ internal class ReplayResultSubject<T> : IResultSubject<T>
     public IDisposable Subscribe(Action<Result<T>> onResult, Action? onCompleted = null)
     {
         // Replay buffered values to new subscriber
-        lock (_lock)
         {
+            using var _ = _lock.EnterScope();
             foreach (var result in _buffer)
             {
                 onResult(result);

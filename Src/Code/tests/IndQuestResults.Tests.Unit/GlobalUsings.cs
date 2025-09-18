@@ -15,3 +15,5 @@ global using System.Threading.Tasks;
 
 // Test project specific
 global using global::IndQuestResults.Operations;
+global using global::IndQuestResults.Extensions.Async;
+global using global::IndQuestResults.Extensions.Collections;

@@ -190,7 +190,7 @@ public interface IResultSubject<T> : IDisposable
 internal class ResultSubject<T> : IResultSubject<T>
 {
     private readonly ConcurrentDictionary<int, IResultObserver<T>> _observers = new();
-    private readonly object _lock = new();
+    private readonly Lock _lock = new();
     private int _nextId = 0;
     private bool _isCompleted = false;
     private bool _disposed = false;
@@ -223,8 +223,8 @@ internal class ResultSubject<T> : IResultSubject<T>
         if (_isCompleted) return;
         ArgumentNullException.ThrowIfNull(exception);
 
-        lock (_lock)
         {
+            using var _ = _lock.EnterScope();
             if (_isCompleted) return;
             _isCompleted = true;
         }
@@ -249,8 +249,8 @@ internal class ResultSubject<T> : IResultSubject<T>
         ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
         if (_isCompleted) return;
 
-        lock (_lock)
         {
+            using var _ = _lock.EnterScope();
             if (_isCompleted) return;
             _isCompleted = true;
         }

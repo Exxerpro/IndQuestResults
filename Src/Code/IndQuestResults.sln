@@ -1,10 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Blend for Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A1B2C3D4-E5F6-789A-BCDE-F0123456789A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndQuestResults.Extensions.Collections.Tests.Unit", "tests\IndQuestResults.Extensions.Collections.Tests.Unit\IndQuestResults.Extensions.Collections.Tests.Unit.csproj", "{0A1B2C3D-4E5F-6789-ABCD-0123456789AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B2C3D4E5-F6A7-890B-CDEF-123456789ABC}"
 EndProject
@@ -15,14 +13,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{E5F6A789-0123-4CDE-F123-456789ABCDEF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndQuestResults", "src\IndQuestResults\IndQuestResults.csproj", "{F6A78901-2345-6DEF-1234-56789ABCDEF0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndQuestResults.Extensions.Async", "src\IndQuestResults.Extensions.Async\IndQuestResults.Extensions.Async.csproj", "{F7A78901-2345-6DEF-1234-56789ABCDEF1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndQuestResults.Extensions.Collections", "src\IndQuestResults.Extensions.Collections\IndQuestResults.Extensions.Collections.csproj", "{F8A78901-2345-6DEF-1234-56789ABCDEF2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndQuestResults.Extensions.Observables", "src\IndQuestResults.Extensions.Observables\IndQuestResults.Extensions.Observables.csproj", "{F9A78901-2345-6DEF-1234-56789ABCDEF3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndQuestResults.Extensions.Functional", "src\IndQuestResults.Extensions.Functional\IndQuestResults.Extensions.Functional.csproj", "{FAA78901-2345-6DEF-1234-56789ABCDEF4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndQuestResults.Tests.Unit", "tests\IndQuestResults.Tests.Unit\IndQuestResults.Tests.Unit.csproj", "{A7890123-4567-8901-2345-6789ABCDEF01}"
 EndProject
@@ -52,22 +42,6 @@ Global
 		{F6A78901-2345-6DEF-1234-56789ABCDEF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6A78901-2345-6DEF-1234-56789ABCDEF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6A78901-2345-6DEF-1234-56789ABCDEF0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7A78901-2345-6DEF-1234-56789ABCDEF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7A78901-2345-6DEF-1234-56789ABCDEF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7A78901-2345-6DEF-1234-56789ABCDEF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7A78901-2345-6DEF-1234-56789ABCDEF1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8A78901-2345-6DEF-1234-56789ABCDEF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8A78901-2345-6DEF-1234-56789ABCDEF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8A78901-2345-6DEF-1234-56789ABCDEF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8A78901-2345-6DEF-1234-56789ABCDEF2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9A78901-2345-6DEF-1234-56789ABCDEF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9A78901-2345-6DEF-1234-56789ABCDEF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9A78901-2345-6DEF-1234-56789ABCDEF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9A78901-2345-6DEF-1234-56789ABCDEF3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FAA78901-2345-6DEF-1234-56789ABCDEF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FAA78901-2345-6DEF-1234-56789ABCDEF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FAA78901-2345-6DEF-1234-56789ABCDEF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FAA78901-2345-6DEF-1234-56789ABCDEF4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A7890123-4567-8901-2345-6789ABCDEF01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A7890123-4567-8901-2345-6789ABCDEF01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7890123-4567-8901-2345-6789ABCDEF01}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -82,27 +56,18 @@ Global
 		{12345678-9ABC-3456-789A-BCDEF0123456}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23456789-ABCD-4567-89AB-CDEF01234567}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{23456789-ABCD-4567-89AB-CDEF01234567}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A1B2C3D-4E5F-6789-ABCD-0123456789AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A1B2C3D-4E5F-6789-ABCD-0123456789AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A1B2C3D-4E5F-6789-ABCD-0123456789AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A1B2C3D-4E5F-6789-ABCD-0123456789AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F6A78901-2345-6DEF-1234-56789ABCDEF0} = {A1B2C3D4-E5F6-789A-BCDE-F0123456789A}
-		{F7A78901-2345-6DEF-1234-56789ABCDEF1} = {A1B2C3D4-E5F6-789A-BCDE-F0123456789A}
-		{F8A78901-2345-6DEF-1234-56789ABCDEF2} = {A1B2C3D4-E5F6-789A-BCDE-F0123456789A}
-		{F9A78901-2345-6DEF-1234-56789ABCDEF3} = {A1B2C3D4-E5F6-789A-BCDE-F0123456789A}
-		{FAA78901-2345-6DEF-1234-56789ABCDEF4} = {A1B2C3D4-E5F6-789A-BCDE-F0123456789A}
 		{A7890123-4567-8901-2345-6789ABCDEF01} = {B2C3D4E5-F6A7-890B-CDEF-123456789ABC}
 		{89012345-6789-0123-4567-89ABCDEF0123} = {B2C3D4E5-F6A7-890B-CDEF-123456789ABC}
 		{90123456-789A-1234-5678-9ABCDEF01234} = {B2C3D4E5-F6A7-890B-CDEF-123456789ABC}
 		{01234567-89AB-2345-6789-ABCDEF012345} = {D4E5F6A7-8901-2BCD-EF12-3456789ABCDE}
 		{12345678-9ABC-3456-789A-BCDEF0123456} = {D4E5F6A7-8901-2BCD-EF12-3456789ABCDE}
 		{23456789-ABCD-4567-89AB-CDEF01234567} = {E5F6A789-0123-4CDE-F123-456789ABCDEF}
-		{0A1B2C3D-4E5F-6789-ABCD-0123456789AB} = {B2C3D4E5-F6A7-890B-CDEF-123456789ABC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {12345678-ABCD-EF01-2345-6789ABCDEF00}

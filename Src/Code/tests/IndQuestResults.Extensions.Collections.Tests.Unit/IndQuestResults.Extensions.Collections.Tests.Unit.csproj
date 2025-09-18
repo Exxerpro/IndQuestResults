@@ -7,11 +7,6 @@
     <AssemblyName>IndQuestResults.Extensions.Collections.Tests.Unit</AssemblyName>
   </PropertyGroup>
 
-  <ItemGroup>
-
-    <ProjectReference Include="..\..\src\IndQuestResults.Extensions.Collections\IndQuestResults.Extensions.Collections.csproj" />
-  </ItemGroup>
-
 
   <ItemGroup>
 

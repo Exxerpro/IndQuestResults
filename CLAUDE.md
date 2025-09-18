@@ -4,20 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-IndQuestResults is an enterprise-grade Result<T> library for functional error handling in .NET applications. The library is partitioned into separate packages to maintain domain purity and allow consumers to only take dependencies on the functionality they need.
+IndQuestResults is an enterprise-grade Result<T> library for functional error handling in .NET applications. The library is unified into a single package containing core domain functionality and all extension capabilities with zero external dependencies.
 
-### Package Structure
+### Unified Architecture
 
-**Core Domain (Zero Dependencies):**
-- `IndQuestResults` - Pure domain with Result<T> and Result classes, validation, performance optimizations
+**Single Package (Zero Dependencies):**
+- `IndQuestResults` - Complete Result<T> library with all functionality unified:
+  - **Core Operations** - Result<T> and Result classes, validation, performance optimizations
+  - **Extensions.Async** - Async/await integration (Task<Result<T>> patterns)
+  - **Extensions.Collections** - Collection operations (Sequence, Traverse, Partition)
+  - **Extensions.Functional** - Advanced functional patterns (Applicative functors)
+  - **Extensions.Observables** - Observable/reactive patterns with subscription management
 
-**Extension Packages:**
-- `IndQuestResults.Extensions.Async` - Async/await integration (Task<Result<T>> patterns)
-- `IndQuestResults.Extensions.Collections` - Collection operations (Sequence, Traverse, Partition)
-- `IndQuestResults.Extensions.Functional` - Advanced functional patterns (Applicative functors)
-- `IndQuestResults.Extensions.Observables` - Observable/reactive patterns with subscription management
-
-This architecture maintains domain purity while providing powerful extensions for different programming paradigms.
+This unified architecture eliminates dependency complexity while providing powerful functional programming patterns across all paradigms.
 
 ## Essential Commands
 
@@ -26,12 +25,8 @@ This architecture maintains domain purity while providing powerful extensions fo
 # Build the entire solution
 dotnet build Src/Code/IndQuestResults.sln
 
-# Build individual packages
+# Build the main project
 dotnet build Src/Code/src/IndQuestResults/IndQuestResults.csproj
-dotnet build Src/Code/src/IndQuestResults.Extensions.Async/IndQuestResults.Extensions.Async.csproj
-dotnet build Src/Code/src/IndQuestResults.Extensions.Collections/IndQuestResults.Extensions.Collections.csproj
-dotnet build Src/Code/src/IndQuestResults.Extensions.Functional/IndQuestResults.Extensions.Functional.csproj
-dotnet build Src/Code/src/IndQuestResults.Extensions.Observables/IndQuestResults.Extensions.Observables.csproj
 
 # Run all unit tests
 dotnet test Src/Code/tests/IndQuestResults.Tests.Unit/IndQuestResults.Tests.Unit.csproj
@@ -42,12 +37,8 @@ dotnet test Src/Code/tests/IndQuestResults.Tests.Performance/IndQuestResults.Tes
 # Run benchmarks
 dotnet run --project Src/Code/benchmarks/IndQuestResults.Benchmarks/IndQuestResults.Benchmarks.csproj --configuration Release
 
-# Create NuGet packages for all projects
+# Create NuGet package
 dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj --configuration Release
-dotnet pack Src/Code/src/IndQuestResults.Extensions.Async/IndQuestResults.Extensions.Async.csproj --configuration Release
-dotnet pack Src/Code/src/IndQuestResults.Extensions.Collections/IndQuestResults.Extensions.Collections.csproj --configuration Release
-dotnet pack Src/Code/src/IndQuestResults.Extensions.Functional/IndQuestResults.Extensions.Functional.csproj --configuration Release
-dotnet pack Src/Code/src/IndQuestResults.Extensions.Observables/IndQuestResults.Extensions.Observables.csproj --configuration Release
 ```
 
 ### Mutation Testing
@@ -61,7 +52,7 @@ dotnet stryker --config-file stryker-simple-config.json
 ```
 
 ### Development Environment
-- Target Framework: .NET 8.0
+- Target Framework: .NET 9.0
 - Language Version: Latest C#
 - Nullable Reference Types: Enabled
 - Treat Warnings as Errors: Enabled
@@ -84,11 +75,11 @@ dotnet stryker --config-file stryker-simple-config.json
 - `Validation/MultipleNullArgumentsError.cs` - Multi-parameter validation errors
 - Both Result classes are immutable, thread-safe, and JSON serializable
 
-**Extension Packages:**
-- `IndQuestResults.Extensions.Async/ResultAsync.cs` - Async patterns (BindAsync, MapAsync, TapAsync, RecoverAsync)
-- `IndQuestResults.Extensions.Collections/ResultCollections.cs` - Collection operations (Sequence, Traverse, Partition, Collect)
-- `IndQuestResults.Extensions.Functional/ResultApplicative.cs` - Applicative functors for validation error accumulation
-- `IndQuestResults.Extensions.Observables/` - Observable bridge patterns and subscription management
+**Extension Namespaces (Unified Package):**
+- `Extensions/Async/ResultAsync.cs` - Async patterns (BindAsync, MapAsync, TapAsync, RecoverAsync)
+- `Extensions/Collections/ResultCollections.cs` - Collection operations (Sequence, Traverse, Partition, Collect)
+- `Extensions/Functional/ResultApplicative.cs` - Applicative functors for validation error accumulation
+- `Extensions/Observables/` - Observable bridge patterns and subscription management
   - `ResultObservableBridge.cs` - Observable integration utilities
   - `ResultSubscriptionsCore.cs` - Core subscription management
 
@@ -122,25 +113,25 @@ dotnet stryker --config-file stryker-simple-config.json
 
 ## Development Patterns
 
-### Package Selection Guide
+### Extension Usage Guide
 ```csharp
-// Core domain only - minimal dependencies
+// Core domain - available in base package
 using IndQuestResults;
 var result = Result<User>.Success(user);
 
-// Async operations - add Async extension
+// Async operations - unified extension namespace
 using IndQuestResults.Extensions.Async;
 var result = await GetUserAsync(id).BindAsync(LoadProfileAsync);
 
-// Collection operations - add Collections extension  
+// Collection operations - unified extension namespace
 using IndQuestResults.Extensions.Collections;
 var results = userIds.TraverseResults(LoadUser);
 
-// Validation with error accumulation - add Functional extension
+// Validation with error accumulation - unified extension namespace
 using IndQuestResults.Extensions.Functional;
 var userResult = ResultApplicative.Apply(nameResult, emailResult, (n, e) => new User(n, e));
 
-// Observable/reactive patterns - add Observables extension
+// Observable/reactive patterns - unified extension namespace
 using IndQuestResults.Extensions.Observables;
 var subject = ResultSubscriptionsCore.CreateResultSubject<User>();
 ```
@@ -157,7 +148,7 @@ return _dataService
         onFailure: errors => BadRequest(errors)
     );
 
-// Async functional patterns (requires Extensions.Async)
+// Async functional patterns (unified Extensions.Async namespace)
 return await _dataService
     .GetUserAsync(userId)
     .BindAsync(user => _validator.ValidateUserAsync(user))
@@ -194,15 +185,15 @@ F:\Dynamic\IndFusion\IndQuestResults\
 └── build\                     # Build artifacts and scripts
 ```
 
-**Core Projects (Src\Code\src\):**
-- `IndQuestResults/` - Core domain library (zero dependencies)
+**Main Project (Src\Code\src\):**
+- `IndQuestResults/` - Unified library with all functionality (zero dependencies)
   - `Operations/` - Core Result and Result<T> classes, extensions, constants
   - `Performance/` - Memory and Span optimizations  
   - `Validation/` - Null argument validation utilities
-- `IndQuestResults.Extensions.Async/` - Async patterns extension
-- `IndQuestResults.Extensions.Collections/` - Collection utilities extension
-- `IndQuestResults.Extensions.Functional/` - Advanced functional patterns extension
-- `IndQuestResults.Extensions.Observables/` - Observable/reactive patterns extension
+  - `Extensions/Async/` - Async patterns and utilities
+  - `Extensions/Collections/` - Collection operations and utilities
+  - `Extensions/Functional/` - Advanced functional patterns
+  - `Extensions/Observables/` - Observable/reactive patterns
 
 **Supporting Projects (Src\Code\):**
 - `tests/` - All test projects
@@ -222,7 +213,8 @@ F:\Dynamic\IndFusion\IndQuestResults\
 ## Build Configuration
 
 The solution uses centralized build configuration via `Directory.Build.props`:
-- Consistent targeting of .NET 8.0
+- Consistent targeting of .NET 9.0
 - Shared package references for test projects
 - Mutation testing tools for quality assurance projects
 - Benchmarking tools for performance projects
+- Unified packaging for single NuGet distribution
