@@ -47,8 +47,8 @@ public class MetricsExample
         var metrics = ResultMetrics.CreateScope("api.users");
 
         // Validate input - with metrics
-        var validationResult = await metrics.TimedAsync(
-            () => ValidateUserIdAsync(userId),
+        var validationResult = await metrics.TimedAsync<Result>(
+            async () => await ValidateUserIdAsync(userId),
             "validate_id",
             ct);
 
@@ -58,31 +58,39 @@ public class MetricsExample
         }
 
         // Load user - with metrics
-        var userResult = await metrics.TimedAsync(
-            () => LoadUserFromDatabaseAsync(userId, ct),
+        var userResult = await metrics.TimedAsync<Result<User>>(
+            async () => await LoadUserFromDatabaseAsync(userId, ct),
             "load_user",
             ct);
 
-        if (!userResult.IsSuccess)
+        if (userResult.IsFailure)
         {
             return Result<UserDto>.WithFailure(userResult.Errors);
         }
 
-        // Check permissions - with metrics
-        var permissionsResult = await metrics.TimedAsync(
-            () => CheckUserPermissionsAsync(userResult.Value!, ct),
-            "check_permissions",
-            ct);
-
-        if (!permissionsResult.IsSuccess)
+        if (userResult.Value is not null)
         {
-            return Result<UserDto>.WithFailure("Access denied");
+            // Check permissions - with metrics
+            var permissionsResult = await metrics.TimedAsync<Result>(
+                () => CheckUserPermissionsAsync(userResult.Value!, ct),
+                "check_permissions",
+                ct);
+
+            if (!permissionsResult.IsSuccess)
+            {
+                return Result<UserDto>.WithFailure("Access denied");
+            }
+
+            if (userResult.Value is not null)
+            {
+                // Transform to DTO - with metrics
+                return metrics.Timed(
+                    () => TransformToDto(userResult.Value!),
+                    "transform_dto");
+            }
         }
 
-        // Transform to DTO - with metrics
-        return metrics.Timed(
-            () => TransformToDto(userResult.Value!),
-            "transform_dto");
+        return Result<UserDto>.WithFailure("User not found");
     }
 
     /// <summary>
@@ -288,6 +296,7 @@ public class User
     /// Gets or sets the unique identifier of the user.
     /// </summary>
     public int Id { get; set; }
+
     /// <summary>
     /// Gets or sets the display name of the user.
     /// </summary>
@@ -303,6 +312,7 @@ public class UserDto
     /// Gets or sets the unique identifier of the user.
     /// </summary>
     public int Id { get; set; }
+
     /// <summary>
     /// Gets or sets the display name of the user.
     /// </summary>
@@ -318,6 +328,7 @@ public class Order
     /// Gets or sets the unique identifier of the order.
     /// </summary>
     public int Id { get; set; }
+
     /// <summary>
     /// Gets or sets the collection of items included in the order.
     /// </summary>
@@ -333,6 +344,7 @@ public class OrderItem
     /// Gets or sets the unit price of the item.
     /// </summary>
     public decimal Price { get; set; }
+
     /// <summary>
     /// Gets or sets the quantity of the item.
     /// </summary>
@@ -348,10 +360,12 @@ public class OrderSummary
     /// Gets or sets the order identifier.
     /// </summary>
     public int OrderId { get; set; }
+
     /// <summary>
     /// Gets or sets the total amount for the order.
     /// </summary>
     public decimal Total { get; set; }
+
     /// <summary>
     /// Gets or sets the processing status of the order.
     /// </summary>

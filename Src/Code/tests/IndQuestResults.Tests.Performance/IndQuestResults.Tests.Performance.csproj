@@ -9,6 +9,7 @@
     <OutputType>Exe</OutputType>
     <StartupObject>IndQuestResults.Tests.Performance.Program</StartupObject>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -15,7 +15,7 @@ public class SpanAndMemorySmokeTests
         var largeFormatted = SpanOptimizations.FormatCollection(large, "L:", ", ");
         largeFormatted.ShouldStartWith("L:");
         largeFormatted.ShouldContain(", ");
-        largeFormatted.Split(", ").Length.ShouldBe(large.Length + 1); // prefix + items
+        largeFormatted.Split(", ").Length.ShouldBe(large.Length); // items separated by ", "
     }
 
     [Fact]

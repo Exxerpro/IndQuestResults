@@ -21,6 +21,7 @@
     
     <!-- Analyzer-specific suppressions -->
     <NoWarn>$(NoWarn);RS2008;CA2016;CA1822;IDE0300;IDE0078;IDE0046;IDE0045;CS1998;CS1570;IDE0011;IDE0007;CA1040;CA1852;CA1051;CA1062;IDE0058;IDE0060;IDE0063;IDE0022;IDE0028;IDE0300;IDE0078;IDE0290;CA1303;CA1308;RS1032;IDE0010;CS1503;CS1061;CS1591</NoWarn>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>

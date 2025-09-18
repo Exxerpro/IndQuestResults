@@ -5,4 +5,5 @@ global using System.Threading.Tasks;
 global using IndQuestResults;
 global using IndQuestResults.Performance;
 global using IndQuestResults.Operations;
+global using IndQuestResults.Collections;
 global using Microsoft.Extensions.Logging;

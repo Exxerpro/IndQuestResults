@@ -6,6 +6,7 @@
     <RootNamespace>IndQuestResults.Tests.Unit</RootNamespace>
     <AssemblyName>IndQuestResults.Tests.Unit</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <PropertyGroup>

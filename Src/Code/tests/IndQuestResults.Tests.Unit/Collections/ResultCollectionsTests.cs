@@ -15,7 +15,7 @@ public class ResultCollectionsTests
     private static readonly int[] Expected4_5 = [4, 5];
     private static readonly string[] ExpectedAB = ["A", "B"];
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{Result{T}})"/>
     /// aggregates values when all inputs are successful.
     /// </summary>
     [Fact]
@@ -38,7 +38,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{Result{T}})"/>
     /// accumulates errors when any input fails.
     /// </summary>
     [Fact]
@@ -63,7 +63,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.SequenceFailFast{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.SequenceFailFast{T}(System.Collections.Generic.IEnumerable{Result{T}})"/>
     /// stops at the first failure and returns only that failure's errors.
     /// </summary>
     [Fact]
@@ -89,7 +89,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Operations.Result{TOutput}})"/>
+    /// Ensures <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, Result{TOutput}})"/>
     /// maps and sequences successfully when all mappings succeed.
     /// </summary>
     [Fact]
@@ -108,7 +108,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Operations.Result{TOutput}})"/>
+    /// Ensures <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, Result{TOutput}})"/>
     /// accumulates errors when mappings fail.
     /// </summary>
     [Fact]
@@ -134,7 +134,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.TraverseFailFast{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Operations.Result{TOutput}})"/>
+    /// Ensures <see cref="ResultCollections.TraverseFailFast{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, Result{TOutput}})"/>
     /// stops on the first failure and returns only that failure's errors.
     /// </summary>
     [Fact]
@@ -157,7 +157,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Partition{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.Partition{T}(System.Collections.Generic.IEnumerable{Result{T}})"/>
     /// splits successes and failures correctly.
     /// </summary>
     [Fact]
@@ -183,7 +183,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Collect{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.Collect{T}(System.Collections.Generic.IEnumerable{Result{T}})"/>
     /// returns only successful values.
     /// </summary>
     [Fact]
@@ -206,7 +206,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.CollectErrors{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.CollectErrors{T}(System.Collections.Generic.IEnumerable{Result{T}})"/>
     /// returns only errors from failed results.
     /// </summary>
     [Fact]
@@ -231,7 +231,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.WhereSuccess{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.WhereSuccess{T}(System.Collections.Generic.IEnumerable{Result{T}})"/>
     /// filters only successful results.
     /// </summary>
     [Fact]
@@ -254,7 +254,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.WhereFailure{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.WhereFailure{T}(System.Collections.Generic.IEnumerable{Result{T}})"/>
     /// filters only failed results.
     /// </summary>
     [Fact]
@@ -277,8 +277,8 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures extension <see cref="ResultCollections.SequenceResults{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
-    /// behaves like <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>.
+    /// Ensures extension <see cref="ResultCollections.SequenceResults{T}(System.Collections.Generic.IEnumerable{Result{T}})"/>
+    /// behaves like <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{Result{T}})"/>.
     /// </summary>
     [Fact]
     public void SequenceResults_Extension_WhenAllSuccessful_ShouldAggregateValues()
@@ -299,8 +299,8 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures extension <see cref="ResultCollections.TraverseResults{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Operations.Result{TOutput}})"/>
-    /// behaves like <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Operations.Result{TOutput}})"/>.
+    /// Ensures extension <see cref="ResultCollections.TraverseResults{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, Result{TOutput}})"/>
+    /// behaves like <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, Result{TOutput}})"/>.
     /// </summary>
     [Fact]
     public void TraverseResults_Extension_WhenAllSuccessful_ShouldMapAndAggregate()

@@ -22,19 +22,25 @@ This unified architecture eliminates dependency complexity while providing power
 
 ### Building and Testing
 ```bash
-# Build the entire solution
-dotnet build Src/Code/IndQuestResults.sln
+# Build the entire solution (primary command)
+dotnet build Src/Code/IndQuestResults.All.sln
 
-# Build the main project
+# Build the main project only
 dotnet build Src/Code/src/IndQuestResults/IndQuestResults.csproj
 
-# Run all unit tests
+# Run all unit tests (comprehensive test suite)
 dotnet test Src/Code/tests/IndQuestResults.Tests.Unit/IndQuestResults.Tests.Unit.csproj
 
-# Run performance tests  
+# Run performance tests with benchmarking
 dotnet test Src/Code/tests/IndQuestResults.Tests.Performance/IndQuestResults.Tests.Performance.csproj
 
-# Run benchmarks
+# Run analyzers tests
+dotnet test Src/Code/tests/IndQuestResults.Analyzers.Tests/IndQuestResults.Analyzers.Tests.csproj
+
+# Run minimal v3 compatibility tests
+dotnet test Src/Code/tests/IndQuestResults.Tests.V3Minimal/IndQuestResults.Tests.V3Minimal.csproj
+
+# Run benchmarks (Release configuration required)
 dotnet run --project Src/Code/benchmarks/IndQuestResults.Benchmarks/IndQuestResults.Benchmarks.csproj --configuration Release
 
 # Create NuGet package
@@ -43,12 +49,15 @@ dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj --configuration 
 
 ### Mutation Testing
 ```bash
-# Run mutation testing with Stryker (from mutation test directory)
-cd Src/Code/tests/IndQuestResults.Tests.Mutation
+# Run mutation testing with Stryker (from unit test directory)
+cd Src/Code/tests/IndQuestResults.Tests.Unit
 dotnet stryker --config-file stryker-config.json
 
-# Simple mutation test configuration
-dotnet stryker --config-file stryker-simple-config.json
+# Global Stryker installation (if needed)
+dotnet tool install -g dotnet-stryker
+
+# View mutation test reports (after running tests)
+# Reports are generated in StrykerOutput folder within test directory
 ```
 
 ### Development Environment
@@ -62,24 +71,26 @@ dotnet stryker --config-file stryker-simple-config.json
 ### Main Components
 
 **Core Domain (IndQuestResults):**
-- `Operations/Result.cs` - Non-generic result for operations without return values
-- `Operations/ResultGeneric.cs` - Generic result for operations with strongly-typed return values  
+- `Result.cs` - Non-generic result for operations without return values
+- `ResultGeneric.cs` - Generic result for operations with strongly-typed return values  
+- `ResultConstants.cs` - Error message constants and defaults
+- `ResultErrors.cs` - Error handling and messaging utilities
 - `Operations/ResultExtensions.cs` - Core validation and utility methods (cancellation, null checks)
-- `Operations/ResultConstants.cs` - Error message constants and defaults
-- `Operations/ResultErrors.cs` - Error handling and messaging utilities
 - `Operations/CancellationAwareResult.cs` - Cancellation token integration
 - `Performance/MemoryOptimizations.cs` - Memory allocation optimizations
 - `Performance/SpanOptimizations.cs` - Span<T> optimizations for 70% reduction in allocations
+- `Performance/ResultMetrics.cs` - Performance monitoring and metrics collection
+- `Performance/ResultTiming.cs` - Timing utilities for performance analysis
 - `Validation/NullArgumentValidation.cs` - Null argument checking utilities
 - `Validation/NullArgumentError.cs` - Null argument error definitions
 - `Validation/MultipleNullArgumentsError.cs` - Multi-parameter validation errors
 - Both Result classes are immutable, thread-safe, and JSON serializable
 
-**Extension Namespaces (Unified Package):**
-- `Extensions/Async/ResultAsync.cs` - Async patterns (BindAsync, MapAsync, TapAsync, RecoverAsync)
-- `Extensions/Collections/ResultCollections.cs` - Collection operations (Sequence, Traverse, Partition, Collect)
-- `Extensions/Functional/ResultApplicative.cs` - Applicative functors for validation error accumulation
-- `Extensions/Observables/` - Observable bridge patterns and subscription management
+**Extension Components (Unified Package):**
+- `Async/ResultAsync.cs` - Async patterns (BindAsync, MapAsync, TapAsync, RecoverAsync)
+- `Collections/ResultCollections.cs` - Collection operations (Sequence, Traverse, Partition, Collect)
+- `Functional/ResultApplicative.cs` - Applicative functors for validation error accumulation
+- `Reactive/` - Observable/reactive patterns with subscription management
   - `ResultObservableBridge.cs` - Observable integration utilities
   - `ResultSubscriptionsCore.cs` - Core subscription management
 
@@ -105,11 +116,12 @@ dotnet stryker --config-file stryker-simple-config.json
 - **Mutation Testing** - 85% mutation score threshold with Stryker for code quality assurance
 
 ### Mutation Testing Configuration
-- High threshold: 85%
-- Low threshold: 70%
-- Break threshold: 60%
+- High threshold: 90%
+- Low threshold: 75%
+- Break threshold: 0%
 - Coverage analysis: per test in isolation
 - Timeout: 30 seconds per test
+- Current mutation score target: 85%+ for enterprise quality
 
 ## Development Patterns
 
@@ -119,21 +131,21 @@ dotnet stryker --config-file stryker-simple-config.json
 using IndQuestResults;
 var result = Result<User>.Success(user);
 
-// Async operations - unified extension namespace
-using IndQuestResults.Extensions.Async;
+// Async operations - no additional using required (unified package)
 var result = await GetUserAsync(id).BindAsync(LoadProfileAsync);
 
-// Collection operations - unified extension namespace
-using IndQuestResults.Extensions.Collections;
+// Collection operations - no additional using required (unified package)  
 var results = userIds.TraverseResults(LoadUser);
 
-// Validation with error accumulation - unified extension namespace
-using IndQuestResults.Extensions.Functional;
+// Validation with error accumulation - no additional using required (unified package)
 var userResult = ResultApplicative.Apply(nameResult, emailResult, (n, e) => new User(n, e));
 
-// Observable/reactive patterns - unified extension namespace
-using IndQuestResults.Extensions.Observables;
+// Observable/reactive patterns - no additional using required (unified package)
 var subject = ResultSubscriptionsCore.CreateResultSubject<User>();
+
+// Performance monitoring
+var timedResult = ResultTiming.Time(() => expensiveOperation());
+var metrics = ResultMetrics.CollectMetrics(results);
 ```
 
 ### Functional Composition
@@ -148,7 +160,7 @@ return _dataService
         onFailure: errors => BadRequest(errors)
     );
 
-// Async functional patterns (unified Extensions.Async namespace)
+// Async functional patterns (unified package)
 return await _dataService
     .GetUserAsync(userId)
     .BindAsync(user => _validator.ValidateUserAsync(user))
@@ -187,24 +199,27 @@ F:\Dynamic\IndFusion\IndQuestResults\
 
 **Main Project (Src\Code\src\):**
 - `IndQuestResults/` - Unified library with all functionality (zero dependencies)
-  - `Operations/` - Core Result and Result<T> classes, extensions, constants
-  - `Performance/` - Memory and Span optimizations  
-  - `Validation/` - Null argument validation utilities
-  - `Extensions/Async/` - Async patterns and utilities
-  - `Extensions/Collections/` - Collection operations and utilities
-  - `Extensions/Functional/` - Advanced functional patterns
-  - `Extensions/Observables/` - Observable/reactive patterns
+  - Root files: `Result.cs`, `ResultGeneric.cs`, `ResultConstants.cs`, `ResultErrors.cs`
+  - `Operations/` - Core extensions, cancellation-aware utilities
+  - `Performance/` - Memory optimizations, Span optimizations, metrics, timing
+  - `Validation/` - Null argument validation utilities and error types
+  - `Async/` - Async patterns and utilities
+  - `Collections/` - Collection operations and utilities
+  - `Functional/` - Advanced functional patterns (Applicative functors)
+  - `Reactive/` - Observable/reactive patterns and subscription management
 
 **Supporting Projects (Src\Code\):**
+- `src/IndQuestResults.Analyzers/` - Code analyzers for Result patterns and performance
 - `tests/` - All test projects
-  - `IndQuestResults.Tests.Unit/` - Comprehensive unit tests
+  - `IndQuestResults.Tests.Unit/` - Comprehensive unit tests (includes mutation testing config)
   - `IndQuestResults.Tests.Performance/` - Performance benchmarking tests
-  - `IndQuestResults.Tests.Mutation/` - Mutation testing with Stryker configuration
+  - `IndQuestResults.Analyzers.Tests/` - Tests for code analyzers
+  - `IndQuestResults.Tests.V3Minimal/` - XUnit v3 compatibility tests
 - `samples/` - Usage examples
   - `IndQuestResults.Samples.Basic/` - Basic usage patterns
   - `IndQuestResults.Samples.Advanced/` - Advanced usage scenarios
 - `benchmarks/IndQuestResults.Benchmarks/` - Performance benchmarking code
-- Build configuration files: `Directory.Build.props`, `Directory.Build.targets`, `Directory.Packages.props`
+- Build configuration files: `Directory.Build.props`, `Directory.Build.targets`, `Directory.Packages.props`, `Common.props`
 
 **Documentation:**
 - `docs/architecture.md` - Detailed architecture documentation

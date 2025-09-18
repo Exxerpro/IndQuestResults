@@ -6,6 +6,7 @@
     <RootNamespace>IndQuestResults.Samples.Advanced</RootNamespace>
     <AssemblyName>IndQuestResults.Samples.Advanced</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <!-- Toggle between local project references and NuGet package consumption -->

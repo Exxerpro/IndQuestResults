@@ -20,6 +20,7 @@
          MSB3277 : Assembly version conflicts found (benign in test harness multi-target/transitive scenarios)
     -->
     <NoWarn>$(NoWarn);CA1707;NU1701;CS1570;CS1705;CS0246;MSB3277</NoWarn>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>
