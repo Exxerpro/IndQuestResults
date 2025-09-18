@@ -1,4 +1,4 @@
-namespace IndQuestResults.Operations;
+namespace IndQuestResults;
 
 /// <summary>
 /// Constants used by the Result classes to ensure consistency and avoid magic strings.

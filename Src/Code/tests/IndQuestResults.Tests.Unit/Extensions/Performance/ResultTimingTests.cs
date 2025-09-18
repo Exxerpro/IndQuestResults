@@ -405,3 +405,6 @@ public class ResultTimingTests
         timedResult.ElapsedMilliseconds.ShouldBeLessThan(80); // Should be cancelled before full delay
     }
 }
+
+
+

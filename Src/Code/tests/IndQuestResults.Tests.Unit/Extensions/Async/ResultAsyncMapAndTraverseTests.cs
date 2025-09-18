@@ -119,3 +119,6 @@ public class ResultAsyncMapAndTraverseTests
             await ResultAsync.TraverseParallelAsync(inputs, x => Task.FromResult(Result<int>.Success(x)), 0, cts.Token));
     }
 }
+
+
+

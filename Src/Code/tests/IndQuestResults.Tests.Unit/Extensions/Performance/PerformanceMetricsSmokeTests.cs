@@ -95,3 +95,6 @@ public class PerformanceMetricsSmokeTests
         entry.Timestamp.ShouldBeInRange(now.AddSeconds(-1), now.AddSeconds(1));
     }
 }
+
+
+

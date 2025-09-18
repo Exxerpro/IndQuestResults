@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IndQuestResults;
 using IndQuestResults.Operations;
 
-namespace IndQuestResults.Extensions.Async;
+namespace IndQuestResults.Async;
 
 /// <summary>
 /// Provides async/await integration for Result types, enabling monadic operations in asynchronous contexts.

@@ -138,3 +138,6 @@ public class CancellationAwareResultTests
         result.Errors.ShouldContain(ResultErrors.OperationCancelled);
     }
 }
+
+
+

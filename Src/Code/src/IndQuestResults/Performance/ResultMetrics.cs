@@ -2,9 +2,10 @@ using System;
 using System.Threading.Channels;
 using System.Threading;
 using System.Threading.Tasks;
+using IndQuestResults;
 using IndQuestResults.Operations;
 
-namespace IndQuestResults.Extensions.Performance;
+namespace IndQuestResults.Performance;
 
 /// <summary>
 /// Provides non-blocking metrics collection for Result operations.

@@ -1,6 +1,6 @@
-using IndQuestResults.Operations;
+using IndQuestResults;
 
-namespace IndQuestResults.Extensions.Functional;
+namespace IndQuestResults.Functional;
 
 /// <summary>
 /// Provides Applicative Functor operations for Result types, enabling validation of multiple independent values

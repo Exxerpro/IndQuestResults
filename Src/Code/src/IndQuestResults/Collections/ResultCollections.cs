@@ -1,6 +1,6 @@
-using IndQuestResults.Operations;
+using IndQuestResults;
 
-namespace IndQuestResults.Extensions.Collections;
+namespace IndQuestResults.Collections;
 
 /// <summary>
 /// Provides collection operations for Result types, implementing Sequence and Traverse patterns

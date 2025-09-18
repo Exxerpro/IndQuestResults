@@ -1,3 +1,5 @@
+using IndQuestResults.Performance;
+
 namespace IndQuestResults.Benchmarks;
 
 /// <summary>
@@ -23,10 +25,7 @@ public class TimingBenchmarks
         stopwatch.Stop();
 
         // Simulate using the result
-        if (!result.IsSuccess)
-            throw new InvalidOperationException("Unexpected failure");
-
-        return stopwatch.Elapsed;
+        return !result.IsSuccess ? throw new InvalidOperationException("Unexpected failure") : stopwatch.Elapsed;
     }
 
     /// <summary>
@@ -39,10 +38,7 @@ public class TimingBenchmarks
         var timedResult = ResultTiming.Timed(CreateSuccessResult);
 
         // Simulate using the result
-        if (!timedResult.IsSuccess)
-            throw new InvalidOperationException("Unexpected failure");
-
-        return timedResult.Elapsed;
+        return !timedResult.IsSuccess ? throw new InvalidOperationException("Unexpected failure") : timedResult.Elapsed;
     }
 
     /// <summary>
@@ -85,10 +81,7 @@ public class TimingBenchmarks
         var result = await CreateSuccessResultAsync();
         stopwatch.Stop();
 
-        if (!result.IsSuccess)
-            throw new InvalidOperationException("Unexpected failure");
-
-        return stopwatch.Elapsed;
+        return !result.IsSuccess ? throw new InvalidOperationException("Unexpected failure") : stopwatch.Elapsed;
     }
 
     /// <summary>
@@ -100,10 +93,7 @@ public class TimingBenchmarks
     {
         var timedResult = await ResultTiming.TimedAsync(CreateSuccessResultAsync);
 
-        if (!timedResult.IsSuccess)
-            throw new InvalidOperationException("Unexpected failure");
-
-        return timedResult.Elapsed;
+        return !timedResult.IsSuccess ? throw new InvalidOperationException("Unexpected failure") : timedResult.Elapsed;
     }
 
     /// <summary>
@@ -143,10 +133,7 @@ public class TimingBenchmarks
     {
         var timedResult = ResultTiming.Timed(CreateFailureResult);
 
-        if (timedResult.IsSuccess)
-            throw new InvalidOperationException("Expected failure");
-
-        return timedResult.Elapsed;
+        return timedResult.IsSuccess ? throw new InvalidOperationException("Expected failure") : timedResult.Elapsed;
     }
 
     /// <summary>
@@ -156,12 +143,9 @@ public class TimingBenchmarks
     [BenchmarkCategory("Exception")]
     public TimeSpan ResultTiming_Exception()
     {
-        var timedResult = ResultTiming.Timed<int>(CreateExceptionResult);
+        var timedResult = ResultTiming.Timed(CreateExceptionResult);
 
-        if (timedResult.IsSuccess)
-            throw new InvalidOperationException("Expected failure from exception");
-
-        return timedResult.Elapsed;
+        return timedResult.IsSuccess ? throw new InvalidOperationException("Expected failure from exception") : timedResult.Elapsed;
     }
 
     /// <summary>
@@ -180,7 +164,9 @@ public class TimingBenchmarks
             stopwatch.Stop();
 
             if (result.IsSuccess)
+            {
                 totalMicroseconds += (long)stopwatch.Elapsed.TotalMicroseconds;
+            }
         }
 
         return totalMicroseconds;
@@ -200,7 +186,9 @@ public class TimingBenchmarks
             var timedResult = ResultTiming.Timed(() => CreateFastSuccessResult(i));
 
             if (timedResult.IsSuccess)
+            {
                 totalMicroseconds += (long)timedResult.ElapsedMicroseconds;
+            }
         }
 
         return totalMicroseconds;
@@ -226,7 +214,7 @@ public class TimingBenchmarks
     private static Result<int> CreateFailureResult()
     {
         // Simulate validation failure
-        return Result<int>.WithFailure("Validation failed", defaultValue: 0);
+        return Result<int>.WithFailure("Validation failed");
     }
 
     private static Result<int> CreateExceptionResult()

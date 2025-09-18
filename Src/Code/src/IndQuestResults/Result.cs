@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace IndQuestResults.Operations;
+namespace IndQuestResults;
 
 /// <summary>
 /// Provides a functional approach to error handling in .NET applications, eliminating the need for exceptions in normal control flow.

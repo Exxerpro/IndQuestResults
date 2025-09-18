@@ -222,3 +222,5 @@ public class ResultAsyncBindTests
         boundResult.Value.ShouldBe("Value: 42");
     }
 }
+
+

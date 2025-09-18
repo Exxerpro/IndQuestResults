@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Local CPM scope for Roslyn when building this project standalone -->
+    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.14.0" />
+  </ItemGroup>
+</Project>

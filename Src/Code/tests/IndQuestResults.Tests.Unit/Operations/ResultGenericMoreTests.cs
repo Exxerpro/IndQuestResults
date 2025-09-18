@@ -53,3 +53,6 @@ public class ResultGenericMoreTests
         res2.Error.ShouldBe(ResultConstants.NoErrorsFoundMessage);
     }
 }
+
+
+

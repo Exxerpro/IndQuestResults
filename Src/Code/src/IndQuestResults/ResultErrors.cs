@@ -1,4 +1,4 @@
-namespace IndQuestResults.Operations;
+namespace IndQuestResults;
 
 /// <summary>
 /// Specialized error constants for specific Result scenarios.

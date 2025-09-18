@@ -2,9 +2,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using IndQuestResults;
 using IndQuestResults.Operations;
 
-namespace IndQuestResults.Extensions.Observables;
+namespace IndQuestResults.Reactive;
 
 /// <summary>
 /// Provides core subscription support for Result types without external dependencies.

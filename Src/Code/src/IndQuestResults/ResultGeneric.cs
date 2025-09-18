@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace IndQuestResults.Operations;
+namespace IndQuestResults;
 
 /// <summary>
 /// Represents the result of an operation that returns a value, including success status, value, and error messages.

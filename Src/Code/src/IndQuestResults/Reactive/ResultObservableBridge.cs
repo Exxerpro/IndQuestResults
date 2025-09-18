@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using IndQuestResults;
 using IndQuestResults.Operations;
 
-namespace IndQuestResults.Extensions.Observables;
+namespace IndQuestResults.Reactive;
 
 /// <summary>
 /// Provides bridge extensions between IObservable and Result patterns for gateway scenarios.

@@ -1,3 +1,5 @@
+using IndQuestResults.Performance;
+
 namespace IndQuestResults.Samples.Advanced;
 
 /// <summary>

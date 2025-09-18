@@ -2,9 +2,10 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using IndQuestResults;
 using IndQuestResults.Operations;
 
-namespace IndQuestResults.Extensions.Performance;
+namespace IndQuestResults.Performance;
 
 /// <summary>
 /// Provides timing extensions for Result operations to measure execution time and performance metrics.
