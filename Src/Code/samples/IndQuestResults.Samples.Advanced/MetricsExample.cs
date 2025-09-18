@@ -85,7 +85,7 @@ public class MetricsExample
             {
                 // Transform to DTO - with metrics
                 return metrics.Timed(
-                    () => TransformToDto(userResult.Value!),
+                    () => TransformToDto(userResult.Value),
                     "transform_dto");
             }
         }

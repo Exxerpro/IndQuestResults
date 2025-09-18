@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
     <RootNamespace>IndQuestResults</RootNamespace>
     <AssemblyName>IndQuestResults</AssemblyName>
     <PackageId>IndQuestResults</PackageId>
@@ -16,6 +16,7 @@
     <!-- Package metadata only -->
     <PackageDescription>Enterprise-grade Result&lt;T&gt; library for functional error handling in .NET applications.</PackageDescription>
     <PackageVersion>1.0.1.2</PackageVersion>
+    <AssemblyVersion>1.0.1.2</AssemblyVersion>
   </PropertyGroup>
 
 

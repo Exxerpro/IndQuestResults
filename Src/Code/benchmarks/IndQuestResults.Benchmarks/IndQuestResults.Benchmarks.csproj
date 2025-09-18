@@ -8,6 +8,7 @@
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <AssemblyVersion>1.0.1.2</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup>
