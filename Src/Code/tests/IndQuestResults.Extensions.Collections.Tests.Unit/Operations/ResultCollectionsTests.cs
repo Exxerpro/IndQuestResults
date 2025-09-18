@@ -5,8 +5,17 @@ namespace IndQuestResults.Extensions.Collections.Tests.Unit.Operations;
 /// </summary>
 public class ResultCollectionsTests
 {
+    private static readonly string[] ErrorsE2E3 = new[] { "E2", "E3" };
+    private static readonly string[] ErrorsE2aE2b = new[] { "E2a", "E2b" };
+    private static readonly string[] ErrorsE3aE3b = new[] { "E3a", "E3b" };
+    private static readonly int[] Expected123 = new int[] { 1, 2, 3 };
+    private static readonly int[] Expected246 = new int[] { 2, 4, 6 };
+    private static readonly int[] Expected10_20 = new int[] { 10, 20 };
+    private static readonly int[] Expected1_2 = new int[] { 1, 2 };
+    private static readonly int[] Expected4_5 = new int[] { 4, 5 };
+    private static readonly string[] ExpectedAB = new string[] { "A", "B" };
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
     /// aggregates values when all inputs are successful.
     /// </summary>
     [Fact]
@@ -25,11 +34,11 @@ public class ResultCollectionsTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value!.ToArray().ShouldBe(new[] { 1, 2, 3 });
+        result.Value!.ToArray().ShouldBe(Expected123);
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
     /// accumulates errors when any input fails.
     /// </summary>
     [Fact]
@@ -40,7 +49,7 @@ public class ResultCollectionsTests
         {
             Result<int>.Success(1),
             Result<int>.WithFailure("E1"),
-            Result<int>.WithFailure(new []{ "E2", "E3" })
+            Result<int>.WithFailure(ErrorsE2E3)
         };
 
         // Act
@@ -54,7 +63,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.SequenceFailFast{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.SequenceFailFast{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
     /// stops at the first failure and returns only that failure's errors.
     /// </summary>
     [Fact]
@@ -65,7 +74,7 @@ public class ResultCollectionsTests
         {
             Result<int>.Success(1),
             Result<int>.Success(2),
-            Result<int>.WithFailure(new []{ "E2a", "E2b" }),
+            Result<int>.WithFailure(ErrorsE2aE2b),
             Result<int>.WithFailure("E3")
         };
 
@@ -80,7 +89,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Result{TOutput}})"/>
+    /// Ensures <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Operations.Result{TOutput}})"/>
     /// maps and sequences successfully when all mappings succeed.
     /// </summary>
     [Fact]
@@ -88,18 +97,18 @@ public class ResultCollectionsTests
     {
         // Arrange
         var inputs = new[] { 1, 2, 3 };
-        Result<int> Map(int x) => Result<int>.Success(x * 2);
+        static Result<int> Map(int x) => Result<int>.Success(x * 2);
 
         // Act
         var result = ResultCollections.Traverse<int, int>(inputs, Map);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value!.ToArray().ShouldBe(new[] { 2, 4, 6 });
+        result.Value!.ToArray().ShouldBe(Expected246);
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Result{TOutput}})"/>
+    /// Ensures <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Operations.Result{TOutput}})"/>
     /// accumulates errors when mappings fail.
     /// </summary>
     [Fact]
@@ -107,10 +116,10 @@ public class ResultCollectionsTests
     {
         // Arrange
         var inputs = new[] { 1, 2, 3 };
-        Result<int> Map(int x) => x switch
+        static Result<int> Map(int x) => x switch
         {
             2 => Result<int>.WithFailure("E2"),
-            3 => Result<int>.WithFailure(new []{ "E3a", "E3b" }),
+            3 => Result<int>.WithFailure(ErrorsE3aE3b),
             _ => Result<int>.Success(x * 2)
         };
 
@@ -125,7 +134,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.TraverseFailFast{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Result{TOutput}})"/>
+    /// Ensures <see cref="ResultCollections.TraverseFailFast{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Operations.Result{TOutput}})"/>
     /// stops on the first failure and returns only that failure's errors.
     /// </summary>
     [Fact]
@@ -133,8 +142,8 @@ public class ResultCollectionsTests
     {
         // Arrange
         var inputs = new[] { 1, 2, 3 };
-        Result<int> Map(int x) => x == 2
-            ? Result<int>.WithFailure(new []{ "E2a", "E2b" })
+        static Result<int> Map(int x) => x == 2
+            ? Result<int>.WithFailure(ErrorsE2aE2b)
             : Result<int>.Success(x);
 
         // Act
@@ -148,7 +157,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Partition{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.Partition{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
     /// splits successes and failures correctly.
     /// </summary>
     [Fact]
@@ -160,21 +169,21 @@ public class ResultCollectionsTests
             Result<string>.Success("A"),
             Result<string>.WithFailure("E1"),
             Result<string>.Success("B"),
-            Result<string>.WithFailure(new []{ "E2", "E3" })
+            Result<string>.WithFailure(ErrorsE2E3)
         };
 
         // Act
         var (successes, failures) = ResultCollections.Partition(inputs);
 
         // Assert
-        successes.ToArray().ShouldBe(new[] { "A", "B" });
+        successes.ToArray().ShouldBe(ExpectedAB);
         failures.ShouldContain("E1");
         failures.ShouldContain("E2");
         failures.ShouldContain("E3");
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.Collect{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.Collect{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
     /// returns only successful values.
     /// </summary>
     [Fact]
@@ -193,11 +202,11 @@ public class ResultCollectionsTests
         var values = ResultCollections.Collect(inputs);
 
         // Assert
-        values.ToArray().ShouldBe(new[] { 10, 20 });
+        values.ToArray().ShouldBe(Expected10_20);
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.CollectErrors{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.CollectErrors{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
     /// returns only errors from failed results.
     /// </summary>
     [Fact]
@@ -208,7 +217,7 @@ public class ResultCollectionsTests
         {
             Result<int>.WithFailure("E1"),
             Result<int>.Success(10),
-            Result<int>.WithFailure(new []{ "E2", "E3" })
+            Result<int>.WithFailure(ErrorsE2E3)
         };
 
         // Act
@@ -222,7 +231,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.WhereSuccess{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.WhereSuccess{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
     /// filters only successful results.
     /// </summary>
     [Fact]
@@ -245,7 +254,7 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures <see cref="ResultCollections.WhereFailure{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Result{T}})"/>
+    /// Ensures <see cref="ResultCollections.WhereFailure{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
     /// filters only failed results.
     /// </summary>
     [Fact]
@@ -268,8 +277,8 @@ public class ResultCollectionsTests
     }
 
     /// <summary>
-    /// Ensures extension <see cref="ResultCollections.SequenceResults{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Result{T}})"/>
-    /// behaves like <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Result{T}})"/>.
+    /// Ensures extension <see cref="ResultCollections.SequenceResults{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>
+    /// behaves like <see cref="ResultCollections.Sequence{T}(System.Collections.Generic.IEnumerable{IndQuestResults.Operations.Result{T}})"/>.
     /// </summary>
     [Fact]
     public void SequenceResults_Extension_WhenAllSuccessful_ShouldAggregateValues()
@@ -286,26 +295,26 @@ public class ResultCollectionsTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value!.ToArray().ShouldBe(new[] { 1, 2 });
+        result.Value!.ToArray().ShouldBe(Expected1_2);
     }
 
     /// <summary>
-    /// Ensures extension <see cref="ResultCollections.TraverseResults{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Result{TOutput}})"/>
-    /// behaves like <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Result{TOutput}})"/>.
+    /// Ensures extension <see cref="ResultCollections.TraverseResults{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Operations.Result{TOutput}})"/>
+    /// behaves like <see cref="ResultCollections.Traverse{TInput, TOutput}(System.Collections.Generic.IEnumerable{TInput}, System.Func{TInput, IndQuestResults.Operations.Result{TOutput}})"/>.
     /// </summary>
     [Fact]
     public void TraverseResults_Extension_WhenAllSuccessful_ShouldMapAndAggregate()
     {
         // Arrange
         var inputs = new[] { 3, 4 };
-        Result<int> Map(int x) => Result<int>.Success(x + 1);
+        static Result<int> Map(int x) => Result<int>.Success(x + 1);
 
         // Act
         var result = inputs.TraverseResults<int, int>(Map);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value!.ToArray().ShouldBe(new[] { 4, 5 });
+        result.Value!.ToArray().ShouldBe(Expected4_5);
     }
 }
 

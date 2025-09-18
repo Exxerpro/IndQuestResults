@@ -56,7 +56,10 @@ public class CancellationAwareResultTests
         // Arrange
         // Act
         var result = await CancellationAwareResult.WrapResultOperation(async ct =>
-            Result<int>.Success((await Task.Delay(5, ct), 11).Item2), CancellationToken.None);
+        {
+            await Task.Delay(5, ct);
+            return Result<int>.Success(11);
+        }, CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -71,7 +74,7 @@ public class CancellationAwareResultTests
     {
         // Arrange
         // Act
-        var result = await CancellationAwareResult.WrapCancellationAware(async ct => { await Task.Delay(10, ct); }, CancellationToken.None);
+        var result = await CancellationAwareResult.WrapCancellationAware(ct => Task.Delay(10, ct), CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
