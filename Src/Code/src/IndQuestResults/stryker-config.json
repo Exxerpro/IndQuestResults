@@ -1,8 +1,7 @@
 {
   "stryker-config": {
     "mutate": [
-      "Operations/ResultExtensions.cs",
-      "Operations/Result.cs"
+      "Extensions/Observables/*.cs"
     ],
     "ignore-mutations": [
       "Block"
