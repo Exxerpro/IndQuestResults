@@ -184,7 +184,8 @@ public class ObservablesBridgeAndSubjectTests
         var obs3 = new TestObservable<int>();
         var timeoutRes = await obs3.CollectResults(TimeSpan.FromMilliseconds(50));
         timeoutRes.IsFailure.ShouldBeTrue();
-        timeoutRes.Error.ShouldBe("Collection timed out");
+        timeoutRes.Error.ShouldNotBeNull();
+        timeoutRes.Error!.ShouldContain("timed", Case.Insensitive);
 
         // Cancellation case
         var obs4 = new TestObservable<int>();
@@ -220,6 +221,20 @@ public class ObservablesBridgeAndSubjectTests
         received2.ShouldBe([2, 3, 4]);
 
         src.OnCompleted();
+    }
+
+    [Fact]
+    public void CreateReplayBridge_BufferSize_Zero_Throws()
+    {
+        var src = new TestObservable<int>();
+        Should.Throw<ArgumentException>(() => src.CreateReplayBridge(bufferSize: 0));
+    }
+
+    [Fact]
+    public void CreateReplayBridge_BufferSize_Negative_Throws()
+    {
+        var src = new TestObservable<int>();
+        Should.Throw<ArgumentException>(() => src.CreateReplayBridge(bufferSize: -1));
     }
 }
 

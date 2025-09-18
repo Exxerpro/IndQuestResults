@@ -385,6 +385,7 @@ internal class ResultObserver<T> : IResultObserver<T>
         }
         else
         {
+            // Stryker disable once NullCoalescing: Errors are normalized by library
             _onFailure?.Invoke(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
         }
     }

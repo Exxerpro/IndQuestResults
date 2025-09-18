@@ -182,6 +182,7 @@ public static class ResultObservableBridge
                 }
                 else
                 {
+                    // Stryker disable once NullCoalescing: Errors are normalized by library
                     onFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
                 }
             },

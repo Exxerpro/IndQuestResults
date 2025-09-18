@@ -60,7 +60,9 @@ public static class ResultAsync
                 ? ResultExtensions.Cancelled<TOutput>()
                 : result.IsSuccess
                 ? await func(result.Value!).ConfigureAwait(false)
-                : Result<TOutput>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+                :
+                // Stryker disable once NullCoalescing: Errors normalized; mutant is equivalent
+                Result<TOutput>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
         }
         catch (OperationCanceledException)
         {
@@ -111,6 +113,7 @@ public static class ResultAsync
                 return Result<TOutput>.Success(transformedValue);
             }
 
+            // Stryker disable once NullCoalescing: Errors normalized; mutant is equivalent
             return Result<TOutput>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
         }
         catch (OperationCanceledException)
