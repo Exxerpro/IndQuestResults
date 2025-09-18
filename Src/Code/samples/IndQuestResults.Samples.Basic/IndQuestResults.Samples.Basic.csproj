@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <!-- Toggle between local project references and NuGet package consumption -->
+  <!-- Toggle between local project references and NuGet package consumption -->
   <PropertyGroup>
     <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">false</UseLocalRefs>
   </PropertyGroup>
@@ -25,10 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Examples\BasicUsageExamples.cs" />
-    <Compile Include="Examples\ValidationExamples.cs" />
-    <Compile Include="Examples\ErrorHandlingExamples.cs" />
+    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
   </ItemGroup>
+
 
 </Project>

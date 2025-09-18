@@ -25,18 +25,5 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Examples\RailwayProgrammingExamples.cs" />
-    <Compile Include="Examples\AsyncPipelineExamples.cs" />
-    <Compile Include="Examples\PerformanceOptimizationExamples.cs" />
-    <Compile Include="Examples\CancellationExamples.cs" />
-    <Compile Include="Examples\WarningSystemExamples.cs" />
-    <Compile Include="Examples\SerializationExamples.cs" />
-    <Compile Include="Services\UserService.cs" />
-    <Compile Include="Services\ValidationService.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Models\ValidationResult.cs" />
-  </ItemGroup>
 
 </Project>

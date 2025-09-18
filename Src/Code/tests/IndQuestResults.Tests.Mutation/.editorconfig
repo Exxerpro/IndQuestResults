@@ -1,7 +1,0 @@
-# Scoped configuration for mutation test project only
-
-[*.cs]
-# Allow underscores in identifiers for tests by disabling CA1707 here
-dotnet_diagnostic.CA1707.severity = none
-
-

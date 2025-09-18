@@ -19,14 +19,5 @@
     <PackageReference Include="IndQuestResults" />
   </ItemGroup>
 
-  <!-- Performance Testing -->
-  <ItemGroup>
-    <Compile Include="Benchmarks\ResultCreationBenchmarks.cs" />
-    <Compile Include="Benchmarks\ErrorFormattingBenchmarks.cs" />
-    <Compile Include="Benchmarks\FluentChainBenchmarks.cs" />
-    <Compile Include="Benchmarks\SpanOptimizationBenchmarks.cs" />
-    <Compile Include="Benchmarks\ConcurrencyBenchmarks.cs" />
-    <Compile Include="Program.cs" />
-  </ItemGroup>
 
 </Project>
