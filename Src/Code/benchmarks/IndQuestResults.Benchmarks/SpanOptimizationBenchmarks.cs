@@ -18,12 +18,12 @@ namespace IndQuestResults.Benchmarks;
 [RPlotExporter]
 public class SpanOptimizationBenchmarks
 {
-    private string[] _smallErrorArray;
-    private string[] _mediumErrorArray;
-    private string[] _largeErrorArray;
-    private List<string> _smallErrorList;
-    private List<string> _mediumErrorList;
-    private List<string> _largeErrorList;
+    private string[] _smallErrorArray = null!;
+    private string[] _mediumErrorArray = null!;
+    private string[] _largeErrorArray = null!;
+    private List<string> _smallErrorList = null!;
+    private List<string> _mediumErrorList = null!;
+    private List<string> _largeErrorList = null!;
 
     /// <summary>
     /// Gets or sets the error collection size for parameterized Span optimization tests.
@@ -52,6 +52,9 @@ public class SpanOptimizationBenchmarks
         _largeErrorList = _largeErrorArray.ToList();
     }
 
+    /// <summary>
+    /// Benchmarks error formatting using Span optimizations.
+    /// </summary>
     [Benchmark]
     public string FormatWithSpanOptimization()
     {
@@ -59,6 +62,9 @@ public class SpanOptimizationBenchmarks
         return Result.FormatErrorsString(errors, "Operation Failed");
     }
 
+    /// <summary>
+    /// Benchmarks error formatting using StringBuilder (baseline).
+    /// </summary>
     [Benchmark(Baseline = true)]
     public string FormatWithStringBuilder()
     {
@@ -66,30 +72,45 @@ public class SpanOptimizationBenchmarks
         return FormatUsingStringBuilder(errors, "Operation Failed");
     }
 
+    /// <summary>
+    /// Benchmarks small array formatting with Span optimization.
+    /// </summary>
     [Benchmark]
     public string FormatSmallArrayWithSpan()
     {
         return Result.FormatErrorsString(_smallErrorArray, "Failed");
     }
 
+    /// <summary>
+    /// Benchmarks small list formatting with Span optimization.
+    /// </summary>
     [Benchmark]
     public string FormatSmallListWithSpan()
     {
         return Result.FormatErrorsString(_smallErrorList, "Failed");
     }
 
+    /// <summary>
+    /// Benchmarks medium array formatting with Span optimization.
+    /// </summary>
     [Benchmark]
     public string FormatMediumArrayWithSpan()
     {
         return Result.FormatErrorsString(_mediumErrorArray, "Failed");
     }
 
+    /// <summary>
+    /// Benchmarks large array formatting fallback to StringBuilder.
+    /// </summary>
     [Benchmark]
     public string FormatLargeArrayFallback()
     {
         return Result.FormatErrorsString(_largeErrorArray, "Failed");
     }
 
+    /// <summary>
+    /// Benchmarks combining small error collections using Span optimization.
+    /// </summary>
     [Benchmark]
     public Result CombineErrorsSmallSpan()
     {
@@ -98,18 +119,27 @@ public class SpanOptimizationBenchmarks
         return Result.CombineErrors(primary, secondary);
     }
 
+    /// <summary>
+    /// Benchmarks combining medium error collections using Span optimization.
+    /// </summary>
     [Benchmark]
     public Result CombineErrorsMediumSpan()
     {
         return Result.CombineErrors(_smallErrorArray, _mediumErrorArray);
     }
 
+    /// <summary>
+    /// Benchmarks combining large error collections with StringBuilder fallback.
+    /// </summary>
     [Benchmark]
     public Result CombineErrorsLargeFallback()
     {
         return Result.CombineErrors(_mediumErrorArray, _largeErrorArray);
     }
 
+    /// <summary>
+    /// Benchmarks formatting errors with variable message lengths.
+    /// </summary>
     [Benchmark]
     public string FormatVariableLengthErrors()
     {
@@ -119,6 +149,9 @@ public class SpanOptimizationBenchmarks
         return Result.FormatErrorsString(errors, "Variable");
     }
 
+    /// <summary>
+    /// Benchmarks multiple small error collection combinations.
+    /// </summary>
     [Benchmark]
     public Result MultipleSmallCombines()
     {
@@ -133,25 +166,37 @@ public class SpanOptimizationBenchmarks
         return result;
     }
 
+    /// <summary>
+    /// Benchmarks formatting empty error collections.
+    /// </summary>
     [Benchmark]
     public string FormatEmptyErrors()
     {
         return Result.FormatErrorsString(Array.Empty<string>(), "Empty");
     }
 
+    /// <summary>
+    /// Benchmarks formatting single error messages.
+    /// </summary>
     [Benchmark]
     public string FormatSingleError()
     {
         return Result.FormatErrorsString(new[] { "Single error" }, "Failed");
     }
 
+    /// <summary>
+    /// Benchmarks formatting error arrays containing null values.
+    /// </summary>
     [Benchmark]
     public string FormatWithNullsInArray()
     {
-        var errors = new string[] { "Error1", null, "Error3", null, "Error5" };
-        return Result.FormatErrorsString(errors, "WithNulls");
+        var errors = new string?[] { "Error1", null, "Error3", null, "Error5" };
+        return Result.FormatErrorsString(errors.Where(e => e != null)!, "WithNulls");
     }
 
+    /// <summary>
+    /// Benchmarks to determine optimal Span vs StringBuilder threshold.
+    /// </summary>
     [Benchmark]
     public int SpanVsStringBuilderThreshold()
     {
@@ -168,6 +213,9 @@ public class SpanOptimizationBenchmarks
         return count;
     }
 
+    /// <summary>
+    /// Benchmarks combining Results with various error collection sizes.
+    /// </summary>
     [Benchmark]
     public Result CombineWithVariousSizes()
     {

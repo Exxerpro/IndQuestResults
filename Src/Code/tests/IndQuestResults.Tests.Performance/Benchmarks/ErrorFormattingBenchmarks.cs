@@ -13,6 +13,9 @@ public static class ErrorFormattingBenchmarks
     private const int IterationCount = 100_000;
     private const int WarmupIterations = 1_000;
 
+    /// <summary>
+    /// Runs all error formatting performance tests to validate Span optimization claims.
+    /// </summary>
     public static void RunAll()
     {
         Console.WriteLine("=== Error Formatting Performance Tests ===");

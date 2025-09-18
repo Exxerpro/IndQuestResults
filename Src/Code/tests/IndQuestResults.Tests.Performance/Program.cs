@@ -7,6 +7,10 @@ namespace IndQuestResults.Tests.Performance;
 /// </summary>
 public class Program
 {
+    /// <summary>
+    /// Entry point for the performance test application that validates IndQuestResults performance claims.
+    /// </summary>
+    /// <param name="args">Command line arguments to specify which benchmarks to run.</param>
     public static void Main(string[] args)
     {
         Console.WriteLine("IndQuestResults Performance Tests");

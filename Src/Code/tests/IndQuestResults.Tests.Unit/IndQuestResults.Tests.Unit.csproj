@@ -24,6 +24,8 @@
 
   <PropertyGroup>
     <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">true</UseLocalRefs>
+    <!-- Suppress additional warnings for unit test projects -->
+    <NoWarn>$(NoWarn);CS1591;CS8625;CA1861;IDE0004</NoWarn>
   </PropertyGroup>
   <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
     <PackageReference Include="IndQuestResults" />

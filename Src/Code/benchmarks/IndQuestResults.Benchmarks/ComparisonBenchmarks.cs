@@ -17,11 +17,11 @@ namespace IndQuestResults.Benchmarks;
 [RPlotExporter]
 public class ComparisonBenchmarks
 {
-    private Result _successResult;
-    private Result _failureResult;
-    private Result<int> _successResultWithValue;
-    private Result<int> _failureResultWithValue;
-    private List<string> _errors;
+    private Result _successResult = null!;
+    private Result _failureResult = null!;
+    private Result<int> _successResultWithValue = null!;
+    private Result<int> _failureResultWithValue = null!;
+    private List<string> _errors = null!;
 
     /// <summary>
     /// Initializes test data for benchmarks including success/failure results and error collections.
@@ -83,7 +83,7 @@ public class ComparisonBenchmarks
     /// </summary>
     /// <returns>The first error message string.</returns>
     [Benchmark]
-    public string GetFirstError() => _failureResult.Error;
+    public string? GetFirstError() => _failureResult.Error;
 
     /// <summary>
     /// Benchmarks retrieving all error messages from a failed Result.
@@ -131,12 +131,9 @@ public class ComparisonBenchmarks
     /// </summary>
     /// <returns>String representation based on success/failure state.</returns>
     [Benchmark]
-    public string MatchOperationSuccess()
+    public Result<string> MatchOperationSuccess()
     {
-        return _successResultWithValue.Match(
-            onSuccess: value => $"Success: {value}",
-            onFailure: errors => $"Failure: {string.Join(", ", errors)}"
-        );
+        return _successResultWithValue.Map(value => $"Success: {value}");
     }
 
     /// <summary>
@@ -144,12 +141,9 @@ public class ComparisonBenchmarks
     /// </summary>
     /// <returns>String representation based on success/failure state.</returns>
     [Benchmark]
-    public string MatchOperationFailure()
+    public Result<string> MatchOperationFailure()
     {
-        return _failureResultWithValue.Match(
-            onSuccess: value => $"Success: {value}",
-            onFailure: errors => $"Failure: {string.Join(", ", errors)}"
-        );
+        return _failureResultWithValue.Bind(value => Result<string>.WithFailure(_failureResultWithValue.Errors));
     }
 
     /// <summary>

@@ -12,6 +12,9 @@ public static class ResultCreationBenchmarks
     private const int IterationCount = 1_000_000;
     private const int WarmupIterations = 10_000;
 
+    /// <summary>
+    /// Runs all result creation performance tests to validate performance claims.
+    /// </summary>
     public static void RunAll()
     {
         Console.WriteLine("=== Result Creation Performance Tests ===");

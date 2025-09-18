@@ -17,9 +17,9 @@ namespace IndQuestResults.Benchmarks;
 [RPlotExporter]
 public class FluentApiPerformanceBenchmarks
 {
-    private Result<int> _startValue;
-    private Result _baseResult;
-    private List<Result<int>> _resultCollection;
+    private Result<int> _startValue = null!;
+    private Result _baseResult = null!;
+    private List<Result<int>> _resultCollection = null!;
 
     /// <summary>
     /// Initializes test data including successful Results and mixed success/failure collections.
@@ -127,23 +127,25 @@ public class FluentApiPerformanceBenchmarks
     [Benchmark]
     public string MatchWithComplexLogic()
     {
-        return _startValue
+        var chainedResult = _startValue
             .Map(x => x * 3)
-            .Bind(x => Result<double>.Success(Math.Pow(x, 2)))
-            .Match(
-                onSuccess: value => 
-                {
-                    var result = $"Success: {value:F2}";
-                    // Simulate complex processing
-                    for (int i = 0; i < 10; i++)
-                    {
-                        result = result.ToUpper();
-                        result = result.ToLower();
-                    }
-                    return result;
-                },
-                onFailure: errors => string.Join(" | ", errors)
-            );
+            .Bind(x => Result<double>.Success(Math.Pow(x, 2)));
+            
+        if (chainedResult.IsSuccess)
+        {
+            var result = $"Success: {chainedResult.Value:F2}";
+            // Simulate complex processing
+            for (int i = 0; i < 10; i++)
+            {
+                result = result.ToUpper();
+                result = result.ToLower();
+            }
+            return result;
+        }
+        else
+        {
+            return string.Join(" | ", chainedResult.Errors);
+        }
     }
 
     /// <summary>
@@ -192,10 +194,7 @@ public class FluentApiPerformanceBenchmarks
             .Where(r => r.IsSuccess)
             .Select(r => r.Map(x => x * 2))
             .Aggregate(0, (sum, result) => 
-                result.Match(
-                    onSuccess: value => sum + value,
-                    onFailure: _ => sum
-                ));
+                result.IsSuccess ? sum + result.Value : sum);
     }
 
     /// <summary>

@@ -17,12 +17,12 @@ namespace IndQuestResults.Benchmarks;
 [RPlotExporter]
 public class ErrorFormattingBenchmarks
 {
-    private string[] _smallErrorSet;
-    private string[] _mediumErrorSet;
-    private string[] _largeErrorSet;
-    private List<string> _smallErrorList;
-    private List<string> _mediumErrorList;
-    private List<string> _largeErrorList;
+    private string[] _smallErrorSet = null!;
+    private string[] _mediumErrorSet = null!;
+    private string[] _largeErrorSet = null!;
+    private List<string> _smallErrorList = null!;
+    private List<string> _mediumErrorList = null!;
+    private List<string> _largeErrorList = null!;
     private const string TestPrefix = "Operation Failed";
 
     /// <summary>
@@ -239,7 +239,7 @@ public class ErrorFormattingBenchmarks
         var errors = Enumerable.Range(1, ErrorCount)
             .Select(i => i % 3 == 0 ? null : $"Error {i}")
             .ToArray();
-        return Result.FormatErrorsString(errors, TestPrefix);
+        return Result.FormatErrorsString(errors.Where(e => e != null)!, TestPrefix);
     }
 
     /// <summary>

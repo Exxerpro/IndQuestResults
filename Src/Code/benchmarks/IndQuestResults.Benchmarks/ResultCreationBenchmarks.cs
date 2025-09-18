@@ -16,8 +16,8 @@ namespace IndQuestResults.Benchmarks;
 [RPlotExporter]
 public class ResultCreationBenchmarks
 {
-    private string[] _errorArray;
-    private string _singleError;
+    private string[] _errorArray = null!;
+    private string _singleError = null!;
 
     /// <summary>
     /// Gets or sets the number of error messages used in parameterized creation benchmarks.
@@ -39,66 +39,99 @@ public class ResultCreationBenchmarks
             : Array.Empty<string>();
     }
 
+    /// <summary>
+    /// Benchmarks creation of a successful Result without value.
+    /// </summary>
     [Benchmark]
     public Result CreateSuccessResult()
     {
         return Result.Success();
     }
 
+    /// <summary>
+    /// Benchmarks creation of a successful Result with integer value.
+    /// </summary>
     [Benchmark]
     public Result<int> CreateSuccessResultWithValue()
     {
         return Result<int>.Success(42);
     }
 
+    /// <summary>
+    /// Benchmarks creation of a successful Result with string value.
+    /// </summary>
     [Benchmark]
     public Result<string> CreateSuccessResultWithStringValue()
     {
         return Result<string>.Success("Success value");
     }
 
+    /// <summary>
+    /// Benchmarks creation of a successful Result with complex object value.
+    /// </summary>
     [Benchmark]
     public Result<object> CreateSuccessResultWithComplexObject()
     {
         return Result<object>.Success(new { Id = 1, Name = "Test", Values = new[] { 1, 2, 3 } });
     }
 
+    /// <summary>
+    /// Benchmarks creation of a failed Result with single error.
+    /// </summary>
     [Benchmark]
     public Result CreateFailureResultSingleError()
     {
         return Result.WithFailure(_singleError);
     }
 
+    /// <summary>
+    /// Benchmarks creation of a failed Result with multiple errors.
+    /// </summary>
     [Benchmark]
     public Result CreateFailureResultMultipleErrors()
     {
         return Result.WithFailure(_errorArray);
     }
 
+    /// <summary>
+    /// Benchmarks creation of a failed Result&lt;int&gt; with single error.
+    /// </summary>
     [Benchmark]
     public Result<int> CreateFailureResultWithValueSingleError()
     {
         return Result<int>.WithFailure(_singleError);
     }
 
+    /// <summary>
+    /// Benchmarks creation of a failed Result&lt;int&gt; with multiple errors.
+    /// </summary>
     [Benchmark]
     public Result<int> CreateFailureResultWithValueMultipleErrors()
     {
         return Result<int>.WithFailure(_errorArray);
     }
 
+    /// <summary>
+    /// Benchmarks creation of a failed Result&lt;int&gt; with single error (alternative).
+    /// </summary>
     [Benchmark]
     public Result<int> CreateFailureWithSingleError()
     {
         return Result<int>.WithFailure(_singleError);
     }
 
+    /// <summary>
+    /// Benchmarks creation of a successful Result with nullable string value.
+    /// </summary>
     [Benchmark]
     public Result<string> CreateSuccessNullableValue()
     {
-        return Result<string>.Success(null);
+        return Result<string>.Success(null!);
     }
 
+    /// <summary>
+    /// Benchmarks creation of a Result with warnings.
+    /// </summary>
     [Benchmark]
     public Result<int> CreateWithWarnings()
     {
@@ -106,6 +139,9 @@ public class ResultCreationBenchmarks
         return Result<int>.WithWarnings(warnings, 42);
     }
 
+    /// <summary>
+    /// Benchmarks conditional Result creation based on parameter.
+    /// </summary>
     [Benchmark]
     public Result CreateFromCondition()
     {
@@ -113,6 +149,9 @@ public class ResultCreationBenchmarks
         return condition ? Result.Success() : Result.WithFailure("Condition failed");
     }
 
+    /// <summary>
+    /// Benchmarks creation of generic Result with type constraint.
+    /// </summary>
     [Benchmark]
     public Result<T> CreateGenericResult<T>() where T : new()
     {
@@ -121,6 +160,9 @@ public class ResultCreationBenchmarks
             : Result<T>.Success(new T());
     }
 
+    /// <summary>
+    /// Benchmarks creation of Result with dynamically generated errors.
+    /// </summary>
     [Benchmark]
     public Result CreateWithDynamicErrors()
     {
@@ -130,24 +172,36 @@ public class ResultCreationBenchmarks
         return Result.WithFailure(errors);
     }
 
+    /// <summary>
+    /// Benchmarks creation of default failure Result.
+    /// </summary>
     [Benchmark]
     public Result CreateDefaultFailure()
     {
         return new Result();
     }
 
+    /// <summary>
+    /// Benchmarks creation of failure Result with empty error collection.
+    /// </summary>
     [Benchmark]
     public Result CreateFailureEmptyErrors()
     {
         return Result.WithFailure(Array.Empty<string>());
     }
 
+    /// <summary>
+    /// Benchmarks creation of failure Result with null error collection.
+    /// </summary>
     [Benchmark]
     public Result CreateFailureNullErrors()
     {
-        return Result.WithFailure((string[])null);
+        return Result.WithFailure((string[])null!);
     }
 
+    /// <summary>
+    /// Benchmarks chained Result creation with pattern matching.
+    /// </summary>
     [Benchmark]
     public Result<int> CreateChainedResult()
     {
@@ -160,6 +214,9 @@ public class ResultCreationBenchmarks
         };
     }
 
+    /// <summary>
+    /// Benchmarks Result creation from computation with exception handling.
+    /// </summary>
     [Benchmark]
     public Result<double> CreateResultFromComputation()
     {
@@ -174,6 +231,9 @@ public class ResultCreationBenchmarks
         }
     }
 
+    /// <summary>
+    /// Benchmarks batch creation and combination of multiple Results.
+    /// </summary>
     [Benchmark]
     public Result BatchCreateResults()
     {

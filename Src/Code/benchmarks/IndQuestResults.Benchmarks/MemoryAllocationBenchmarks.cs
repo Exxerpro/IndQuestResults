@@ -38,9 +38,9 @@ public static class BenchmarkExtensions
 [EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class MemoryAllocationBenchmarks
 {
-    private Result<int>[] _resultArray;
-    private List<Result<int>> _resultList;
-    private Result<string> _complexResult;
+    private Result<int>[] _resultArray = null!;
+    private List<Result<int>> _resultList = null!;
+    private Result<string> _complexResult = null!;
     
     /// <summary>
     /// Gets or sets the size of Result collections used in parameterized benchmarks.
@@ -77,7 +77,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>A successful Result instance.</returns>
     [Benchmark]
-    public Result SuccessCreation_ZeroAllocation()
+    public static Result SuccessCreationZeroAllocation()
     {
         return Result.Success();
     }
@@ -88,7 +88,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>A successful Result&lt;int&gt; instance with value 42.</returns>
     [Benchmark]
-    public Result<int> SuccessWithValue_MinimalAllocation()
+    public static Result<int> SuccessWithValueMinimalAllocation()
     {
         return Result<int>.Success(42);
     }
@@ -122,7 +122,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>Sum of successful values from the Result array.</returns>
     [Benchmark]
-    public int ProcessResultArray_Allocations()
+    public int ProcessResultArrayAllocations()
     {
         var sum = 0;
         foreach (var result in _resultArray)
@@ -141,7 +141,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>List containing all successful values from the Result array.</returns>
     [Benchmark]
-    public List<int> ExtractSuccessValues_WithAllocations()
+    public List<int> ExtractSuccessValuesWithAllocations()
     {
         var values = new List<int>();
         foreach (var result in _resultArray)
@@ -160,7 +160,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>Count of successful Results without allocating a collection.</returns>
     [Benchmark]
-    public int ExtractSuccessValues_NoAllocations()
+    public int ExtractSuccessValuesNoAllocations()
     {
         var count = 0;
         foreach (var result in _resultArray)
@@ -179,7 +179,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>Result after a chain of string transformation operations.</returns>
     [Benchmark]
-    public Result<string> ChainOperations_Allocations()
+    public Result<string> ChainOperationsAllocations()
     {
         return _complexResult
             .Map(s => s.ToUpper())
@@ -194,7 +194,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>Concatenated string of aggregated error messages.</returns>
     [Benchmark]
-    public string ErrorAggregation_StringJoin()
+    public string ErrorAggregationStringJoin()
     {
         var failedResults = _resultArray.Where(r => r.IsFailure).Take(10);
         var errors = failedResults.SelectMany(r => r.Errors);
@@ -207,7 +207,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>Concatenated string of manually aggregated error messages.</returns>
     [Benchmark]
-    public string ErrorAggregation_Manual()
+    public string ErrorAggregationManual()
     {
         var errorList = new List<string>();
         var count = 0;
@@ -233,7 +233,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>Combined Result containing all errors from failed input Results.</returns>
     [Benchmark]
-    public Result CombineResults_SmallSet()
+    public Result CombineResultsSmallSet()
     {
         return _resultArray.Take(5).Aggregate(
             Result.Success(),
@@ -247,7 +247,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>Combined Result containing all errors from the large Result set.</returns>
     [Benchmark]
-    public Result CombineResults_LargeSet()
+    public Result CombineResultsLargeSet()
     {
         var results = _resultArray.Select(r => r.ToNonGeneric()).ToArray();
         return results[0].Combine(results.Skip(1).ToArray());
@@ -259,7 +259,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>Sum of values accessed without boxing overhead.</returns>
     [Benchmark]
-    public int BoxingAvoidance_Generic()
+    public int BoxingAvoidanceGeneric()
     {
         var sum = 0;
         foreach (var result in _resultArray)
@@ -278,7 +278,7 @@ public class MemoryAllocationBenchmarks
     /// </summary>
     /// <returns>Sum of values accessed through boxing/unboxing operations.</returns>
     [Benchmark]
-    public int BoxingScenario_Object()
+    public int BoxingScenarioObject()
     {
         var sum = 0;
         foreach (var result in _resultArray)

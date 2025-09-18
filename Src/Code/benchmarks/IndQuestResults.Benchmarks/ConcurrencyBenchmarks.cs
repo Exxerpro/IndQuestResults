@@ -21,9 +21,9 @@ public class ConcurrencyBenchmarks
     private const int ThreadCount = 8;
     private const int OperationsPerThread = 10000;
     
-    private Result _sharedSuccessResult;
-    private Result<int> _sharedSuccessResultWithValue;
-    private Result _sharedFailureResult;
+    private Result _sharedSuccessResult = null!;
+    private Result<int> _sharedSuccessResultWithValue = null!;
+    private Result _sharedFailureResult = null!;
     
     /// <summary>
     /// Initializes shared Result instances for concurrent access testing.
@@ -53,7 +53,7 @@ public class ConcurrencyBenchmarks
                     var result = i % 2 == 0 
                         ? Result.Success() 
                         : Result.WithFailure($"Error {i}");
-                    _ = result.IsSuccess;
+                    var isSuccess = result.IsSuccess;
                 }
             }))
             .ToArray();
@@ -74,9 +74,9 @@ public class ConcurrencyBenchmarks
             {
                 for (int i = 0; i < OperationsPerThread; i++)
                 {
-                    _ = _sharedSuccessResult.IsSuccess;
-                    _ = _sharedFailureResult.IsFailure;
-                    _ = _sharedFailureResult.Error;
+                    var isSuccess = _sharedSuccessResult.IsSuccess;
+                    var isFailure = _sharedFailureResult.IsFailure;
+                    var error = _sharedFailureResult.Error;
                 }
             }))
             .ToArray();
@@ -98,7 +98,7 @@ public class ConcurrencyBenchmarks
                 for (int i = 0; i < OperationsPerThread; i++)
                 {
                     var result = _sharedSuccessResult.Map(() => i * 2);
-                    _ = result.Value;
+                    if (result.IsSuccess) _ = result.Value;
                 }
             }))
             .ToArray();
@@ -121,7 +121,7 @@ public class ConcurrencyBenchmarks
                 {
                     var result = _sharedSuccessResultWithValue.Bind(value => 
                         Result<int>.Success(value + i));
-                    _ = result.Value;
+                    if (result.IsSuccess) _ = result.Value;
                 }
             }))
             .ToArray();
@@ -147,7 +147,7 @@ public class ConcurrencyBenchmarks
                 for (int i = 0; i < OperationsPerThread; i++)
                 {
                     var combined = results[0].Combine(results.Skip(1).ToArray());
-                    _ = combined.IsSuccess;
+                    var isSuccess = combined.IsSuccess;
                 }
             }))
             .ToArray();
@@ -168,11 +168,10 @@ public class ConcurrencyBenchmarks
             {
                 for (int i = 0; i < OperationsPerThread; i++)
                 {
-                    var value = _sharedSuccessResultWithValue.Match(
-                        onSuccess: v => v + i,
-                        onFailure: _ => -1
-                    );
-                    _ = value;
+                    var value = _sharedSuccessResultWithValue.IsSuccess 
+                        ? _sharedSuccessResultWithValue.Value + i 
+                        : -1;
+                    _ = value; // Use value to prevent optimization
                 }
             }))
             .ToArray();
@@ -227,7 +226,7 @@ public class ConcurrencyBenchmarks
                         .Map(x => x.ToString())
                         .Bind(x => Result<double>.Success(double.Parse(x)))
                         .Map(x => (int)x);
-                    _ = result.Value;
+                    if (result.IsSuccess) _ = result.Value;
                 }
             }))
             .ToArray();
@@ -250,10 +249,7 @@ public class ConcurrencyBenchmarks
             
         Parallel.ForEach(results, result =>
         {
-            _ = result.Match(
-                onSuccess: value => value * 2,
-                onFailure: errors => errors.Count()
-            );
+            var processedValue = result.IsSuccess ? result.Value * 2 : result.Errors.Count();
         });
     }
 
@@ -270,8 +266,8 @@ public class ConcurrencyBenchmarks
             {
                 for (int i = 0; i < OperationsPerThread; i++)
                 {
-                    _ = _sharedSuccessResult.ToString();
-                    _ = _sharedFailureResult.ToString();
+                    var str1 = _sharedSuccessResult.ToString();
+                    var str2 = _sharedFailureResult.ToString();
                 }
             }))
             .ToArray();

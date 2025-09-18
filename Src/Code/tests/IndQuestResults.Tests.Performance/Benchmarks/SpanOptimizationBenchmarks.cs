@@ -13,6 +13,9 @@ public static class SpanOptimizationBenchmarks
     private const int IterationCount = 100_000;
     private const int WarmupIterations = 1_000;
 
+    /// <summary>
+    /// Runs all Span optimization performance tests to validate allocation reduction claims.
+    /// </summary>
     public static void RunAll()
     {
         Console.WriteLine("=== Span Optimization Performance Tests ===");
