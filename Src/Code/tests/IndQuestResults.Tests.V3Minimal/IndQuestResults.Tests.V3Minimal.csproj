@@ -18,16 +18,7 @@
     <!-- Inherit from Directory.Build.props to avoid duplicates -->
   </ItemGroup>
 
-  <ItemGroup Label="Platform &amp; Coverage">
-    <PackageReference Include="Microsoft.Testing.Platform" />
-    <PackageReference Include="Microsoft.Testing.Platform.MSBuild" />
-    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
-    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
-  </ItemGroup>
+  <!-- Inherited Platform & Coverage from Directory.Build.props -->
 
-  <ItemGroup Label="Logging &amp; Utilities">
-    <PackageReference Include="Meziantou.Extensions.Logging.Xunit.v3" />
-    <PackageReference Include="Microsoft.Extensions.Logging" />
-    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
-  </ItemGroup>
+  <!-- Inherited Logging & Utilities from Directory.Build.props -->
 </Project>

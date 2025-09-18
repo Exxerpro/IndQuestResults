@@ -1,0 +1,190 @@
+name: 🐛 Bug Report
+description: Report a reproducible bug with complete details
+title: "[BUG]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠️ READ BEFORE SUBMITTING ⚠️
+        
+        **This issue will be IMMEDIATELY CLOSED if:**
+        - No minimal reproducible repository is provided
+        - Environment details are incomplete
+        - Issue is not reproducible
+        - Formatting requirements are not followed
+        
+        **All fields marked with * are MANDATORY**
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites ✅
+      description: Confirm you have completed these steps
+      options:
+        - label: I have searched existing issues and found no duplicates
+          required: true
+        - label: I have created a minimal reproducible repository
+          required: true
+        - label: I have verified this is a bug and not a usage question
+          required: true
+        - label: I have tested with the latest version of IndQuestResults
+          required: true
+
+  - type: input
+    id: reproduction-repo
+    attributes:
+      label: "* Minimal Reproducible Repository"
+      description: "MANDATORY: Public GitHub repository that demonstrates the bug"
+      placeholder: "https://github.com/username/indquest-bug-reproduction"
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: "* Bug Description"
+      description: "Clear, concise description of the bug"
+      placeholder: "Describe what is happening..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: "* Expected Behavior"
+      description: "What should happen instead?"
+      placeholder: "Describe the expected outcome..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: "* Actual Behavior"
+      description: "What actually happens? Include exact error messages, stack traces, performance metrics."
+      placeholder: "Include complete error messages, stack traces, performance data..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: "* Steps to Reproduce"
+      description: "Detailed steps to reproduce the issue"
+      placeholder: |
+        1. Create Result<User> with...
+        2. Call method X with parameters...
+        3. Observe error Y...
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+
+  - type: dropdown
+    id: dotnet-version
+    attributes:
+      label: "* .NET Version"
+      description: "Which .NET version are you using?"
+      options:
+        - ".NET 9.0"
+        - ".NET 8.0"
+        - ".NET 7.0"
+        - "Other (specify in details)"
+    validations:
+      required: true
+
+  - type: input
+    id: indquest-version
+    attributes:
+      label: "* IndQuestResults Version"
+      description: "Which version of IndQuestResults?"
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: "* Operating System"
+      description: "Which OS are you using?"
+      options:
+        - "Windows 11"
+        - "Windows 10"
+        - "macOS Ventura (13.x)"
+        - "macOS Monterey (12.x)"
+        - "Ubuntu 22.04"
+        - "Ubuntu 20.04"
+        - "Other Linux"
+        - "Other (specify in details)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: "* Severity Level"
+      description: "How severe is this bug?"
+      options:
+        - "Critical - Application crashes/data loss"
+        - "High - Core functionality broken"
+        - "Medium - Feature partially working"
+        - "Low - Minor issue or workaround available"
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment-details
+    attributes:
+      label: "* Environment Details"
+      description: "Complete environment information"
+      placeholder: |
+        - IDE: Visual Studio 2022 17.8.0
+        - Target Framework: net9.0
+        - Platform: x64
+        - Hardware: 16GB RAM, Intel i7
+        - Any relevant configuration...
+    validations:
+      required: true
+
+  - type: textarea
+    id: attempted-solutions
+    attributes:
+      label: "* Attempted Solutions"
+      description: "What have you already tried to solve this?"
+      placeholder: "List everything you've attempted..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: business-impact
+    attributes:
+      label: "Business Impact"
+      description: "How does this affect your application/business?"
+      placeholder: "Optional: Describe the impact..."
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional Context"
+      description: "Any other relevant information"
+      placeholder: "Screenshots, logs, related issues..."
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        
+        ## 📋 Submission Checklist
+        
+        Before submitting, ensure:
+        - ✅ Reproducible repository is public and accessible
+        - ✅ All mandatory fields are completed
+        - ✅ Issue title is descriptive and specific
+        - ✅ This is a bug report, not a usage question
+        
+        **Issues missing ANY required information will be closed immediately.**

@@ -1,0 +1,278 @@
+name: ⚡ Performance Issue
+description: Report performance regression or optimization opportunity
+title: "[PERFORMANCE]: "
+labels: ["performance", "needs-benchmarks"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠️ PERFORMANCE ISSUES REQUIRE EVIDENCE ⚠️
+        
+        **This issue will be IMMEDIATELY CLOSED if:**
+        - No reproducible benchmark repository is provided
+        - Performance measurements are missing or incomplete
+        - Environment details are insufficient
+        - No comparison with previous versions
+        
+        **Performance claims MUST be backed by reproducible data.**
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites ✅
+      description: Confirm you have completed these steps
+      options:
+        - label: I have created a reproducible benchmark demonstrating the issue
+          required: true
+        - label: I have measured performance across multiple runs
+          required: true
+        - label: I have compared with previous IndQuestResults versions
+          required: true
+        - label: I have profiled memory usage and allocations
+          required: true
+
+  - type: input
+    id: benchmark-repo
+    attributes:
+      label: "* Benchmark Repository"
+      description: "MANDATORY: Public repository with complete benchmarks"
+      placeholder: "https://github.com/username/indquest-performance-issue"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: "* Issue Type"
+      description: "What kind of performance issue is this?"
+      options:
+        - "Regression - Performance worse than previous version"
+        - "Memory leak - Growing memory usage over time"
+        - "High allocations - Excessive GC pressure"
+        - "Slow operation - Specific method too slow"
+        - "Scalability - Poor performance with large datasets"
+        - "Threading - Contention or synchronization issues"
+    validations:
+      required: true
+
+  - type: textarea
+    id: performance-data
+    attributes:
+      label: "* Performance Measurements"
+      description: "Detailed benchmark results with specific numbers"
+      placeholder: |
+        **Current Performance:**
+        - Operation: CreateUser with validation
+        - Time: 150μs (mean), 200μs (95th percentile)
+        - Memory: 2.4KB allocated per operation
+        - GC: Gen0 collections every 1000 operations
+        
+        **Expected/Previous Performance:**
+        - Time: 50μs (mean), 75μs (95th percentile)
+        - Memory: 800B allocated per operation
+        - GC: Gen0 collections every 5000 operations
+        
+        **Regression Factor:**
+        - 3x slower execution
+        - 3x more memory allocation
+        - 5x more frequent GC
+    validations:
+      required: true
+
+  - type: textarea
+    id: benchmark-results
+    attributes:
+      label: "* Benchmark Results"
+      description: "Complete BenchmarkDotNet results or equivalent data"
+      placeholder: |
+        ```
+        | Method           | Mean       | StdDev    | Allocated |
+        |----------------- |-----------:|----------:|----------:|
+        | CurrentVersion   | 150.2 μs   | 5.4 μs    | 2.4 KB    |
+        | PreviousVersion  | 52.1 μs    | 2.1 μs    | 832 B     |
+        | Baseline         | 48.9 μs    | 1.8 μs    | 768 B     |
+        ```
+        
+        **Environment:**
+        - BenchmarkDotNet version: 0.13.x
+        - Warmup: 10 iterations
+        - Measurement: 100 iterations
+        - Job: .NET 9.0, x64, RyuJIT
+    validations:
+      required: true
+
+  - type: textarea
+    id: profiling-data
+    attributes:
+      label: "* Profiling Analysis"
+      description: "Memory profiler results and CPU analysis"
+      placeholder: |
+        **Memory Profile (dotMemory/PerfView):**
+        - Largest allocations: string[] (45%), Dictionary (30%)
+        - Allocation hotspots: ValidateUser method line 42
+        - LOH allocations: None/List specific
+        
+        **CPU Profile:**
+        - Hottest methods: String.Join (25%), Dictionary.TryGetValue (15%)
+        - Blocking operations: None/List specific
+        - Thread contention: None/Detected at...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: indquest-version-current
+    attributes:
+      label: "* Current IndQuestResults Version"
+      description: "Version showing the performance issue"
+      options:
+        - "1.0.0"
+        - "0.9.x"
+        - "Development build"
+        - "Other (specify in description)"
+    validations:
+      required: true
+
+  - type: input
+    id: indquest-version-baseline
+    attributes:
+      label: "* Baseline Version"
+      description: "Last known good version (if regression) or target performance"
+      placeholder: "0.8.5 (last good version) or 'Target: 50μs mean'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: workload-description
+    attributes:
+      label: "* Workload Description"
+      description: "Detailed description of the performance test scenario"
+      placeholder: |
+        **Scenario:** High-throughput user validation in web API
+        
+        **Data Characteristics:**
+        - Input size: 10,000 users per batch
+        - User object: Name (string), Email (string), Roles (string[])
+        - Validation rules: NotNull, Email format, Role validation
+        
+        **Execution Pattern:**
+        - Sequential processing vs parallel
+        - Single-threaded vs multi-threaded (X threads)
+        - Memory pressure: Low/Medium/High
+        
+        **Expected Usage:**
+        - Production load: 1000 requests/second
+        - Peak load: 5000 requests/second
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment-details
+    attributes:
+      label: "* Environment Details"
+      description: "Complete hardware and software environment"
+      placeholder: |
+        **Hardware:**
+        - CPU: Intel Core i7-13700K / AMD Ryzen 9 7950X
+        - RAM: 32GB DDR4-3200
+        - Storage: NVMe SSD
+        - Platform: x64
+        
+        **Software:**
+        - OS: Windows 11 22H2 / Ubuntu 22.04
+        - .NET: 9.0.0
+        - Runtime: CoreCLR / NativeAOT
+        - GC: Server GC / Workstation GC
+        - DOTNET_* environment variables: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: "* Reproduction Steps"
+      description: "Exact steps to reproduce the performance issue"
+      placeholder: |
+        1. Clone benchmark repository: git clone ...
+        2. Restore packages: dotnet restore
+        3. Build release: dotnet build -c Release
+        4. Run benchmarks: dotnet run -c Release
+        5. Compare results with baseline data
+        6. Observe: 3x performance regression in ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact-analysis
+    attributes:
+      label: "* Business Impact"
+      description: "How does this affect real-world applications?"
+      placeholder: |
+        **Production Impact:**
+        - Response time increase: 50ms → 150ms (200% slower)
+        - Throughput reduction: 1000 RPS → 300 RPS
+        - Resource usage: 2x more CPU, 3x more memory
+        
+        **Cost Impact:**
+        - Infrastructure scaling: Need 3x more servers
+        - User experience: Timeout errors increase by 25%
+        - SLA violations: 99.9% → 95% availability
+    validations:
+      required: true
+
+  - type: textarea
+    id: investigation-attempts
+    attributes:
+      label: "* Investigation Attempts"
+      description: "What have you tried to identify the root cause?"
+      placeholder: |
+        **Profiling Attempts:**
+        - Tools used: dotMemory, BenchmarkDotNet, PerfView
+        - Suspected causes: ...
+        - Configuration changes tried: ...
+        
+        **Code Analysis:**
+        - Hot path identification: ...
+        - Allocation sources: ...
+        - Potential fixes considered: ...
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: "Proposed Solution"
+      description: "If you have ideas for fixing the performance issue"
+      placeholder: |
+        **Root Cause Hypothesis:**
+        - Suspected issue: ...
+        - Evidence supporting: ...
+        
+        **Proposed Fix:**
+        - Implementation approach: ...
+        - Expected improvement: ...
+        - Risk assessment: ...
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        
+        ## 📊 Performance Standards
+        
+        **IndQuestResults Performance Targets:**
+        - Success path operations: < 100ns allocation-free
+        - Complex validations: < 50μs with minimal allocations
+        - Large dataset processing: Linear scaling, O(n)
+        - Memory efficiency: 70% reduction vs traditional approaches
+        
+        **Investigation Priority:**
+        1. **Critical**: >2x performance regression
+        2. **High**: Memory leaks or excessive allocations
+        3. **Medium**: 20-100% performance degradation
+        4. **Low**: Minor optimization opportunities
+        
+        **Resolution Timeline:**
+        - Critical issues: 48-72 hours
+        - High priority: 1-2 weeks
+        - Medium priority: 2-4 weeks
+        - Low priority: Next major release

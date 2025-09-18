@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/exxerpro/IndQuestResults/discussions
+    about: Ask questions, share ideas, and discuss best practices
+
+  - name: 📚 Documentation
+    url: https://github.com/exxerpro/IndQuestResults/blob/main/README.md
+    about: Read the comprehensive documentation and usage examples
+
+  - name: 🎯 Examples & Samples
+    url: https://github.com/exxerpro/IndQuestResults/tree/main/Src/Code/samples
+    about: Explore practical examples and implementation patterns
+
+  - name: ⚠️ Before Opening Issues
+    url: https://github.com/exxerpro/IndQuestResults/blob/main/CONTRIBUTING.md
+    about: READ THIS FIRST - Contribution guidelines and issue requirements
