@@ -1,7 +1,3 @@
-using BenchmarkDotNet.Running;
-using System;
-using System.Linq;
-
 namespace IndQuestResults.Benchmarks;
 
 /// <summary>
@@ -35,35 +31,43 @@ public class Program
             Console.WriteLine("8. All Benchmarks");
             Console.WriteLine();
             Console.Write("Enter your choice (1-8): ");
-            
+
             var choice = Console.ReadLine();
-            
+
             switch (choice)
             {
                 case "1":
                     BenchmarkRunner.Run<ComparisonBenchmarks>();
                     break;
+
                 case "2":
                     BenchmarkRunner.Run<ConcurrencyBenchmarks>();
                     break;
+
                 case "3":
                     BenchmarkRunner.Run<ErrorFormattingBenchmarks>();
                     break;
+
                 case "4":
                     BenchmarkRunner.Run<FluentApiPerformanceBenchmarks>();
                     break;
+
                 case "5":
                     BenchmarkRunner.Run<ResultCreationBenchmarks>();
                     break;
+
                 case "6":
                     BenchmarkRunner.Run<SpanOptimizationBenchmarks>();
                     break;
+
                 case "7":
                     BenchmarkRunner.Run<MemoryAllocationBenchmarks>();
                     break;
+
                 case "8":
                     RunAllBenchmarks();
                     break;
+
                 default:
                     Console.WriteLine("Invalid choice. Running all benchmarks...");
                     RunAllBenchmarks();
@@ -74,33 +78,41 @@ public class Program
         {
             // Support command line arguments for CI/CD
             var benchmarkType = args[0].ToLower();
-            
+
             switch (benchmarkType)
             {
                 case "comparison":
                     BenchmarkRunner.Run<ComparisonBenchmarks>();
                     break;
+
                 case "concurrency":
                     BenchmarkRunner.Run<ConcurrencyBenchmarks>();
                     break;
+
                 case "errorformatting":
                     BenchmarkRunner.Run<ErrorFormattingBenchmarks>();
                     break;
+
                 case "fluentapi":
                     BenchmarkRunner.Run<FluentApiPerformanceBenchmarks>();
                     break;
+
                 case "creation":
                     BenchmarkRunner.Run<ResultCreationBenchmarks>();
                     break;
+
                 case "span":
                     BenchmarkRunner.Run<SpanOptimizationBenchmarks>();
                     break;
+
                 case "memory":
                     BenchmarkRunner.Run<MemoryAllocationBenchmarks>();
                     break;
+
                 case "all":
                     RunAllBenchmarks();
                     break;
+
                 default:
                     Console.WriteLine($"Unknown benchmark type: {benchmarkType}");
                     Console.WriteLine("Valid options: comparison, concurrency, errorformatting, fluentapi, creation, span, memory, all");
@@ -108,11 +120,11 @@ public class Program
                     break;
             }
         }
-        
+
         Console.WriteLine();
         Console.WriteLine("Benchmarks completed. Check the BenchmarkDotNet.Artifacts folder for detailed results.");
     }
-    
+
     private static void RunAllBenchmarks()
     {
         var benchmarkTypes = new[]
@@ -125,7 +137,7 @@ public class Program
             typeof(SpanOptimizationBenchmarks),
             typeof(MemoryAllocationBenchmarks)
         };
-        
+
         foreach (var benchmarkType in benchmarkTypes)
         {
             Console.WriteLine($"\nRunning {benchmarkType.Name}...");

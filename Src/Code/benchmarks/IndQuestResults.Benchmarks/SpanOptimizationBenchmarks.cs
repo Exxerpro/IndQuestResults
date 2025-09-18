@@ -1,11 +1,3 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
-using IndQuestResults.Operations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace IndQuestResults.Benchmarks;
 
 /// <summary>

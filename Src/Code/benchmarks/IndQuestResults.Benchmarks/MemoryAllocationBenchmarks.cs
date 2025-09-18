@@ -1,11 +1,3 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
-using BenchmarkDotNet.Diagnosers;
-using IndQuestResults.Operations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace IndQuestResults.Benchmarks;
 
 /// <summary>
@@ -41,7 +33,7 @@ public class MemoryAllocationBenchmarks
     private Result<int>[] _resultArray = null!;
     private List<Result<int>> _resultList = null!;
     private Result<string> _complexResult = null!;
-    
+
     /// <summary>
     /// Gets or sets the size of Result collections used in parameterized benchmarks.
     /// Tests memory behavior across different collection sizes to measure scaling characteristics.
@@ -58,16 +50,16 @@ public class MemoryAllocationBenchmarks
     {
         _resultArray = new Result<int>[CollectionSize];
         _resultList = new List<Result<int>>(CollectionSize);
-        
+
         for (int i = 0; i < CollectionSize; i++)
         {
-            var result = i % 10 == 0 
-                ? Result<int>.WithFailure($"Failed at {i}") 
+            var result = i % 10 == 0
+                ? Result<int>.WithFailure($"Failed at {i}")
                 : Result<int>.Success(i);
             _resultArray[i] = result;
             _resultList.Add(result);
         }
-        
+
         _complexResult = Result<string>.Success("Initial value");
     }
 
@@ -211,7 +203,7 @@ public class MemoryAllocationBenchmarks
     {
         var errorList = new List<string>();
         var count = 0;
-        
+
         foreach (var result in _resultArray)
         {
             if (result.IsFailure && count < 10)
@@ -223,7 +215,7 @@ public class MemoryAllocationBenchmarks
                 count++;
             }
         }
-        
+
         return string.Join(", ", errorList);
     }
 
@@ -301,7 +293,7 @@ public class MemoryAllocationBenchmarks
     public Result<int> RecoverWithAllocation()
     {
         return Result<int>.WithFailure("Initial failure")
-            .Recover(() => 
+            .Recover(() =>
             {
                 var items = Enumerable.Range(1, 10).ToList();
                 return Result<int>.Success(items.Sum());
@@ -328,7 +320,7 @@ public class MemoryAllocationBenchmarks
     public void TapWithClosure()
     {
         var capturedValue = 0;
-        
+
         foreach (var result in _resultArray.Take(10))
         {
             result.Tap(value => capturedValue += value); // Closure allocation

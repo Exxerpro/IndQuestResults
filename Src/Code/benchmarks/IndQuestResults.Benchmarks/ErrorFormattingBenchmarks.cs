@@ -1,10 +1,3 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
-using IndQuestResults.Operations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace IndQuestResults.Benchmarks;
 
 /// <summary>
@@ -43,7 +36,7 @@ public class ErrorFormattingBenchmarks
         _smallErrorSet = Enumerable.Range(1, 5).Select(i => $"Error message {i}").ToArray();
         _mediumErrorSet = Enumerable.Range(1, 16).Select(i => $"Medium length error message number {i} with additional context").ToArray();
         _largeErrorSet = Enumerable.Range(1, 100).Select(i => $"This is a much longer error message {i} that contains detailed information about what went wrong in the operation").ToArray();
-        
+
         // Setup error lists
         _smallErrorList = _smallErrorSet.ToList();
         _mediumErrorList = _mediumErrorSet.ToList();

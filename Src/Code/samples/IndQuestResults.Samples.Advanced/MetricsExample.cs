@@ -1,11 +1,3 @@
-using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using IndQuestResults;
-using IndQuestResults.Extensions.Performance;
-using Microsoft.Extensions.Logging;
-
 namespace IndQuestResults.Samples.Advanced;
 
 /// <summary>
@@ -15,7 +7,7 @@ namespace IndQuestResults.Samples.Advanced;
 public class MetricsExample
 {
     private readonly ILogger<MetricsExample> _logger;
-    
+
     public MetricsExample(ILogger<MetricsExample> logger)
     {
         _logger = logger;
@@ -28,10 +20,10 @@ public class MetricsExample
     {
         // Create a metrics processor that logs to your monitoring system
         var processor = new LoggingMetricsProcessor(logger);
-        
+
         // Create a non-blocking collector with a large buffer
         var collector = new ChannelMetricsCollector(processor, capacity: 10000);
-        
+
         // Set as global collector for all Result operations
         ResultMetrics.SetGlobalCollector(collector);
     }
@@ -43,24 +35,24 @@ public class MetricsExample
     {
         // Create a scope for this request
         var metrics = ResultMetrics.CreateScope("api.users");
-        
+
         // Validate input - with metrics
         var validationResult = await metrics.TimedAsync(
             () => ValidateUserIdAsync(userId),
             "validate_id",
             ct);
-            
+
         if (!validationResult.IsSuccess)
         {
             return Result<UserDto>.WithFailure(validationResult.Errors);
         }
 
-        // Load user - with metrics  
+        // Load user - with metrics
         var userResult = await metrics.TimedAsync(
             () => LoadUserFromDatabaseAsync(userId, ct),
             "load_user",
             ct);
-            
+
         if (!userResult.IsSuccess)
         {
             return Result<UserDto>.WithFailure(userResult.Errors);
@@ -71,7 +63,7 @@ public class MetricsExample
             () => CheckUserPermissionsAsync(userResult.Value!, ct),
             "check_permissions",
             ct);
-            
+
         if (!permissionsResult.IsSuccess)
         {
             return Result<UserDto>.WithFailure("Access denied");
@@ -124,7 +116,7 @@ public class MetricsExample
     {
         // For ultra-hot paths, you might skip metrics entirely
         // or use sampling (e.g., only measure 1% of calls)
-        
+
         if (ShouldSample()) // Only measure 1% of calls
         {
             return ResultMetrics.TimedWithMetrics(
@@ -148,8 +140,8 @@ public class MetricsExample
     private async Task<Result> ValidateUserIdAsync(int userId)
     {
         await Task.Delay(10); // Simulate validation
-        return userId > 0 
-            ? Result.Success() 
+        return userId > 0
+            ? Result.Success()
             : Result.WithFailure("Invalid user ID");
     }
 
@@ -167,18 +159,18 @@ public class MetricsExample
 
     private Result<UserDto> TransformToDto(User user)
     {
-        return Result<UserDto>.Success(new UserDto 
-        { 
-            Id = user.Id, 
-            Name = user.Name 
+        return Result<UserDto>.Success(new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name
         });
     }
 
     private async Task<Result> ValidateOrderAsync(Order order)
     {
         await Task.Delay(15); // Simulate validation
-        return order.Items.Count > 0 
-            ? Result.Success() 
+        return order.Items.Count > 0
+            ? Result.Success()
             : Result.WithFailure("Order has no items");
     }
 
@@ -198,13 +190,13 @@ public class MetricsExample
         {
             return Result<decimal>.WithFailure("Invalid quantity", 0m);
         }
-        
+
         var price = product.BasePrice * quantity;
         if (quantity >= 10)
         {
             price *= 0.9m; // 10% discount
         }
-        
+
         return Result<decimal>.Success(price);
     }
 }
@@ -216,17 +208,17 @@ public class MetricsExample
 public class LoggingMetricsProcessor : IMetricsProcessor
 {
     private readonly ILogger _logger;
-    
+
     public LoggingMetricsProcessor(ILogger logger)
     {
         _logger = logger;
     }
-    
+
     public Task ProcessAsync(MetricEntry metric, CancellationToken cancellationToken)
     {
         // In production, batch these and send to your metrics system
         // This example just logs them
-        
+
         if (metric.IsException)
         {
             _logger.LogWarning(
@@ -256,7 +248,7 @@ public class LoggingMetricsProcessor : IMetricsProcessor
                 metric.OperationName,
                 metric.ElapsedMilliseconds);
         }
-        
+
         return Task.CompletedTask;
     }
 }

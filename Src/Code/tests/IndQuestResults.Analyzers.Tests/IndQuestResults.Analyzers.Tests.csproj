@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    
+    <!-- Test-specific warning suppressions (CS1591 removed per request)
+         CA1707  : Identifiers should not contain underscores (common in test names)
+         NU1701  : Package restored using target framework fallback (acceptable for test-only transitive packages)
+         CS1570  : XML comment has badly formed XML or invalid chars (can appear inside embedded code samples used as test inputs)
+         CS1705  : Assembly uses a higher version than referenced (temporary analyzer/Test SDK binding differences during test harness runs)
+         CS0246  : Type or namespace not found (expected in negative analyzer test cases that intentionally reference missing symbols)
+         MSB3277 : Assembly version conflicts found (benign in test harness multi-target/transitive scenarios)
+    -->
+    <NoWarn>$(NoWarn);CA1707;NU1701;CS1570;CS1705;CS0246;MSB3277</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Analyzer Testing Framework (Test framework inherited from Directory.Build.props) -->
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit" />
+    <!-- Force Roslyn version via CPM to match analyzer assembly -->
+    <PackageReference Include="Microsoft.CodeAnalysis" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Reference the analyzer project -->
+    <ProjectReference Include="..\..\src\IndQuestResults.Analyzers\IndQuestResults.Analyzers.csproj" />
+    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
+  </ItemGroup>
+
+</Project>

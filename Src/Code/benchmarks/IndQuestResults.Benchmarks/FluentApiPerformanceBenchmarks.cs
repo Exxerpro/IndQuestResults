@@ -1,10 +1,3 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
-using IndQuestResults.Operations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace IndQuestResults.Benchmarks;
 
 /// <summary>
@@ -31,8 +24,8 @@ public class FluentApiPerformanceBenchmarks
         _startValue = Result<int>.Success(10);
         _baseResult = Result.Success();
         _resultCollection = Enumerable.Range(1, 100)
-            .Select(i => i % 10 == 0 
-                ? Result<int>.WithFailure($"Failed at {i}") 
+            .Select(i => i % 10 == 0
+                ? Result<int>.WithFailure($"Failed at {i}")
                 : Result<int>.Success(i))
             .ToList();
     }
@@ -110,11 +103,11 @@ public class FluentApiPerformanceBenchmarks
     public Result<int> ConditionalChain()
     {
         return _startValue
-            .Bind(x => x > 5 
-                ? Result<int>.Success(x * 2) 
+            .Bind(x => x > 5
+                ? Result<int>.Success(x * 2)
                 : Result<int>.WithFailure("Value too small"))
-            .Bind(x => x < 50 
-                ? Result<int>.Success(x + 10) 
+            .Bind(x => x < 50
+                ? Result<int>.Success(x + 10)
                 : Result<int>.WithFailure("Value too large"))
             .Map(x => x - 5);
     }
@@ -130,7 +123,7 @@ public class FluentApiPerformanceBenchmarks
         var chainedResult = _startValue
             .Map(x => x * 3)
             .Bind(x => Result<double>.Success(Math.Pow(x, 2)));
-            
+
         if (chainedResult.IsSuccess)
         {
             var result = $"Success: {chainedResult.Value:F2}";
@@ -159,8 +152,8 @@ public class FluentApiPerformanceBenchmarks
         return Result<int>.WithFailure("Initial error")
             .Recover(() => Result<int>.Success(5))
             .Map(x => x * 2)
-            .Bind(x => x > 20 
-                ? Result<int>.WithFailure("Too large after recovery") 
+            .Bind(x => x > 20
+                ? Result<int>.WithFailure("Too large after recovery")
                 : Result<int>.Success(x))
             .Recover(() => Result<int>.Success(15));
     }
@@ -176,7 +169,7 @@ public class FluentApiPerformanceBenchmarks
         var result1 = _baseResult.Ensure(() => true, "Check 1");
         var result2 = _baseResult.Ensure(() => false, "Check 2 failed");
         var result3 = _baseResult.Ensure(() => true, "Check 3");
-        
+
         return result1
             .Combine(result2, result3)
             .Tap(() => { /* Process combined result */ });
@@ -193,7 +186,7 @@ public class FluentApiPerformanceBenchmarks
         return _resultCollection
             .Where(r => r.IsSuccess)
             .Select(r => r.Map(x => x * 2))
-            .Aggregate(0, (sum, result) => 
+            .Aggregate(0, (sum, result) =>
                 result.IsSuccess ? sum + result.Value : sum);
     }
 
@@ -207,16 +200,16 @@ public class FluentApiPerformanceBenchmarks
     {
         var successfulValues = new List<int>();
         var errors = new List<string>();
-        
+
         foreach (var result in _resultCollection)
         {
             result
                 .OnSuccess(value => successfulValues.Add(value))
                 .OnFailure(errs => errors.AddRange(errs));
         }
-        
-        return errors.Any() 
-            ? Result<List<int>>.WithFailure(errors) 
+
+        return errors.Any()
+            ? Result<List<int>>.WithFailure(errors)
             : Result<List<int>>.Success(successfulValues);
     }
 
@@ -244,7 +237,7 @@ public class FluentApiPerformanceBenchmarks
     public Result<int> TapPerformance()
     {
         var sideEffectCount = 0;
-        
+
         return _startValue
             .Tap(x => sideEffectCount++)
             .Tap(x => sideEffectCount++)
@@ -279,13 +272,13 @@ public class FluentApiPerformanceBenchmarks
     public Result<int> ConditionalRecovery()
     {
         var attempt = 0;
-        
+
         return Result<int>.WithFailure("Initial failure")
-            .Recover(() => 
+            .Recover(() =>
             {
                 attempt++;
-                return attempt < 3 
-                    ? Result<int>.WithFailure($"Attempt {attempt} failed") 
+                return attempt < 3
+                    ? Result<int>.WithFailure($"Attempt {attempt} failed")
                     : Result<int>.Success(42);
             })
             .Map(x => x * 2);

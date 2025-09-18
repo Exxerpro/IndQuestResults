@@ -1,0 +1,13 @@
+global using System;
+global using System.Collections.Generic;
+global using System.Diagnostics;
+global using System.Linq;
+global using System.Text;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using BenchmarkDotNet.Attributes;
+global using BenchmarkDotNet.Diagnosers;
+global using BenchmarkDotNet.Jobs;
+global using BenchmarkDotNet.Running;
+global using IndQuestResults.Extensions.Performance;
+global using IndQuestResults.Operations;

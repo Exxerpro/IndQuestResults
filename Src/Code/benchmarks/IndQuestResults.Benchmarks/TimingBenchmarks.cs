@@ -1,10 +1,3 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
-using IndQuestResults.Extensions.Performance;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-
 namespace IndQuestResults.Benchmarks;
 
 /// <summary>
@@ -28,11 +21,11 @@ public class TimingBenchmarks
         var stopwatch = Stopwatch.StartNew();
         var result = CreateSuccessResult();
         stopwatch.Stop();
-        
+
         // Simulate using the result
         if (!result.IsSuccess)
             throw new InvalidOperationException("Unexpected failure");
-            
+
         return stopwatch.Elapsed;
     }
 
@@ -44,11 +37,11 @@ public class TimingBenchmarks
     public TimeSpan ResultTiming_Success()
     {
         var timedResult = ResultTiming.Timed(CreateSuccessResult);
-        
+
         // Simulate using the result
         if (!timedResult.IsSuccess)
             throw new InvalidOperationException("Unexpected failure");
-            
+
         return timedResult.Elapsed;
     }
 
@@ -62,10 +55,10 @@ public class TimingBenchmarks
         var stopwatch = Stopwatch.StartNew();
         var result = CreateSuccessResult();
         stopwatch.Stop();
-        
+
         // Simulate logging/monitoring callback
         ProcessTimingResult(result, stopwatch.Elapsed);
-        
+
         return result;
     }
 
@@ -91,10 +84,10 @@ public class TimingBenchmarks
         var stopwatch = Stopwatch.StartNew();
         var result = await CreateSuccessResultAsync();
         stopwatch.Stop();
-        
+
         if (!result.IsSuccess)
             throw new InvalidOperationException("Unexpected failure");
-            
+
         return stopwatch.Elapsed;
     }
 
@@ -106,10 +99,10 @@ public class TimingBenchmarks
     public async Task<TimeSpan> ResultTiming_Async()
     {
         var timedResult = await ResultTiming.TimedAsync(CreateSuccessResultAsync);
-        
+
         if (!timedResult.IsSuccess)
             throw new InvalidOperationException("Unexpected failure");
-            
+
         return timedResult.Elapsed;
     }
 
@@ -123,9 +116,9 @@ public class TimingBenchmarks
         var stopwatch = Stopwatch.StartNew();
         var result = await CreateSuccessResultAsync();
         stopwatch.Stop();
-        
+
         ProcessTimingResult(result, stopwatch.Elapsed);
-        
+
         return result;
     }
 
@@ -149,10 +142,10 @@ public class TimingBenchmarks
     public TimeSpan ResultTiming_Failure()
     {
         var timedResult = ResultTiming.Timed(CreateFailureResult);
-        
+
         if (timedResult.IsSuccess)
             throw new InvalidOperationException("Expected failure");
-            
+
         return timedResult.Elapsed;
     }
 
@@ -164,10 +157,10 @@ public class TimingBenchmarks
     public TimeSpan ResultTiming_Exception()
     {
         var timedResult = ResultTiming.Timed<int>(CreateExceptionResult);
-        
+
         if (timedResult.IsSuccess)
             throw new InvalidOperationException("Expected failure from exception");
-            
+
         return timedResult.Elapsed;
     }
 
@@ -179,17 +172,17 @@ public class TimingBenchmarks
     public long HighFrequency_ManualTiming()
     {
         long totalMicroseconds = 0;
-        
+
         for (int i = 0; i < 1000; i++)
         {
             var stopwatch = Stopwatch.StartNew();
             var result = CreateFastSuccessResult(i);
             stopwatch.Stop();
-            
+
             if (result.IsSuccess)
                 totalMicroseconds += (long)stopwatch.Elapsed.TotalMicroseconds;
         }
-        
+
         return totalMicroseconds;
     }
 
@@ -201,15 +194,15 @@ public class TimingBenchmarks
     public long HighFrequency_ResultTiming()
     {
         long totalMicroseconds = 0;
-        
+
         for (int i = 0; i < 1000; i++)
         {
             var timedResult = ResultTiming.Timed(() => CreateFastSuccessResult(i));
-            
+
             if (timedResult.IsSuccess)
                 totalMicroseconds += (long)timedResult.ElapsedMicroseconds;
         }
-        
+
         return totalMicroseconds;
     }
 

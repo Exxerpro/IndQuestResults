@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsPackable>true</IsPackable>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    
+    <!-- NuGet Package Metadata -->
+    <PackageId>IndQuestResults.Analyzers</PackageId>
+    <Description>Roslyn analyzers and code fixes for IndQuestResults library. Enforces best practices and patterns for Result&lt;T&gt; usage.</Description>
+    <PackageTags>analyzers;result;functional;indquestresults;roslyn</PackageTags>
+    
+    <!-- Analyzer-specific suppressions -->
+    <NoWarn>$(NoWarn);RS2008;CA2016;CA1822;IDE0300;IDE0078;IDE0046;IDE0045;CS1998;CS1570;IDE0011;IDE0007;CA1040;CA1852;CA1051;CA1062;IDE0058;IDE0060;IDE0063;IDE0022;IDE0028;IDE0300;IDE0078;IDE0290;CA1303;CA1308;RS1032;IDE0010;CS1503;CS1061;CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Roslyn Analyzer Dependencies -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Package the analyzers -->
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+
+</Project>

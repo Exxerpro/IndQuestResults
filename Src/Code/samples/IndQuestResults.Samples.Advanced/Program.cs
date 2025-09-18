@@ -1,7 +1,3 @@
-using IndQuestResults;
-using IndQuestResults.Extensions.Collections;
-using IndQuestResults.Operations;
-
 namespace IndQuestResults.Samples.Advanced;
 
 /// <summary>
