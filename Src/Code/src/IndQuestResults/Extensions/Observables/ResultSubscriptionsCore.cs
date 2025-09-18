@@ -193,11 +193,11 @@ internal class ResultSubject<T> : IResultSubject<T>
 {
     private readonly ConcurrentDictionary<int, IResultObserver<T>> _observers = new();
     private readonly Lock _lock = new();
-    private int _nextId = 0;
-    private bool _disposed = false;
+    private int _nextId;
+    private bool _disposed;
 
     public int SubscriberCount => _observers.Count;
-    public bool IsCompleted { get; private set; } = false;
+    public bool IsCompleted { get; private set; }
 
     public void OnNext(Result<T> result)
     {
@@ -413,7 +413,7 @@ internal class ResultObserver<T> : IResultObserver<T>
 internal class Subscription : IDisposable
 {
     private readonly Action _dispose;
-    private bool _disposed = false;
+    private bool _disposed;
 
     public Subscription(Action dispose)
     {
@@ -465,7 +465,7 @@ public interface ISubscriptionManager : IDisposable
 internal class SubscriptionManager : ISubscriptionManager
 {
     private readonly ConcurrentBag<IDisposable> _subscriptions = [];
-    private bool _disposed = false;
+    private bool _disposed;
 
     public int Count => _subscriptions.Count;
 

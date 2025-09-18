@@ -85,3 +85,40 @@ ENV/
 # pipenv, poetry
 Pipfile.lock
 poetry.lock
+
+####################
+# Repo-specific and tooling
+####################
+.serena/
+.cursor/
+**/StrykerOutput/
+**/BenchmarkDotNet.Artifacts/
+artifacts/
+coverage/
+coverage*.xml
+
+####################
+# OS / Editor junk
+####################
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+*.orig
+
+####################
+# Keep build scripts directory (do not ignore root build/)
+####################
+!build/
+!build/**
+
+####################
+# Release packaging: keep only final NuGet packages
+####################
+Release/**
+!Release/**/*.nupkg
+!Release/**/*.snupkg
+!Release/.gitkeep

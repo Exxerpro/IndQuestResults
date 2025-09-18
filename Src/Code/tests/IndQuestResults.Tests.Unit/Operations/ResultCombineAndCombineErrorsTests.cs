@@ -11,6 +11,38 @@ public class ResultCombineAndCombineErrorsTests
         combined.IsSuccess.ShouldBeTrue();
     }
 
+    private sealed class OneShotEnumerable : IEnumerable<string>
+    {
+        private bool _consumed;
+        private readonly string _value;
+        public OneShotEnumerable(string value) => _value = value;
+        public IEnumerator<string> GetEnumerator()
+        {
+            if (_consumed)
+            {
+                yield break;
+            }
+            _consumed = true;
+            yield return _value;
+        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+    [Fact]
+    public void CombineErrors_FallbackWithDepletedEnumerables_ReturnsNoErrorsFoundMessage()
+    {
+        // Arrange: primary empty to force evaluating secondary.Any(); secondary yields once then depletes
+        IEnumerable<string> primary = [];
+        IEnumerable<string> secondary = new OneShotEnumerable("S1");
+
+        // Act: First Any() on each will be true, but fallback AddRange gets zero items
+        var res = Result.CombineErrors(primary, secondary);
+
+        // Assert: Must choose NoErrorsFoundMessage when combined enumeration yields no items
+        res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldBe(ResultConstants.NoErrorsFoundMessage);
+    }
+
     [Fact]
     public void Combine_WithNoArguments_ReturnsThis()
     {
@@ -85,4 +117,3 @@ public class ResultCombineAndCombineErrorsTests
         s.ShouldEndWith(count == 1 ? "E1" : $"E{count}");
     }
 }
-

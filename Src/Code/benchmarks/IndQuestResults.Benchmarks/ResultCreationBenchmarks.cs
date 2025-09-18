@@ -237,7 +237,7 @@ public class ResultCreationBenchmarks
     [Benchmark]
     public Result BatchCreateResults()
     {
-        Result finalResult = Result.Success();
+        var finalResult = Result.Success();
 
         for (int i = 0; i < 10; i++)
         {

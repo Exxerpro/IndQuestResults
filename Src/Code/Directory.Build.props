@@ -18,51 +18,9 @@
     - CS1591: Missing XML comment for publicly visible type or member
       * This ensures all public APIs have documentation
 
-    SUPPRESSED WARNINGS (NoWarn):
-
-    Code Style (IDE Rules):
-    - IDE0055: Fix formatting
-      * Code formatting suggestions (whitespace, indentation, etc.)
-    - IDE0007: Use 'var' instead of explicit type
-      * Example: string name = "test" vs var name = "test"
-    - IDE0008: Use explicit type instead of 'var'
-      * Opposite of IDE0007 - conflicts in style preferences
-    - IDE0011: Add braces to 'if' statement
-      * Example: if (condition) return; vs if (condition) { return; }
-    - IDE0028: Collection initialization can be simplified
-      * Example: new List<string>() vs [] or new()
-    - IDE0032: Use auto property
-      * Example: private int _value; public int Value => _value; vs public int Value { get; }
-    - IDE0046: 'if' statement can be simplified
-      * Example: suggests ternary operators or return expressions
-    - IDE0060: Remove unused parameter
-      * Parameters that aren't used in method bodies
-    - IDE0130: Namespace does not match folder structure
-      * Example: File in Operations folder but namespace is IndQuestResults
-    - IDE0301: Collection initialization can be simplified
-      * Similar to IDE0028, newer C# collection syntax
-    - IDE0305: Collection initialization can be simplified
-      * Additional collection initialization simplifications
-    - IDE0300: Collection initialization can be simplified
-      * Newer C# collection syntax suggestions
-    - IDE0058: Expression value is never used
-      * Suggests using discard (_) for unused return values
-
     Naming (IDE Rules):
     - IDE1006: Naming rule violation: Missing prefix: '_'
       * Private fields should start with underscore according to style rules
-
-    Code Quality (CA Rules):
-    - CA1000: Do not declare static members on generic types
-      * Design rule for generic type static members
-    - CA1001: Type owns disposable fields but is not disposable
-      * Resource management warnings
-    - CA1305: Culture-specific formatting warnings
-      * Locale-dependent string operations
-    - CA1805: Member is explicitly initialized to its default value
-      * Example: private int _count = 0; (0 is default for int)
-    - CA1863: Cache a 'CompositeFormat' for repeated use in formatting
-      * Performance suggestion for string.Format operations
 
     ALLOWED AS WARNINGS (WarningsNotAsErrors):
     - NU1605: Package downgrade warnings in NuGet
@@ -87,9 +45,28 @@
     <!-- Suppress stylistic/perf suggestions to keep builds clean; behavior is enforced by tests/mutation -->
     <NoWarn>
       $(NoWarn);
-      IDE0005;IDE0007;IDE0008;IDE0055;IDE0058;IDE0060;IDE0305;IDE1006;CA1000;CA1001;CA1305;CA1805;
+      IDE0005;IDE0008;IDE0055;IDE0058;IDE0060;IDE0305;IDE1006;CA1000;CA1305;
     </NoWarn>
   </PropertyGroup>
+  <!-- SUPPRESSED WARNINGS (NoWarn):
+
+  Code Style (IDE Rules):
+  - IDE0055: Fix formatting
+  * Code formatting suggestions (whitespace, indentation, etc.)
+  - IDE0008: Use explicit type instead of 'var'
+  * Opposite of IDE0007 - conflicts in style preferences
+
+    * Additional collection initialization simplifications
+    - IDE0300: Collection initialization can be simplified*/ -
+    * Newer C# collection syntax suggestions
+    - IDE0058: Expression value is never used
+    * Suggests using discard (_) for unused return values
+ Code Quality (CA Rules):
+    - CA1000: Do not declare static members on generic types
+        * Resource management warnings
+    - CA1305: Culture-specific formatting warnings
+      * Locale-dependent string operations
+-->
 
   <PropertyGroup>
     <!-- Package Information -->

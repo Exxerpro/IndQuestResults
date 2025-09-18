@@ -155,14 +155,14 @@ public class SpanOptimizationBenchmarks
     [Benchmark]
     public Result MultipleSmallCombines()
     {
-        Result result = Result.Success();
-        
+        var result = Result.Success();
+
         for (int i = 0; i < 10; i++)
         {
             var errors = new[] { $"E{i}1", $"E{i}2" };
             result = result.Combine(Result.WithFailure(errors));
         }
-        
+
         return result;
     }
 
@@ -201,7 +201,7 @@ public class SpanOptimizationBenchmarks
     public int SpanVsStringBuilderThreshold()
     {
         var count = 0;
-        
+
         // Test different sizes to find optimal threshold
         for (int size = 1; size <= 32; size++)
         {
@@ -209,7 +209,7 @@ public class SpanOptimizationBenchmarks
             var result = Result.FormatErrorsString(errors, "Test");
             count += result.Length;
         }
-        
+
         return count;
     }
 
@@ -227,7 +227,7 @@ public class SpanOptimizationBenchmarks
             Result.WithFailure(_smallErrorArray),
             Result.Success()
         };
-        
+
         return results[0].Combine(results.Skip(1).ToArray());
     }
 
@@ -242,7 +242,7 @@ public class SpanOptimizationBenchmarks
     {
         var sb = new StringBuilder($"{prefix}: ");
         var isFirst = true;
-        
+
         foreach (var error in errors)
         {
             if (!isFirst)
@@ -253,7 +253,7 @@ public class SpanOptimizationBenchmarks
             sb.Append(error);
             isFirst = false;
         }
-        
+
         return sb.ToString();
     }
 }

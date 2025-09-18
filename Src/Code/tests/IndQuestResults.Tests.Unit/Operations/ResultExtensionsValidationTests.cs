@@ -13,6 +13,82 @@ public class ResultExtensionsValidationTests
         res.Error.ShouldContain("name");
     }
 
+    // FailForNullArguments<T>
+    [Fact]
+    public void FailForNullArguments_Generic_NullArray_ReturnsGuardMessage()
+    {
+        var res = ResultExtensions.FailForNullArguments<int>(null!);
+        res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
+        res.Error.ShouldContain("Parameter names cannot be null, empty, or contain empty values");
+    }
+
+    [Fact]
+    public void FailForNullArguments_Generic_EmptyArray_ReturnsGuardMessage()
+    {
+        var res = ResultExtensions.FailForNullArguments<int>([]);
+        res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
+        res.Error.ShouldContain("Parameter names cannot be null, empty, or contain empty values");
+    }
+
+    [Fact]
+    public void FailForNullArguments_Generic_ContainsEmpty_ReturnsGuardMessage()
+    {
+        var res = ResultExtensions.FailForNullArguments<int>("a", "");
+        res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
+        res.Error.ShouldContain("Parameter names cannot be null, empty, or contain empty values");
+    }
+
+    [Fact]
+    public void FailForNullArguments_Generic_ValidNames_ContainsAllNamesInMessage()
+    {
+        var res = ResultExtensions.FailForNullArguments<int>("a", "b");
+        res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
+        res.Error.ShouldContain("'a'");
+        res.Error.ShouldContain("'b'");
+    }
+
+    // FailForNullArguments (non-generic)
+    [Fact]
+    public void FailForNullArguments_NonGeneric_NullArray_ReturnsGuardMessage()
+    {
+        var res = ResultExtensions.FailForNullArguments(null!);
+        res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
+        res.Error.ShouldContain("Parameter names cannot be null, empty, or contain empty values");
+    }
+
+    [Fact]
+    public void FailForNullArguments_NonGeneric_EmptyArray_ReturnsGuardMessage()
+    {
+        var res = ResultExtensions.FailForNullArguments([]);
+        res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
+        res.Error.ShouldContain("Parameter names cannot be null, empty, or contain empty values");
+    }
+
+    [Fact]
+    public void FailForNullArguments_NonGeneric_ContainsEmpty_ReturnsGuardMessage()
+    {
+        var res = ResultExtensions.FailForNullArguments("x", "");
+        res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
+        res.Error.ShouldContain("Parameter names cannot be null, empty, or contain empty values");
+    }
+
+    [Fact]
+    public void FailForNullArguments_NonGeneric_ValidNames_ContainsAllNamesInMessage()
+    {
+        var res = ResultExtensions.FailForNullArguments("p", "q");
+        res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldNotBeNull();
+        res.Error.ShouldContain("'p'");
+        res.Error.ShouldContain("'q'");
+    }
+
     [Fact]
     public void EnsureNotNull_RefType_ValidValue_ReturnsSuccess()
     {
@@ -152,3 +228,4 @@ public class ResultExtensionsValidationTests
         res.Errors.First().ShouldContain("b");
     }
 }
+

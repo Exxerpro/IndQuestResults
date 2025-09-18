@@ -87,7 +87,7 @@ public static class MemoryOptimizations
                 return [];
             }
 
-            T[] result = new T[collection.Count];
+            var result = new T[collection.Count];
             collection.CopyTo(result, 0);
             return result;
         }
@@ -123,7 +123,7 @@ public static class MemoryOptimizations
         }
 
         int totalLength = validArrays.Sum(a => a.Length);
-        T[] result = new T[totalLength];
+        var result = new T[totalLength];
         int position = 0;
 
         foreach (T[] array in validArrays)
