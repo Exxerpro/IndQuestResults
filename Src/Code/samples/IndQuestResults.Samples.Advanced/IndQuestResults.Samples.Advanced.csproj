@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>IndQuestResults.Samples.Advanced</RootNamespace>
     <AssemblyName>IndQuestResults.Samples.Advanced</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
