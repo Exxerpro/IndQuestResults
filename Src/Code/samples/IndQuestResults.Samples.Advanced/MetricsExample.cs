@@ -43,14 +43,13 @@ public class MetricsExample
     /// <returns>A <see cref="Result{T}"/> containing the <see cref="UserDto"/> or errors.</returns>
     public async Task<Result<UserDto>> GetUserWithMetrics(int userId, CancellationToken ct)
     {
+        _logger.LogInformation("Getting user {UserId}", userId);
+        
         // Create a scope for this request
         var metrics = ResultMetrics.CreateScope("api.users");
 
-        // Validate input - with metrics
-        var validationResult = await metrics.TimedAsync<Result>(
-            async () => await ValidateUserIdAsync(userId),
-            "validate_id",
-            ct);
+        // Validate input
+        var validationResult = await ValidateUserIdAsync(userId);
 
         if (!validationResult.IsSuccess)
         {
@@ -58,7 +57,7 @@ public class MetricsExample
         }
 
         // Load user - with metrics
-        var userResult = await metrics.TimedAsync<Result<User>>(
+        var userResult = await metrics.TimedAsync<User>(
             async () => await LoadUserFromDatabaseAsync(userId, ct),
             "load_user",
             ct);
@@ -70,11 +69,8 @@ public class MetricsExample
 
         if (userResult.Value is not null)
         {
-            // Check permissions - with metrics
-            var permissionsResult = await metrics.TimedAsync<Result>(
-                () => CheckUserPermissionsAsync(userResult.Value!, ct),
-                "check_permissions",
-                ct);
+            // Check permissions  
+            var permissionsResult = await CheckUserPermissionsAsync(userResult.Value!, ct);
 
             if (!permissionsResult.IsSuccess)
             {

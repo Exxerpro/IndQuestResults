@@ -1,14 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsTestProject>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    
+    <!-- Microsoft Testing Platform - Disabled for Stryker compatibility -->
+    <!-- See: https://github.com/stryker-mutator/stryker-net/issues/3094 -->
+    <UseMicrosoftTestingPlatformRunner>false</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>false</TestingPlatformDotnetTestSupport>
+    <TestingPlatformServer>false</TestingPlatformServer>
+    <ImplicitUsings>disable</ImplicitUsings>
+    
+    <!-- Keep existing properties -->
     <RootNamespace>IndQuestResults.Tests.Unit</RootNamespace>
     <AssemblyName>IndQuestResults.Tests.Unit</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <AssemblyVersion>1.0.1.2</AssemblyVersion>
+    
+    <!-- Prevent Directory.Build.props from auto-adding xUnit v2 packages -->
+    <DisableImplicitXUnitPackages>true</DisableImplicitXUnitPackages>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -21,15 +35,29 @@
     <ThresholdStat>total</ThresholdStat>
   </PropertyGroup>
 
+  <!-- Remove xUnit v2 added by Directory.Build.props -->
   <ItemGroup>
-    <!-- Additional test utilities beyond Directory.Build.props -->
+    <PackageReference Remove="xunit" />
+  </ItemGroup>
+
+  <ItemGroup Label="Core Testing">
+    <!-- Add xUnit v3 packages -->
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.v3.core" />
+    <!-- Keep AutoFixture from original -->
     <PackageReference Include="AutoFixture" />
+  </ItemGroup>
+
+  <ItemGroup Label="Logging">
+    <PackageReference Include="Meziantou.Extensions.Logging.Xunit.v3" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
   </ItemGroup>
 
   <PropertyGroup>
     <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">true</UseLocalRefs>
     <!-- Suppress additional warnings for unit test projects -->
-    <NoWarn>$(NoWarn);CS1591;CS8625;CA1861;IDE0004;IDE0028;IDE0200;IDE0011;CA2201;IDE0300;IDE0350;CA1852;IDE0053;CA1829</NoWarn>
+    <!-- xUnit1051: Suppress CancellationToken analyzer rule until migration is complete -->
+    <NoWarn>$(NoWarn);CS1591;CS8625;CA1861;IDE0004;IDE0028;IDE0200;IDE0011;CA2201;IDE0300;IDE0350;CA1852;IDE0053;CA1829;xUnit1051</NoWarn>
   </PropertyGroup>
   <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
     <PackageReference Include="IndQuestResults" />

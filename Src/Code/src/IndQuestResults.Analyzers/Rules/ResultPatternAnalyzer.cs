@@ -67,6 +67,9 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true,
         description: "Maintain consistency by always returning Result<T> instead of mixing with nullable.");
 
+    /// <summary>
+    /// Gets the set of diagnostics that this analyzer can produce.
+    /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
         ImmutableArray.Create(
             UnhandledResultRule,
@@ -75,6 +78,10 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
             NullResultRule,
             MixingPatternsRule);
 
+    /// <summary>
+    /// Initializes analyzer actions and registers syntax node handlers.
+    /// </summary>
+    /// <param name="context">The analysis context used to register actions.</param>
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);

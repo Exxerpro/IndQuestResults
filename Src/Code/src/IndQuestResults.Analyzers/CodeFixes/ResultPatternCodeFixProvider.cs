@@ -19,6 +19,9 @@ namespace IndQuestResults.Analyzers.CodeFixes;
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ResultPatternCodeFixProvider)), Shared]
 public class ResultPatternCodeFixProvider : CodeFixProvider
 {
+    /// <summary>
+    /// Gets the diagnostic IDs that this code fix provider can address.
+    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds =>
         ImmutableArray.Create(
             ResultPatternAnalyzer.UnhandledResultId,
@@ -26,8 +29,15 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
             ResultPatternAnalyzer.ThrowingInResultId,
             ResultPatternAnalyzer.NullResultId);
 
+    /// <summary>
+    /// Gets the Fix All provider for this code fix provider.
+    /// </summary>
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
+    /// <summary>
+    /// Registers code fixes for the specified diagnostics.
+    /// </summary>
+    /// <param name="context">The code fix context.</param>
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
@@ -57,6 +67,9 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
         }
     }
 
+    /// <summary>
+    /// Registers code fixes for unhandled Result<T> diagnostics.
+    /// </summary>
     private async Task RegisterUnhandledResultFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
     {
         var invocation = root.FindNode(span).FirstAncestorOrSelf<InvocationExpressionSyntax>();
@@ -80,6 +93,9 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
             context.Diagnostics);
     }
 
+    /// <summary>
+    /// Registers code fixes for direct Value access diagnostics.
+    /// </summary>
     private async Task RegisterDirectValueAccessFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
     {
         var memberAccess = root.FindNode(span).FirstAncestorOrSelf<MemberAccessExpressionSyntax>();
@@ -95,6 +111,9 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
             context.Diagnostics);
     }
 
+    /// <summary>
+    /// Registers code fixes for throw statements inside Result-returning methods.
+    /// </summary>
     private async Task RegisterThrowingInResultFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
     {
         var throwStatement = root.FindNode(span).FirstAncestorOrSelf<ThrowStatementSyntax>();
@@ -110,6 +129,9 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
             context.Diagnostics);
     }
 
+    /// <summary>
+    /// Registers code fixes for null returns in Result-returning methods.
+    /// </summary>
     private async Task RegisterNullResultFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
     {
         var returnStatement = root.FindNode(span).FirstAncestorOrSelf<ReturnStatementSyntax>();
@@ -125,6 +147,9 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
             context.Diagnostics);
     }
 
+    /// <summary>
+    /// Adds an IsSuccess check around a Result-returning invocation.
+    /// </summary>
     private async Task<Document> AddSuccessCheck(Document document, InvocationExpressionSyntax invocation, CancellationToken cancellationToken)
     {
         var editor = await DocumentEditor.CreateAsync(document, cancellationToken).ConfigureAwait(false);
@@ -155,6 +180,9 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
         return editor.GetChangedDocument();
     }
 
+    /// <summary>
+    /// Replaces a bare invocation with a Match pattern call.
+    /// </summary>
     private async Task<Document> UseMatchPattern(Document document, InvocationExpressionSyntax invocation, CancellationToken cancellationToken)
     {
         var editor = await DocumentEditor.CreateAsync(document, cancellationToken).ConfigureAwait(false);
@@ -179,6 +207,9 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
         return editor.GetChangedDocument();
     }
 
+    /// <summary>
+    /// Wraps direct Value access in an IsSuccess guard.
+    /// </summary>
     private async Task<Document> WrapInSuccessCheck(Document document, MemberAccessExpressionSyntax memberAccess, CancellationToken cancellationToken)
     {
         var editor = await DocumentEditor.CreateAsync(document, cancellationToken).ConfigureAwait(false);
@@ -201,6 +232,9 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
         return editor.GetChangedDocument();
     }
 
+    /// <summary>
+    /// Replaces a throw statement with a corresponding Result.WithFailure return.
+    /// </summary>
     private async Task<Document> ReplaceThrowWithFailure(Document document, ThrowStatementSyntax throwStatement, CancellationToken cancellationToken)
     {
         var editor = await DocumentEditor.CreateAsync(document, cancellationToken).ConfigureAwait(false);
@@ -259,6 +293,9 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
         return editor.GetChangedDocument();
     }
 
+    /// <summary>
+    /// Replaces a null return expression with a Result.WithFailure return.
+    /// </summary>
     private async Task<Document> ReplaceNullWithFailure(Document document, ReturnStatementSyntax returnStatement, CancellationToken cancellationToken)
     {
         var editor = await DocumentEditor.CreateAsync(document, cancellationToken).ConfigureAwait(false);

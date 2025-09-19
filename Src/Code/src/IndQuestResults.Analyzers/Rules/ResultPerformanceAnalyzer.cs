@@ -54,6 +54,9 @@ public class ResultPerformanceAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true,
         description: "Boxing value types in hot paths can cause performance issues and GC pressure.");
 
+    /// <summary>
+    /// Gets the set of diagnostics that this analyzer can produce.
+    /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
         ImmutableArray.Create(
             MultipleValueAccessRule,
@@ -61,6 +64,10 @@ public class ResultPerformanceAnalyzer : DiagnosticAnalyzer
             RepeatedErrorFormattingRule,
             BoxingInHotPathRule);
 
+    /// <summary>
+    /// Initializes analyzer actions and registers syntax node handlers.
+    /// </summary>
+    /// <param name="context">The analysis context used to register actions.</param>
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);

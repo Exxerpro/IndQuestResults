@@ -116,6 +116,21 @@ dotnet test -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 - Use collections/fixtures to control parallelism with shared state
 - Prefer `Microsoft.Extensions.TimeProvider.Testing` for time-sensitive tests
 
+### Known Compatibility Issues (as of January 2025)
+
+#### Stryker.NET Compatibility
+- **Microsoft.Testing.Platform**: Not supported by Stryker (see https://github.com/stryker-mutator/stryker-net/issues/3094)
+- **Workaround**: Disable Microsoft Testing Platform for projects that need Stryker support:
+  ```xml
+  <UseMicrosoftTestingPlatformRunner>false</UseMicrosoftTestingPlatformRunner>
+  <TestingPlatformDotnetTestSupport>false</TestingPlatformDotnetTestSupport>
+  <TestingPlatformServer>false</TestingPlatformServer>
+  ```
+
+#### xUnit v3 Analyzer Rules
+- New analyzer rule `xUnit1051` requires using `TestContext.Current.CancellationToken`
+- **Workaround**: Suppress during migration: `<NoWarn>$(NoWarn);xUnit1051</NoWarn>`
+
 ### Checklist
 - [ ] TFM set to net8.0+ (e.g., net10.0)
 - [ ] csproj references: Microsoft.NET.Test.Sdk, xUnit v3 packages, coverlet.collector
