@@ -197,6 +197,74 @@ public class ResultGenericTests
     }
 
     /// <summary>
+    /// Ensures enhanced overload sets warnings and metadata (confidence, missing data ratio).
+    /// </summary>
+    [Fact]
+    public void WithWarnings_Enhanced_ShouldSetWarningsAndMetadata()
+    {
+        // Arrange
+        var warnings = new[] { "Low confidence due to partial input", "Heuristic used" };
+        const string value = "computed";
+        const double confidence = 0.8;
+        const double missing = 0.25;
+
+        // Act
+        var result = Result<string>.WithWarnings(warnings, value, confidence, missing);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.True(result.HasWarnings);
+        Assert.True(result.IsRecoverable);
+        Assert.Equal(value, result.Value);
+        // Warnings should be exposed
+        Assert.NotNull(result.Warnings);
+        Assert.Contains("Low confidence due to partial input", result.Warnings);
+        Assert.Contains("Heuristic used", result.Warnings);
+        // For backward-compat expectations in docs/tests
+        Assert.NotNull(result.Errors);
+        Assert.Contains("Low confidence due to partial input", result.Errors);
+        Assert.Contains("Heuristic used", result.Errors);
+        // Metadata
+        Assert.Equal(confidence, result.Confidence, 3);
+        Assert.Equal(missing, result.MissingDataRatio, 3);
+    }
+
+    /// <summary>
+    /// Ensures confidence and missing data ratio are clamped to [0,1].
+    /// </summary>
+    [Fact]
+    public void WithWarnings_Metadata_ShouldClampOutOfRangeValues()
+    {
+        // Arrange
+        var warnings = new[] { "Partial data" };
+
+        // Act
+        var resultLow = Result<string>.WithWarnings(warnings, "v", confidence: -0.5, missingDataRatio: -1.0);
+        var resultHigh = Result<string>.WithWarnings(warnings, "v", confidence: 2.5, missingDataRatio: 3.0);
+
+        // Assert
+        Assert.Equal(0.0, resultLow.Confidence, 3);
+        Assert.Equal(0.0, resultLow.MissingDataRatio, 3);
+        Assert.Equal(1.0, resultHigh.Confidence, 3);
+        Assert.Equal(1.0, resultHigh.MissingDataRatio, 3);
+    }
+
+    /// <summary>
+    /// Ensures defaults for metadata on standard successes.
+    /// </summary>
+    [Fact]
+    public void Success_DefaultMetadata_ShouldBeApplied()
+    {
+        // Act
+        var result = Result<string>.Success("ok");
+
+        // Assert
+        Assert.Equal(1.0, result.Confidence, 3);
+        Assert.Equal(0.0, result.MissingDataRatio, 3);
+        Assert.False(result.HasWarnings);
+    }
+
+    /// <summary>
     /// Verifies implicit conversion from value to <see cref="Result{T}"/> yields a successful result.
     /// </summary>
     [Fact]

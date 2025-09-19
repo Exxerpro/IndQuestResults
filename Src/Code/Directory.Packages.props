@@ -29,24 +29,26 @@
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="17.14.2" />
     <PackageVersion Include="Microsoft.Testing.Extensions.Telemetry" Version="1.8.2" />
     <PackageVersion Include="Microsoft.Testing.Extensions.VSTestBridge" Version="1.8.4" />
-    
+
     <!-- xUnit v3 -->
     <PackageVersion Include="xunit.v3" Version="3.0.1" />
     <PackageVersion Include="xunit.v3.core" Version="3.0.1" />
+    <!-- Use stable v3 adapter package name -->
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
-    
+
     <!-- Legacy xUnit v2 (for projects not yet migrated) -->
+
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.analyzers" Version="1.6.0" />
-    
+
     <!-- Coverage -->
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
-    
+
     <!-- Logging & helpers -->
     <PackageVersion Include="Meziantou.Extensions.Logging.Xunit.v3" Version="1.1.13" />
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.9.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.0" />
-    
+
     <!-- Assertions & mocking -->
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="Shouldly.Analyzers" Version="0.34.1" />

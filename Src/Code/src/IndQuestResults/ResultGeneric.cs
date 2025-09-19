@@ -43,6 +43,8 @@ public sealed class Result<T>
         HasErrors = errorArray.Length > 0;
         Errors = errorArray;
         Value = value;
+        Warnings = [];
+        Confidence = 1.0;
 
         // Validate state consistency after deserialization
         ValidateInternalState();
@@ -61,6 +63,8 @@ public sealed class Result<T>
         HasErrors = errorArray.Length > 0;
         Errors = errorArray;
         Value = value;
+        Warnings = [];
+        Confidence = 1.0;
     }
 
     /// <summary>
@@ -114,9 +118,27 @@ public sealed class Result<T>
     public bool HasErrors { get; private set; }
 
     /// <summary>
+    /// Gets the collection of warning messages associated with the result (non-fatal diagnostics).
+    /// Warnings do not change IsSuccess; they indicate reduced certainty or partial assumptions.
+    /// </summary>
+    public IEnumerable<string> Warnings { get; private set; } = [];
+
+    /// <summary>
     /// Gets a value indicating whether the result has warnings (i.e., is successful but contains diagnostic messages).
     /// </summary>
-    public bool HasWarnings => IsRecoverable && HasErrors;
+    public bool HasWarnings => IsRecoverable && (Warnings?.Any() == true);
+
+    /// <summary>
+    /// Gets a confidence score for successful results in the range [0.0, 1.0].
+    /// Values are clamped to [0,1]. Defaults to 1.0.
+    /// </summary>
+    public double Confidence { get; private set; } = 1.0;
+
+    /// <summary>
+    /// Gets a ratio indicating the portion of missing or imputed data used to compute the result. Range [0.0, 1.0].
+    /// Values are clamped to [0,1]. Defaults to 0.0.
+    /// </summary>
+    public double MissingDataRatio { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the result is recoverable (successful operations, even with warnings).
@@ -217,8 +239,34 @@ public sealed class Result<T>
         {
             warningArray = [ResultConstants.DefaultWarningMessage];
         }
-        return new Result<T>(true, warningArray, value);
+        
+        var result = new Result<T>(true, Array.Empty<string>(), value)
+        {
+            Warnings = warningArray
+        };
+        return result;
     }
+
+    /// <summary>
+    /// Creates a successful result with warnings and metadata that quantify result quality.
+    /// </summary>
+    /// <param name="warnings">Warning messages describing partial data or estimates.</param>
+    /// <param name="value">The associated value.</param>
+    /// <param name="confidence">Confidence score in [0,1]; values outside are clamped.</param>
+    /// <param name="missingDataRatio">Missing data ratio in [0,1]; values outside are clamped.</param>
+    /// <returns>A successful result with warnings and metadata.</returns>
+    public static Result<T> WithWarnings(IEnumerable<string> warnings, T value, double confidence, double missingDataRatio)
+    {
+        var result = WithWarnings(warnings, value);
+        result.Confidence = Clamp01(confidence);
+        result.MissingDataRatio = Clamp01(missingDataRatio);
+        return result;
+    }
+
+    /// <summary>
+    /// Clamps a double value into [0.0, 1.0].
+    /// </summary>
+    private static double Clamp01(double v) => v < 0.0 ? 0.0 : (v > 1.0 ? 1.0 : v);
 
     /// <summary>
     /// Creates a failed result with the specified errors and optional value (overload for string array).

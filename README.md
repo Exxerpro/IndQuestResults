@@ -50,6 +50,17 @@ var withWarnings = Result<string>.WithWarnings(
     new[] { "Performance warning" },
     "Operation completed"
 );
+
+// Warnings with quality metadata (confidence + missing data ratio)
+var withWarnsAndMeta = Result<string>.WithWarnings(
+    warnings: new[] { "Heuristic fill for missing fields", "Low signal period" },
+    value: "Computed",
+    confidence: 0.82,            // clamped to [0,1]
+    missingDataRatio: 0.25       // clamped to [0,1]
+);
+Console.WriteLine(withWarnsAndMeta.Confidence);        // 0.82
+Console.WriteLine(withWarnsAndMeta.MissingDataRatio);  // 0.25
+Console.WriteLine(string.Join(", ", withWarnsAndMeta.Warnings));
 ```
 
 ### Functional Programming

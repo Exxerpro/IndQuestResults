@@ -35,34 +35,29 @@
     <ThresholdStat>total</ThresholdStat>
   </PropertyGroup>
 
-  <!-- Remove xUnit v2 added by Directory.Build.props -->
-  <ItemGroup>
-    <PackageReference Remove="xunit" />
-  </ItemGroup>
+
 
   <ItemGroup Label="Core Testing">
     <!-- Add xUnit v3 packages -->
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.v3.core" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
     <!-- Keep AutoFixture from original -->
     <PackageReference Include="AutoFixture" />
   </ItemGroup>
 
   <ItemGroup Label="Logging">
     <PackageReference Include="Meziantou.Extensions.Logging.Xunit.v3" />
-    <PackageReference Include="Microsoft.Extensions.Logging" />
+  
   </ItemGroup>
 
   <PropertyGroup>
-    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">true</UseLocalRefs>
+    
     <!-- Suppress additional warnings for unit test projects -->
     <!-- xUnit1051: Suppress CancellationToken analyzer rule until migration is complete -->
     <NoWarn>$(NoWarn);CS1591;CS8625;CA1861;IDE0004;IDE0028;IDE0200;IDE0011;CA2201;IDE0300;IDE0350;CA1852;IDE0053;CA1829;xUnit1051</NoWarn>
   </PropertyGroup>
-  <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
-    <PackageReference Include="IndQuestResults" />
-    <PackageReference Include="IndQuestResults.Extensions.Collections" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />

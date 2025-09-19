@@ -111,7 +111,9 @@ Namespace: `IndQuestResults.Operations`
   - Create failure; null/empty `errors` replaced with `DefaultErrorMessage`.
 
 - `Result<T>.WithWarnings(IEnumerable<string> warnings, T value)`
-  - Success + diagnostics (warnings are stored in `Errors`).
+  - Success + diagnostics (warnings are exposed via `Warnings` and included in `Errors`).
+- `Result<T>.WithWarnings(IEnumerable<string> warnings, T value, double confidence, double missingDataRatio)`
+  - Success + diagnostics and quality metadata. `confidence` and `missingDataRatio` are clamped to [0,1].
 
 - Implicit conversions
   - `public static implicit operator Result<T>(T value)` => `Success(value)`.
@@ -183,6 +185,18 @@ var parsed = Result<string>.Success("42").Bind(s =>
         : Result<int>.WithFailure("Parse failed"));
 
 var ensured = Result<string>.Success("hello").Ensure(s => s.Length > 0, "empty"); // success
+
+// Warnings with metadata
+var withWarns = Result<string>.WithWarnings(
+    warnings: new[] { "Partial dataset", "Heuristic applied" },
+    value: "answer",
+    confidence: 0.8,
+    missingDataRatio: 0.25
+);
+// Inspect metadata
+_ = withWarns.Confidence;       // 0.8
+_ = withWarns.MissingDataRatio; // 0.25
+_ = withWarns.Warnings;         // enumerable of warning messages
 ```
 
 Nullability examples (from tests):

@@ -4,7 +4,7 @@
   <Import Project="$(MSBuildThisFileDirectory)Common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -46,7 +46,8 @@
     <!-- Suppress stylistic/perf suggestions to keep builds clean; behavior is enforced by tests/mutation -->
     <NoWarn>
       $(NoWarn);
-      IDE0005;IDE0008;IDE0055;IDE0058;IDE0060;IDE0305;IDE1006;CA1000;CA1305; CA1822</NoWarn>
+      IDE0005;IDE0008;IDE0055;IDE0058;IDE0060;IDE0305;IDE1006;CA1000;CA1305; CA1822
+    </NoWarn>
   </PropertyGroup>
   <!-- SUPPRESSED WARNINGS (NoWarn):
 
@@ -118,18 +119,11 @@
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Tests'))">
     <NoWarn>$(NoWarn);CS1587;CA1016</NoWarn>
   </PropertyGroup>
-  
+
   <!-- Sample Projects Only -->
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Samples'))">
     <NoWarn>$(NoWarn);CA1848;IDE0028</NoWarn>
   </PropertyGroup>
-  <ItemGroup Condition="$(MSBuildProjectName.Contains('Tests'))">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
-    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
-    <PackageReference Include="Shouldly" />
-    <PackageReference Include="coverlet.collector" PrivateAssets="all" />
-  </ItemGroup>
 
   <!-- Mutation Testing -->
   <ItemGroup Condition="$(MSBuildProjectName.Contains('Mutation'))">

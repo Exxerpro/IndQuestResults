@@ -35,6 +35,14 @@ namespace IndQuestResults;
 ///     new[] { "Performance warning" },
 ///     "Operation completed"
 /// );
+///
+/// // Warnings with quality metadata
+/// var withWarnsAndMeta = Result&lt;string&gt;.WithWarnings(
+///     warnings: new[] { "Heuristic fill for missing fields", "Low signal period" },
+///     value: "Computed",
+///     confidence: 0.82,
+///     missingDataRatio: 0.25
+/// );
 /// </code>
 ///
 /// <para><strong>Performance Benefits:</strong></para>
