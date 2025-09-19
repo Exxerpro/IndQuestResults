@@ -239,8 +239,10 @@ public sealed class Result<T>
         {
             warningArray = [ResultConstants.DefaultWarningMessage];
         }
-        
-        var result = new Result<T>(true, Array.Empty<string>(), value)
+
+        // Backward-compat expectation: expose warnings via Errors and set HasErrors
+        // so existing callers/tests that read Errors see the warnings too.
+        var result = new Result<T>(true, warningArray, value)
         {
             Warnings = warningArray
         };

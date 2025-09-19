@@ -11,15 +11,10 @@
   </PropertyGroup>
 
   <!-- Toggle between local project references and NuGet package consumption -->
-  <PropertyGroup>
-    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">true</UseLocalRefs>
-  </PropertyGroup>
 
-  <ItemGroup Condition="'$(UseLocalRefs)' == 'true'">
+
+  <ItemGroup >
     <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(UseLocalRefs)' != 'true'">
-    <PackageReference Include="IndQuestResults" />
   </ItemGroup>
 
   <ItemGroup>

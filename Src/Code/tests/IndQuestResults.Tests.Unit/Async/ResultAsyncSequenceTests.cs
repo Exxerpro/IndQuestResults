@@ -1,0 +1,56 @@
+using IndQuestResults.Async;
+
+namespace IndQuestResults.Tests.Unit.Async;
+
+public class ResultAsyncSequenceTests
+{
+    [Fact]
+    public async Task SequenceAsync_AllSuccess_ReturnsAll()
+    {
+        Task<Result<int>>[] tasks =
+        [
+            Task.FromResult(Result<int>.Success(1)),
+            Task.FromResult(Result<int>.Success(2)),
+            Task.FromResult(Result<int>.Success(3)),
+        ];
+
+        var res = await ResultAsync.SequenceAsync(tasks);
+        res.IsSuccess.ShouldBeTrue();
+        res.Value!.ShouldBe([1, 2, 3]);
+    }
+
+    [Fact]
+    public async Task SequenceAsync_WithFailure_AggregatesErrors()
+    {
+        Task<Result<int>>[] tasks =
+        [
+            Task.FromResult(Result<int>.Success(1)),
+            Task.FromResult(Result<int>.WithFailure("e1")),
+            Task.FromResult(Result<int>.WithFailure("e2")),
+        ];
+
+        var res = await ResultAsync.SequenceAsync(tasks);
+        res.IsFailure.ShouldBeTrue();
+        res.Errors.ShouldContain("e1");
+        res.Errors.ShouldContain("e2");
+    }
+
+    [Fact]
+    public async Task SequenceAsync_Empty_ReturnsEmptySuccess()
+    {
+        var res = await ResultAsync.SequenceAsync(Array.Empty<Task<Result<int>>>());
+        res.IsSuccess.ShouldBeTrue();
+        res.Value!.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task SequenceAsync_PreCancelled_ReturnsCancelled()
+    {
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+        Task<Result<int>>[] tasks = [Task.FromResult(Result<int>.Success(1))];
+        var res = await ResultAsync.SequenceAsync(tasks, cts.Token);
+        res.IsFailure.ShouldBeTrue();
+        res.Error.ShouldBe(ResultErrors.OperationCancelled);
+    }
+}

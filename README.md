@@ -4,8 +4,8 @@
 [![Mutation Score](https://img.shields.io/badge/mutation%20score-85%25-brightgreen)](#)
 [![Coverage](https://img.shields.io/badge/coverage-74.5%25-green)](#)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#)
-[![.NET Version](https://img.shields.io/badge/.NET-9.0+-blue)](#)
-[![NuGet](https://img.shields.io/badge/NuGet-v1.0.1-blue)](#release-notes)
+[![.NET Version](https://img.shields.io/badge/.NET-10.0+-blue)](#)
+[![NuGet](https://img.shields.io/badge/NuGet-v1.0.4-blue)](#release-notes)
 [![Contributors](https://img.shields.io/badge/contributors-welcome-brightgreen)](#contributing)
 [![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-enforced-blue)](#code-of-conduct)
 
@@ -80,7 +80,7 @@ return await _dataService
 
 ## 📚 Package Information
 
-- **Target Framework**: .NET 9.0+
+- **Target Framework**: .NET 10.0+
 - **Dependencies**: None (zero external dependencies)
 - **Package ID**: IndQuestResults
 - **License**: MIT
@@ -89,8 +89,8 @@ return await _dataService
 - **Quality**: 85%+ mutation testing score
 
 ### Release Notes & Download
-- Recommended: `Release/IndQuestResults.1.0.1.nupkg`
-- Previous (kept temporarily for consumers): `Release/IndQuestResults.1.0.0.nupkg`
+- Recommended: `Release/IndQuestResults.1.0.4.nupkg`
+- Previous: `Release/IndQuestResults.1.0.3.nupkg`, `Release/IndQuestResults.1.0.2.nupkg`, `Release/IndQuestResults.1.0.1.nupkg`
 - See [CHANGELOG.md](CHANGELOG.md) for details
 
 ## 🤝 Contributing

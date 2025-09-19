@@ -10,15 +10,6 @@
     <!-- No production dependencies for core library - maintaining zero dependencies -->
   </ItemGroup>
 
-  <!-- Internal Packages (local dev consumption via local feed) -->
-  <ItemGroup>
-    <PackageVersion Include="IndQuestResults" Version="1.0.0" />
-    <PackageVersion Include="IndQuestResults.Extensions.Collections" Version="1.0.0" />
-    <PackageVersion Include="IndQuestResults.Extensions.Functional" Version="$(VersionPrefix)" />
-    <PackageVersion Include="IndQuestResults.Extensions.Async" Version="$(VersionPrefix)" />
-    <PackageVersion Include="IndQuestResults.Extensions.Observables" Version="$(VersionPrefix)" />
-  </ItemGroup>
-
   <!-- Test Dependencies -->
   <ItemGroup>
     <!-- Test platform and SDK -->
@@ -35,11 +26,10 @@
     <PackageVersion Include="xunit.v3.core" Version="3.0.1" />
     <!-- Use stable v3 adapter package name -->
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageVersion Include="xunit.v3.runner.msbuild" Version="3.0.1" />
+    <PackageVersion Include="xunit.v3.runner.inproc.console" Version="3.0.1" />
 
-    <!-- Legacy xUnit v2 (for projects not yet migrated) -->
-
-    <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.analyzers" Version="1.6.0" />
+    <!-- Legacy xUnit v2 (removed - replaced with v3) -->
 
     <!-- Coverage -->
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
@@ -48,13 +38,18 @@
     <PackageVersion Include="Meziantou.Extensions.Logging.Xunit.v3" Version="1.1.13" />
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.9.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+    <PackageVersion Include="Serilog" Version="4.3.1-dev-02373" />
+    <PackageVersion Include="Serilog.Enrichers.Demystifier" Version="1.0.3" />
 
     <!-- Assertions & mocking -->
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="Shouldly.Analyzers" Version="0.34.1" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Moq" Version="4.20.69" />
     <PackageVersion Include="AutoFixture" Version="4.18.1" />
     <PackageVersion Include="AutoFixture.Xunit2" Version="4.18.1" />
+
   </ItemGroup>
 
   <!-- Security vulnerability fixes -->
@@ -87,6 +82,15 @@
   <ItemGroup>
     <PackageVersion Include="Verify.Xunit" Version="22.11.4" />
     <PackageVersion Include="DiffEngine" Version="11.3.0" />
+    <PackageVersion Include="EmptyFiles" Version="4.0.1" />
+    <PackageVersion Include="PublicApiGenerator" Version="11.1.0" />
+  </ItemGroup>
+
+  <!-- Performance & Integration Testing -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Testing" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="9.0.9" />
+    <PackageVersion Include="NBomber" Version="6.0.6" />
   </ItemGroup>
 
   <!-- Analyzers (use PackageReference instead of GlobalPackageReference) -->
@@ -98,10 +102,13 @@
 
   <!-- Analyzer Development Dependencies -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.8.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" Version="1.1.1" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit" Version="1.1.1" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.14.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" Version="1.1.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit" Version="1.1.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Testing.Verifiers.XUnit" Version="1.1.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Testing.Verifiers.NUnit" Version="1.1.2" />
   </ItemGroup>
 </Project>

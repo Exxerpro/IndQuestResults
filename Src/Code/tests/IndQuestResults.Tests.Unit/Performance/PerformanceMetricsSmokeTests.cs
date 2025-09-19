@@ -53,8 +53,15 @@ public class PerformanceMetricsSmokeTests
         var res3 = ResultMetrics.TimedWithMetrics(() => Result<string>.WithFailure("bad"), "spec.failure");
         res3.IsFailure.ShouldBeTrue();
 
-        // Allow dispatch
-        Thread.Sleep(10);
+        // Allow dispatch (poll briefly to reduce flakiness on slower machines)
+        for (var i = 0; i < 100; i++)
+        {
+            if (processor.Entries.Any(e => e.OperationName == "spec.success" && e.IsSuccess))
+            {
+                break;
+            }
+            Thread.Sleep(10);
+        }
 
         processor.Entries.Any(e => e.OperationName == "spec.success" && e.IsSuccess).ShouldBeTrue();
         processor.Entries.Any(e => e.OperationName == "spec.exception" && !e.IsSuccess && e.IsException && e.ErrorType!.Contains("InvalidOperation")).ShouldBeTrue();

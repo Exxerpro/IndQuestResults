@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "targets": {
+    "net10.0/win-x64": {
+      "coverlet.console/6.0.0": {
+        "type": "package",
+        "tools": {
+          "tools/net6.0/any/DotnetToolSettings.xml": {},
+          "tools/net6.0/any/McMaster.Extensions.CommandLineUtils.dll": {},
+          "tools/net6.0/any/Microsoft.DotNet.PlatformAbstractions.dll": {},
+          "tools/net6.0/any/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {},
+          "tools/net6.0/any/Microsoft.Extensions.DependencyInjection.dll": {},
+          "tools/net6.0/any/Microsoft.Extensions.DependencyModel.dll": {},
+          "tools/net6.0/any/Microsoft.Extensions.FileSystemGlobbing.dll": {},
+          "tools/net6.0/any/Mono.Cecil.Mdb.dll": {},
+          "tools/net6.0/any/Mono.Cecil.Pdb.dll": {},
+          "tools/net6.0/any/Mono.Cecil.Rocks.dll": {},
+          "tools/net6.0/any/Mono.Cecil.dll": {},
+          "tools/net6.0/any/Newtonsoft.Json.dll": {},
+          "tools/net6.0/any/coverlet.console.deps.json": {},
+          "tools/net6.0/any/coverlet.console.dll": {},
+          "tools/net6.0/any/coverlet.console.pdb": {},
+          "tools/net6.0/any/coverlet.console.runtimeconfig.json": {},
+          "tools/net6.0/any/coverlet.core.dll": {},
+          "tools/net6.0/any/coverlet.core.pdb": {}
+        }
+      }
+    }
+  },
+  "libraries": {},
+  "projectFileDependencyGroups": {}
+}

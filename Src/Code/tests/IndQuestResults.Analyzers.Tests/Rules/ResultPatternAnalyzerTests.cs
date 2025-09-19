@@ -1,8 +1,8 @@
-using Microsoft.CodeAnalysis.CSharp.Testing;
-using Microsoft.CodeAnalysis.Testing;
 using IndQuestResults.Analyzers.Rules;
+using IndQuestResults.Analyzers.Tests.Helpers;
+using Microsoft.CodeAnalysis;
 using Xunit;
-using IndQuestResults.Operations;
+using static IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper;
 
 namespace IndQuestResults.Analyzers.Tests.Rules;
 
@@ -31,11 +31,9 @@ public class TestClass
     private Result<int> GetResult() => Result<int>.Success(42);
 }";
 
-        var expected = new DiagnosticResult(ResultPatternAnalyzer.UnhandledResultId, Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
-            .WithSpan(8, 9, 8, 20)
-            .WithArguments("GetResult");
+        var expected = Diagnostic(ResultPatternAnalyzer.UnhandledResultId, DiagnosticSeverity.Warning, 8, 9);
 
-        await VerifyAnalyzerAsync(testCode, expected);
+        await VerifyAnalyzerAsync<ResultPatternAnalyzer>(testCode, expected);
     }
 
     /// <summary>
@@ -59,10 +57,9 @@ public class TestClass
     private Result<int> GetResult() => Result<int>.Success(42);
 }";
 
-        var expected = new DiagnosticResult(ResultPatternAnalyzer.DirectValueAccessId, Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
-            .WithSpan(9, 21, 9, 33);
+        var expected = Diagnostic(ResultPatternAnalyzer.DirectValueAccessId, DiagnosticSeverity.Error, 9, 21);
 
-        await VerifyAnalyzerAsync(testCode, expected);
+        await VerifyAnalyzerAsync<ResultPatternAnalyzer>(testCode, expected);
     }
 
     /// <summary>
@@ -89,7 +86,7 @@ public class TestClass
     private Result<int> GetResult() => Result<int>.Success(42);
 }";
 
-        await VerifyAnalyzerAsync(testCode);
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
     }
 
     /// <summary>
@@ -111,10 +108,9 @@ public class TestClass
     }
 }";
 
-        var expected = new DiagnosticResult(ResultPatternAnalyzer.ThrowingInResultId, Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
-            .WithSpan(9, 9, 9, 58);
+        var expected = Diagnostic(ResultPatternAnalyzer.ThrowingInResultId, DiagnosticSeverity.Warning, 9, 9);
 
-        await VerifyAnalyzerAsync(testCode, expected);
+        await VerifyAnalyzerAsync<ResultPatternAnalyzer>(testCode, expected);
     }
 
     /// <summary>
@@ -143,7 +139,7 @@ public class TestClass
     }
 }";
 
-        await VerifyAnalyzerAsync(testCode);
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
     }
 
     /// <summary>
@@ -164,10 +160,9 @@ public class TestClass
     }
 }";
 
-        var expected = new DiagnosticResult(ResultPatternAnalyzer.NullResultId, Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
-            .WithSpan(8, 16, 8, 20);
+        var expected = Diagnostic(ResultPatternAnalyzer.NullResultId, DiagnosticSeverity.Error, 8, 16);
 
-        await VerifyAnalyzerAsync(testCode, expected);
+        await VerifyAnalyzerAsync<ResultPatternAnalyzer>(testCode, expected);
     }
 
     /// <summary>
@@ -188,10 +183,9 @@ public class TestClass
     }
 }";
 
-        var expected = new DiagnosticResult(ResultPatternAnalyzer.NullResultId, Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
-            .WithSpan(8, 16, 8, 23);
+        var expected = Diagnostic(ResultPatternAnalyzer.NullResultId, DiagnosticSeverity.Error, 8, 16);
 
-        await VerifyAnalyzerAsync(testCode, expected);
+        await VerifyAnalyzerAsync<ResultPatternAnalyzer>(testCode, expected);
     }
 
     /// <summary>
@@ -218,7 +212,7 @@ public class TestClass
     private void HandleErrors(System.Collections.Generic.IEnumerable<string> errors) { }
 }";
 
-        await VerifyAnalyzerAsync(testCode);
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
     }
 
     /// <summary>
@@ -242,7 +236,7 @@ public class TestClass
     private Result<int> GetResult() => Result<int>.Success(42);
 }";
 
-        await VerifyAnalyzerAsync(testCode);
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
     }
 
     /// <summary>
@@ -267,7 +261,7 @@ public class TestClass
     private Result<string> ProcessValue(int value) => Result<string>.Success(value.ToString());
 }";
 
-        await VerifyAnalyzerAsync(testCode);
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
     }
 
     /// <summary>
@@ -296,7 +290,7 @@ public class TestClass
     private int GetNonResult() => 42;
 }";
 
-        await VerifyAnalyzerAsync(testCode);
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
     }
 
     /// <summary>
@@ -326,17 +320,13 @@ public class TestClass
 
         var expected = new[]
         {
-            new DiagnosticResult(ResultPatternAnalyzer.UnhandledResultId, Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
-                .WithSpan(9, 9, 9, 20),
-            new DiagnosticResult(ResultPatternAnalyzer.DirectValueAccessId, Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
-                .WithSpan(11, 21, 11, 33),
-            new DiagnosticResult(ResultPatternAnalyzer.ThrowingInResultId, Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
-                .WithSpan(12, 9, 12, 51),
-            new DiagnosticResult(ResultPatternAnalyzer.NullResultId, Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
-                .WithSpan(13, 16, 13, 20)
+            Diagnostic(ResultPatternAnalyzer.UnhandledResultId, DiagnosticSeverity.Warning, 9, 9),
+            Diagnostic(ResultPatternAnalyzer.DirectValueAccessId, DiagnosticSeverity.Error, 11, 21),
+            Diagnostic(ResultPatternAnalyzer.ThrowingInResultId, DiagnosticSeverity.Warning, 12, 9),
+            Diagnostic(ResultPatternAnalyzer.NullResultId, DiagnosticSeverity.Error, 13, 16)
         };
 
-        await VerifyAnalyzerAsync(testCode, expected);
+        await VerifyAnalyzerAsync<ResultPatternAnalyzer>(testCode, expected);
     }
 
     /// <summary>
@@ -365,7 +355,7 @@ public class TestClass
     private void ProcessString(string value) { }
 }";
 
-        await VerifyAnalyzerAsync(testCode);
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
     }
 
     /// <summary>
@@ -393,20 +383,6 @@ public class TestClass
     private void ProcessSuccess() { }
 }";
 
-        await VerifyAnalyzerAsync(testCode);
-    }
-
-    private static async Task VerifyAnalyzerAsync(string source, params DiagnosticResult[] expected)
-    {
-        var test = new CSharpAnalyzerTest<ResultPatternAnalyzer, DefaultVerifier>
-        {
-            TestCode = source,
-        };
-
-        // Add reference to IndQuestResults
-        test.TestState.AdditionalReferences.Add(typeof(Result).Assembly);
-
-        test.ExpectedDiagnostics.AddRange(expected);
-        await test.RunAsync();
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
     }
 }

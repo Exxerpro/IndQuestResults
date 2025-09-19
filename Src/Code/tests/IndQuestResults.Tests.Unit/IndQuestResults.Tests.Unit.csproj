@@ -6,25 +6,43 @@
     <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    
+    <IsTestProject>true</IsTestProject>
+    <LangVersion>latest</LangVersion>
+    <!-- Warnings as Errors Configuration -->
+    <!-- Warnings as Errors Configuration -->
+    <WarningsAsErrors />
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Language Features -->
     <!-- Microsoft Testing Platform - Disabled for Stryker compatibility -->
     <!-- See: https://github.com/stryker-mutator/stryker-net/issues/3094 -->
-    <UseMicrosoftTestingPlatformRunner>false</UseMicrosoftTestingPlatformRunner>
-    <TestingPlatformDotnetTestSupport>false</TestingPlatformDotnetTestSupport>
-    <TestingPlatformServer>false</TestingPlatformServer>
-    <ImplicitUsings>disable</ImplicitUsings>
+  
     
     <!-- Keep existing properties -->
     <RootNamespace>IndQuestResults.Tests.Unit</RootNamespace>
     <AssemblyName>IndQuestResults.Tests.Unit</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    
     <AssemblyVersion>1.0.1.2</AssemblyVersion>
     
     <!-- Prevent Directory.Build.props from auto-adding xUnit v2 packages -->
     <DisableImplicitXUnitPackages>true</DisableImplicitXUnitPackages>
   </PropertyGroup>
+  <!-- ============================================================================ -->
+  <!-- TESTING PLATFORM PROPERTIES -->
+  <!-- ============================================================================ -->
+  <PropertyGroup>
+    <!-- Microsoft Testing Platform Configuration -->
+   
+    <ImplicitUsings>enable</ImplicitUsings>
 
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <TestingPlatformServer>true</TestingPlatformServer>
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
+    <GenerateTestingPlatformEntryPoint>false</GenerateTestingPlatformEntryPoint>
+    
+  </PropertyGroup>
   <PropertyGroup>
     <!-- Test Configuration -->
     <CollectCoverage>true</CollectCoverage>
@@ -35,22 +53,83 @@
     <ThresholdStat>total</ThresholdStat>
   </PropertyGroup>
 
-
-
-  <ItemGroup Label="Core Testing">
-    <!-- Add xUnit v3 packages -->
+  
+  <ItemGroup Label="xUnit v3">
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.v3.core" />
-    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+  </ItemGroup>
+  <!-- ============================================================================ -->
+  <!-- PACKAGE REFERENCES - VISUAL STUDIO RUNNER -->
+  <!-- ============================================================================ -->
+  <ItemGroup Label="Visual Studio Runner">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.v3.runner.inproc.console" />
+    <PackageReference Include="xunit.v3.runner.msbuild">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" />
+  </ItemGroup>
+  <!-- ============================================================================ -->
+  <!-- PACKAGE REFERENCES - TESTING UTILITIES -->
+  <!-- ============================================================================ -->
+  <ItemGroup Label="Testing Utilities">
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Enrichers.Demystifier" />
+  </ItemGroup>
+ 
+  <ItemGroup Label="Core Testing">
+
     <!-- Keep AutoFixture from original -->
     <PackageReference Include="AutoFixture" />
   </ItemGroup>
 
+  <!-- ============================================================================ -->
+  <!-- PACKAGE REFERENCES - LOGGING EXTENSIONS -->
+  <!-- ============================================================================ -->
   <ItemGroup Label="Logging">
+    <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="Meziantou.Extensions.Logging.Xunit.v3" />
-  
   </ItemGroup>
-
+  <!-- ============================================================================ -->
+  <!-- PACKAGE REFERENCES - TIME TESTING -->
+  <!-- ============================================================================ -->
+  <ItemGroup Label="Time Testing">
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
+  </ItemGroup>
+  <!-- ============================================================================ -->
+  <!-- PACKAGE REFERENCES - ANALYZERS -->
+  <!-- ============================================================================ -->
+  <ItemGroup Label="NSubstitute Analyzers">
+    <PackageReference Include="NSubstitute.Analyzers.CSharp">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <!-- ============================================================================ -->
+  <!-- MICROSOFT TESTING PLATFORM -->
+  <!-- ============================================================================ -->
+  <ItemGroup Label="Microsoft Testing Platform">
+    <PackageReference Include="Microsoft.Testing.Platform" />
+    <PackageReference Include="Microsoft.Testing.Platform.MSBuild" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
+    <!--<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />-->
+  </ItemGroup>
+  <!-- ============================================================================ -->
+  <!-- PROJECT CAPABILITIES -->
+  <!-- ============================================================================ -->
+  <ItemGroup Label="Testing Platform Capabilities">
+    <ProjectCapability Include="DiagnoseCapabilities" />
+    <ProjectCapability Include="TestingPlatformServer" />
+    <ProjectCapability Include="TestContainer" />
+  </ItemGroup>
   <PropertyGroup>
     
     <!-- Suppress additional warnings for unit test projects -->

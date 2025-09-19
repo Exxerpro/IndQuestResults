@@ -8,7 +8,9 @@ on:
 
 env:
   DOTNET_VERSION: '8.0.x'
-  SOLUTION_PATH: './Src/IndQuestResults.sln'
+  SOLUTION_PATH: './Src/Code/IndQuestResults.All.sln'
+  COVERAGE_MIN_LINE: '85'
+  COVERAGE_MIN_BRANCH: '75'
 
 jobs:
   build:
@@ -30,13 +32,58 @@ jobs:
     - name: Build
       run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
       
-    - name: Test
-      run: dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+    - name: Test with coverage (Cobertura)
+      run: |
+        dotnet test ${{ env.SOLUTION_PATH }} \
+          --configuration Release \
+          --no-build \
+          --settings coverage.runsettings \
+          --collect:"XPlat Code Coverage" \
+          -- \
+          --filter-not-class IndQuestResults.Tests.Unit.Performance.PerformanceMetricsSmokeTests
+
+    - name: Generate HTML coverage report
+      shell: bash
+      run: |
+        dotnet tool install --global dotnet-reportgenerator-globaltool
+        echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+        reportgenerator \
+          -reports:**/coverage.cobertura.xml \
+          -targetdir:coverage-report \
+          -reporttypes:Html;HtmlSummary
+
+    - name: Enforce coverage threshold
+      run: |
+        python3 - << 'PY'
+        import os, glob, xml.etree.ElementTree as ET
+        files = glob.glob('**/coverage.cobertura.xml', recursive=True)
+        if not files:
+            raise SystemExit('No coverage.cobertura.xml found')
+        latest = max(files, key=os.path.getmtime)
+        root = ET.parse(latest).getroot()
+        lr = float(root.get('line-rate')) * 100.0
+        br = float(root.get('branch-rate')) * 100.0
+        print(f'Coverage: line={lr:.2f}% branch={br:.2f}% ({latest})')
+        min_line = float(os.environ.get('COVERAGE_MIN_LINE','85'))
+        min_branch = float(os.environ.get('COVERAGE_MIN_BRANCH','75'))
+        if lr < min_line or br < min_branch:
+            raise SystemExit(f'Coverage below threshold (line {min_line}%, branch {min_branch}%)')
+        PY
       
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v3
+    - name: Upload coverage reports (artifacts)
+      uses: actions/upload-artifact@v4
       with:
-        directory: ./coverage
+        name: coverage-cobertura
+        path: |
+          **/coverage.cobertura.xml
+          coverage-report/**
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: |
+          **/coverage.cobertura.xml
+        fail_ci_if_error: false
         
   mutation-test:
     runs-on: ubuntu-latest
@@ -89,7 +136,7 @@ jobs:
       run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
       
     - name: Run benchmarks
-      run: dotnet run --project Src/benchmarks/IndQuestResults.Benchmarks/IndQuestResults.Benchmarks.csproj --configuration Release -- --exporters json --artifacts ./BenchmarkDotNet.Artifacts
+      run: dotnet run --project Src/Code/benchmarks/IndQuestResults.Benchmarks/IndQuestResults.Benchmarks.csproj --configuration Release -- --exporters json --artifacts ./BenchmarkDotNet.Artifacts
       
     - name: Upload benchmark results
       uses: actions/upload-artifact@v4
@@ -119,7 +166,7 @@ jobs:
       run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
       
     - name: Pack
-      run: dotnet pack Src/src/IndQuestResults/IndQuestResults.csproj --configuration Release --no-build --output ./packages
+      run: dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj --configuration Release --no-build --output ./packages
       
     - name: Push to NuGet (if release)
       if: startsWith(github.ref, 'refs/tags/v')

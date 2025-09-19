@@ -12,13 +12,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <UseLocalRefs Condition="'$(UseLocalRefs)' == ''">false</UseLocalRefs>
+
     <!-- Suppress additional warnings for benchmark projects -->
     <NoWarn>$(NoWarn);CA1707;CA1822;CA1311;CA1304;CA1861;CA1860;IDE0200;IDE0052</NoWarn>
   </PropertyGroup>
-  <ItemGroup Condition="'$(UseLocalRefs)' == 'true'">
-    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
   </ItemGroup>

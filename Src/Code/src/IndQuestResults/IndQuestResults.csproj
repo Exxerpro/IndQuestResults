@@ -15,8 +15,8 @@
     
     <!-- Package metadata only -->
     <PackageDescription>Enterprise-grade Result&lt;T&gt; library for functional error handling in .NET applications.</PackageDescription>
-    <PackageVersion>1.0.3</PackageVersion>
-    <AssemblyVersion>1.0.3</AssemblyVersion>
+    <PackageVersion>1.0.4</PackageVersion>
+    <AssemblyVersion>1.0.4</AssemblyVersion>
   </PropertyGroup>
 
 
