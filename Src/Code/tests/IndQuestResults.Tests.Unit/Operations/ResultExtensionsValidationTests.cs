@@ -228,7 +228,3 @@ public class ResultExtensionsValidationTests
         res.Errors.First().ShouldContain("b");
     }
 }
-
-
-
-

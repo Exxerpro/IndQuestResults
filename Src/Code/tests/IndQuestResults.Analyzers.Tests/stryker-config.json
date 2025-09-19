@@ -1,0 +1,30 @@
+{
+  "stryker-config": {
+    "project": "../../src/IndQuestResults.Analyzers/IndQuestResults.Analyzers.csproj",
+    "language-version": "latest",
+    "additional-timeout": 30000,
+    "thresholds": {
+      "high": 85,
+      "low": 70,
+      "break": 60
+    },
+    "reporters": [
+      "progress",
+      "html",
+      "json"
+    ],
+    "mutate": [
+      "**/*.cs",
+      "!**/Program.cs",
+      "!**/Startup.cs"
+    ],
+    "ignore-mutations": [
+      "string",
+      "regex"
+    ],
+    "coverage-analysis": "pertest",
+    "disable-mix-mutants": false,
+    "concurrency": 4,
+    "verbosity": "info"
+  }
+}

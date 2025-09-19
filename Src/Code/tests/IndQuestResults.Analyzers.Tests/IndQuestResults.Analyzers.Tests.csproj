@@ -55,7 +55,7 @@
 
   <ItemGroup Label="Testing Utilities">
     <!-- Enhanced Testing & Assertions -->
-    <PackageReference Include="Shouldly" Version="4.3.0" /> <!-- MIT licensed alternative to FluentAssertions -->
+    <PackageReference Include="Shouldly" Version="4.3.0" /> 
     
     <!-- Snapshot testing for verifying outputs -->
     <PackageReference Include="EmptyFiles" Version="7.0.0" />
