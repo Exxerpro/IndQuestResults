@@ -158,7 +158,7 @@ public sealed class Result<T>
     /// <summary>
     /// Gets the first non-empty error message, or null if none exist.
     /// </summary>
-    public string? Error => Errors?.FirstOrDefault(e => !string.IsNullOrWhiteSpace(e));
+    public string Error => Errors?.FirstOrDefault(e => !string.IsNullOrWhiteSpace(e)) ?? string.Empty;
 
     /// <summary>
     /// Creates a successful result with the specified value.
@@ -268,7 +268,10 @@ public sealed class Result<T>
     /// <summary>
     /// Clamps a double value into [0.0, 1.0].
     /// </summary>
-    private static double Clamp01(double v) => v < 0.0 ? 0.0 : (v > 1.0 ? 1.0 : v);
+    private static double Clamp01(double v)
+    {
+        return v < 0.0 ? 0.0 : (v > 1.0 ? 1.0 : v);
+    }
 
     /// <summary>
     /// Creates a failed result with the specified errors and optional value (overload for string array).

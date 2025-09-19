@@ -1,3 +1,5 @@
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
+
 using Xunit;
 using IndQuestResults.Analyzers.Rules;
 using Microsoft.CodeAnalysis;
@@ -7,6 +9,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Shouldly;
+using System;
 
 namespace IndQuestResults.Analyzers.Tests;
 
@@ -15,6 +18,9 @@ namespace IndQuestResults.Analyzers.Tests;
 /// </summary>
 public class BasicAnalyzerTests
 {
+    /// <summary>
+    /// Tests that the ResultPatternAnalyzer can be instantiated correctly.
+    /// </summary>
     [Fact]
     public void ResultPatternAnalyzer_CanBeInstantiated()
     {
@@ -24,6 +30,9 @@ public class BasicAnalyzerTests
         analyzer.SupportedDiagnostics.ShouldNotBeEmpty();
     }
 
+    /// <summary>
+    /// Tests that the ResultPerformanceAnalyzer can be instantiated correctly.
+    /// </summary>
     [Fact]
     public void ResultPerformanceAnalyzer_CanBeInstantiated()
     {
@@ -33,6 +42,9 @@ public class BasicAnalyzerTests
         analyzer.SupportedDiagnostics.ShouldNotBeEmpty();
     }
 
+    /// <summary>
+    /// Tests basic compilation with analyzers to ensure they don't crash.
+    /// </summary>
     [Fact]
     public async Task BasicCompilation_WithAnalyzers_Succeeds()
     {
@@ -62,10 +74,13 @@ public class TestClass
         var diagnostics = await compilation.WithAnalyzers(analyzers).GetAnalyzerDiagnosticsAsync();
         
         // This test should pass without any diagnostics since it uses proper patterns
-        var analyzerDiagnostics = diagnostics.Where(d => d.Id.StartsWith("IQR")).ToArray();
+        var analyzerDiagnostics = diagnostics.Where(d => d.Id.StartsWith("IQR", StringComparison.Ordinal)).ToArray();
         analyzerDiagnostics.ShouldBeEmpty("valid Result usage should not produce diagnostics");
     }
 
+    /// <summary>
+    /// Tests that basic compilation can detect unhandled Result pattern.
+    /// </summary>
     [Fact]
     public async Task BasicCompilation_DetectsUnhandledResult()
     {
@@ -85,7 +100,7 @@ public class TestClass
         var compilation = CreateCompilation(testCode);
         var analyzer = new ResultPatternAnalyzer();
 
-        var diagnostics = await compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(analyzer))
+        var diagnostics = await compilation.WithAnalyzers([analyzer])
             .GetAnalyzerDiagnosticsAsync();
         
         var unhandledResultDiagnostics = diagnostics
@@ -96,19 +111,19 @@ public class TestClass
         unhandledResultDiagnostics.Length.ShouldBe(1);
     }
 
-    private static Compilation CreateCompilation(string source)
+    private static CSharpCompilation CreateCompilation(string source)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(source);
         var references = new[]
         {
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(System.Console).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Result).Assembly.Location)
         };
 
         return CSharpCompilation.Create(
             "TestAssembly",
-            new[] { syntaxTree },
+            [syntaxTree],
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
     }

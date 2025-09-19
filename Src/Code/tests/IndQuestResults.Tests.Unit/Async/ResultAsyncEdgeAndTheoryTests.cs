@@ -8,7 +8,7 @@ public class ResultAsyncEdgeAndTheoryTests
     public async Task TraverseAsync_NullInputs_Throws()
     {
         await Should.ThrowAsync<ArgumentNullException>(async () =>
-            await ResultAsync.TraverseAsync<string, int>(null!, _ => Task.FromResult(Result<int>.Success(0))));
+            await ResultAsync.TraverseAsync<string, int>((IEnumerable<string>)null!, _ => Task.FromResult(Result<int>.Success(0))));
     }
 
     [Fact]

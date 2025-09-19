@@ -30,6 +30,133 @@ namespace IndQuestResults.Async;
 public static class ResultAsync
 {
     /// <summary>
+    /// Sequences an async stream of Result{T} into a single Result of all values.
+    /// </summary>
+    public static async Task<Result<IEnumerable<T>>> SequenceAsync<T>(
+        IAsyncEnumerable<Result<T>> results,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(results);
+        var values = new List<T>();
+        var errors = new List<string>();
+
+        await foreach (var r in results.WithCancellation(cancellationToken).ConfigureAwait(false))
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return ResultExtensions.Cancelled<IEnumerable<T>>();
+            }
+
+            if (r is null)
+            {
+                continue;
+            }
+            if (r.IsSuccess)
+            {
+                values.Add(r.Value!);
+            }
+            else if (r.Errors is not null)
+            {
+                errors.AddRange(r.Errors);
+            }
+        }
+
+        return errors.Count > 0 ? Result<IEnumerable<T>>.WithFailure(errors) : Result<IEnumerable<T>>.Success(values);
+    }
+
+    /// <summary>
+    /// Traverses an async stream, applying an async function to each element and sequencing the results.
+    /// </summary>
+    public static async Task<Result<IEnumerable<TOut>>> TraverseAsync<TIn, TOut>(
+        IAsyncEnumerable<TIn> inputs,
+        Func<TIn, Task<Result<TOut>>> func,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(inputs);
+        ArgumentNullException.ThrowIfNull(func);
+
+        var values = new List<TOut>();
+        var errors = new List<string>();
+
+        await foreach (var item in inputs.WithCancellation(cancellationToken).ConfigureAwait(false))
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return ResultExtensions.Cancelled<IEnumerable<TOut>>();
+            }
+
+            Result<TOut> r;
+            try
+            {
+                r = await func(item).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return ResultExtensions.Cancelled<IEnumerable<TOut>>();
+            }
+            catch (Exception ex)
+            {
+                return Result<IEnumerable<TOut>>.WithFailure($"Async traverse failed: {ex.Message}");
+            }
+
+            if (r.IsSuccess)
+            {
+                values.Add(r.Value!);
+            }
+            else if (r.Errors is not null)
+            {
+                errors.AddRange(r.Errors);
+            }
+        }
+
+        return errors.Count > 0 ? Result<IEnumerable<TOut>>.WithFailure(errors) : Result<IEnumerable<TOut>>.Success(values);
+    }
+
+    /// <summary>
+    /// ValueTask-based chaining to avoid extra allocations when upstream returns ValueTask.
+    /// </summary>
+    public static async ValueTask<Result<TOut>> ThenAsync<TIn, TOut>(
+        this ValueTask<Result<TIn>> resultVTask,
+        Func<TIn, ValueTask<Result<TOut>>> next)
+    {
+        ArgumentNullException.ThrowIfNull(next);
+        var result = await resultVTask.ConfigureAwait(false);
+        return result.IsSuccess && result.Value is not null
+            ? await next(result.Value).ConfigureAwait(false)
+            : Result<TOut>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+    }
+
+    /// <summary>
+    /// ValueTask-based map for async pipelines.
+    /// </summary>
+    public static async ValueTask<Result<TOut>> ThenMap<TIn, TOut>(
+        this ValueTask<Result<TIn>> resultVTask,
+        Func<TIn, TOut> mapper)
+    {
+        ArgumentNullException.ThrowIfNull(mapper);
+        var result = await resultVTask.ConfigureAwait(false);
+        return result.IsSuccess && result.Value is not null
+            ? Result<TOut>.Success(mapper(result.Value))
+            : Result<TOut>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+    }
+
+    /// <summary>
+    /// ValueTask-based tap for async pipelines.
+    /// </summary>
+    public static async ValueTask<Result<T>> ThenTap<T>(
+        this ValueTask<Result<T>> resultVTask,
+        Func<T, ValueTask> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        var result = await resultVTask.ConfigureAwait(false);
+        if (result.IsSuccess && result.Value is not null)
+        {
+            await action(result.Value).ConfigureAwait(false);
+        }
+        return result;
+    }
+
+    /// <summary>
     /// Asynchronously binds a Result-returning function to a Task&lt;Result&lt;T&gt;&gt;.
     /// If the original Result is successful, applies the async function; otherwise propagates the error.
     /// </summary>

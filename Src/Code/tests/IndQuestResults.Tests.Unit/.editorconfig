@@ -5,3 +5,9 @@
 dotnet_diagnostic.CA1707.severity = none
 
 
+
+# IDE0320: Make anonymous function static
+dotnet_diagnostic.IDE0320.severity = suggestion
+
+# Default severity for analyzer diagnostics with category 'Style'
+dotnet_analyzer_diagnostic.category-Style.severity = silent

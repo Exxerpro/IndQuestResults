@@ -10,6 +10,9 @@
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+
+    <IsTrimmable>false</IsTrimmable>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
     
     <!-- Temporarily disable Central Package Management for this project -->
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
