@@ -74,12 +74,15 @@ public class ResultPerformanceAnalyzer : DiagnosticAnalyzer
         context.EnableConcurrentExecution();
 
         context.RegisterSyntaxNodeAction(AnalyzeMethodBody, SyntaxKind.MethodDeclaration);
-        context.RegisterSyntaxNodeAction(AnalyzePropertyBody, SyntaxKind.PropertyDeclaration);
-        context.RegisterSyntaxNodeAction(AnalyzeToListCall, SyntaxKind.InvocationExpression);
+        context.RegisterSyntaxNodeAction(AnalyzeInvocation, SyntaxKind.InvocationExpression);
     }
 
     private static void AnalyzeMethodBody(SyntaxNodeAnalysisContext context)
     {
+        // Skip analysis for IndQuestResults library itself
+        if (IsIndQuestResultsLibrary(context))
+            return;
+            
         var method = (MethodDeclarationSyntax)context.Node;
         if (method.Body == null && method.ExpressionBody == null)
             return;
@@ -118,91 +121,66 @@ public class ResultPerformanceAnalyzer : DiagnosticAnalyzer
             }
         }
 
-        // Check for boxing in hot paths
-        CheckForBoxing(method, context);
     }
 
-    private static void AnalyzePropertyBody(SyntaxNodeAnalysisContext context)
+    private static void AnalyzeInvocation(SyntaxNodeAnalysisContext context)
     {
-        var property = (PropertyDeclarationSyntax)context.Node;
-        
-        // Check getter for performance issues
-        if (property.AccessorList != null)
-        {
-            var getter = property.AccessorList.Accessors
-                .FirstOrDefault(a => a.IsKind(SyntaxKind.GetAccessorDeclaration));
+        // Skip analysis for IndQuestResults library itself
+        if (IsIndQuestResultsLibrary(context))
+            return;
             
-            if (getter?.Body != null || getter?.ExpressionBody != null)
+        var invocation = (InvocationExpressionSyntax)context.Node;
+        
+        // Check for ToList calls on Result.Errors
+        if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+            memberAccess.Name.Identifier.Text == "ToList")
+        {
+            // Check if calling ToList on Result.Errors
+            if (memberAccess.Expression is MemberAccessExpressionSyntax errorAccess &&
+                errorAccess.Name.Identifier.Text == "Errors")
             {
-                // Check for repeated error formatting in property getters
-                var stringJoins = getter.DescendantNodes()
-                    .OfType<InvocationExpressionSyntax>()
-                    .Where(inv => IsStringJoinOnErrors(inv, context.SemanticModel))
-                    .ToList();
-
-                if (stringJoins.Count > 0)
+                var type = context.SemanticModel.GetTypeInfo(errorAccess.Expression).Type;
+                if (IsResultType(type))
                 {
                     var diagnostic = Diagnostic.Create(
-                        RepeatedErrorFormattingRule,
-                        stringJoins[0].GetLocation());
+                        UnnecessaryToListRule,
+                        memberAccess.Name.GetLocation());
                     context.ReportDiagnostic(diagnostic);
                 }
             }
         }
-    }
-
-    private static void AnalyzeToListCall(SyntaxNodeAnalysisContext context)
-    {
-        var invocation = (InvocationExpressionSyntax)context.Node;
         
-        if (invocation.Expression is not MemberAccessExpressionSyntax memberAccess)
-            return;
-
-        if (memberAccess.Name.Identifier.Text != "ToList")
-            return;
-
-        // Check if calling ToList on Result.Errors
-        if (memberAccess.Expression is MemberAccessExpressionSyntax errorAccess &&
-            errorAccess.Name.Identifier.Text == "Errors")
+        // Check for error formatting calls
+        if (IsErrorFormattingCall(invocation, context.SemanticModel))
         {
-            var type = context.SemanticModel.GetTypeInfo(errorAccess.Expression).Type;
-            if (IsResultType(type))
-            {
-                var diagnostic = Diagnostic.Create(
-                    UnnecessaryToListRule,
-                    invocation.GetLocation());
-                context.ReportDiagnostic(diagnostic);
-            }
+            var diagnostic = Diagnostic.Create(
+                RepeatedErrorFormattingRule,
+                invocation.GetLocation());
+            context.ReportDiagnostic(diagnostic);
         }
-    }
-
-    private static void CheckForBoxing(MethodDeclarationSyntax method, SyntaxNodeAnalysisContext context)
-    {
-        // Look for Result<T> creation with value types
-        var resultCreations = method.DescendantNodes()
-            .OfType<InvocationExpressionSyntax>()
-            .Where(inv => IsResultCreation(inv, context.SemanticModel));
-
-        foreach (var creation in resultCreations)
+        
+        // Check for boxing in Result creation calls
+        if (IsResultCreation(invocation, context.SemanticModel))
         {
-            var typeArg = GetResultTypeArgument(creation, context.SemanticModel);
-            if (typeArg?.IsValueType == true && creation.ArgumentList?.Arguments.Count > 0)
+            var typeArg = GetResultTypeArgument(invocation, context.SemanticModel);
+            if (typeArg?.IsValueType == true && invocation.ArgumentList?.Arguments.Count > 0)
             {
-                var firstArg = creation.ArgumentList.Arguments[0];
-                var argType = context.SemanticModel.GetTypeInfo(firstArg.Expression).Type;
-                
-                // Check if we're in a loop or frequently called method
-                if (IsInHotPath(creation))
+                // Check if we're in a hot path (loop or LINQ query)
+                if (IsInHotPath(invocation))
                 {
+                    // Report location at the entire invocation for better visibility
+                    var location = invocation.GetLocation();
+                    
                     var diagnostic = Diagnostic.Create(
                         BoxingInHotPathRule,
-                        creation.GetLocation(),
+                        location,
                         typeArg.Name);
                     context.ReportDiagnostic(diagnostic);
                 }
             }
         }
     }
+
 
     private static ISymbol? GetResultSymbol(ExpressionSyntax expression, SemanticModel semanticModel)
     {
@@ -225,31 +203,83 @@ public class ResultPerformanceAnalyzer : DiagnosticAnalyzer
                type.ContainingNamespace?.ToString()?.Contains("IndQuestResults") == true;
     }
 
-    private static bool IsStringJoinOnErrors(InvocationExpressionSyntax invocation, SemanticModel semanticModel)
+    private static bool IsErrorFormattingCall(InvocationExpressionSyntax invocation, SemanticModel semanticModel)
     {
-        var symbol = semanticModel.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
-        if (symbol?.Name != "Join" || symbol.ContainingType?.Name != "String")
-            return false;
-
-        // Check if any argument is Result.Errors
-        return invocation.ArgumentList?.Arguments.Any(arg =>
+        // Check for string.Join calls
+        if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+            memberAccess.Name.Identifier.Text == "Join")
         {
-            if (arg.Expression is MemberAccessExpressionSyntax memberAccess &&
-                memberAccess.Name.Identifier.Text == "Errors")
+            // Much simpler check - just look for any argument that contains ".Errors"
+            var invocationText = invocation.ToString();
+            if (invocationText.Contains(".Errors"))
             {
-                var type = semanticModel.GetTypeInfo(memberAccess.Expression).Type;
-                return IsResultType(type);
+                return true;
             }
-            return false;
-        }) == true;
+        }
+        
+        // Also check for other error formatting patterns like ToString() on errors
+        var invocationText2 = invocation.ToString();
+        if (invocationText2.Contains(".Errors") && 
+            (invocationText2.Contains("ToString") || invocationText2.Contains("Join")))
+        {
+            return true;
+        }
+        
+        return false;
+    }
+
+    private static bool IsIndQuestResultsLibrary(SyntaxNodeAnalysisContext context)
+    {
+        // Check if we're analyzing the IndQuestResults library itself
+        var assemblyName = context.SemanticModel.Compilation.AssemblyName;
+        return assemblyName?.Contains("IndQuestResults") == true;
+    }
+    
+    private static bool ContainsErrorsAccess(SyntaxNode node)
+    {
+        // Check if this node or any descendant accesses ".Errors"
+        if (node is MemberAccessExpressionSyntax memberAccess &&
+            memberAccess.Name.Identifier.Text == "Errors")
+        {
+            return true;
+        }
+        
+        // Recursively check child nodes
+        return node.ChildNodes().Any(ContainsErrorsAccess);
     }
 
     private static bool IsResultCreation(InvocationExpressionSyntax invocation, SemanticModel semanticModel)
     {
         var symbol = semanticModel.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
-        return symbol?.Name == "Success" && 
-               symbol.ContainingType?.Name == "Result" &&
-               symbol.ContainingType.ContainingNamespace?.ToString()?.Contains("IndQuestResults") == true;
+        if (symbol?.Name == "Success" && 
+            symbol.ContainingType?.Name == "Result" &&
+            symbol.ContainingType.ContainingNamespace?.ToString()?.Contains("IndQuestResults") == true)
+        {
+            return true;
+        }
+
+        // Also check syntactically for Result<T>.Success() pattern
+        if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+            memberAccess.Name.Identifier.Text == "Success")
+        {
+            var expression = memberAccess.Expression;
+            
+            // Check for Result<T> pattern
+            if (expression is GenericNameSyntax genericName &&
+                genericName.Identifier.Text == "Result")
+            {
+                return true;
+            }
+            
+            // Check for Result pattern (non-generic)
+            if (expression is IdentifierNameSyntax identifier &&
+                identifier.Identifier.Text == "Result")
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static ITypeSymbol? GetResultTypeArgument(InvocationExpressionSyntax invocation, SemanticModel semanticModel)
@@ -259,6 +289,18 @@ public class ResultPerformanceAnalyzer : DiagnosticAnalyzer
         {
             return namedType.TypeArguments.FirstOrDefault();
         }
+
+        // Fall back to syntactic analysis for Result<T>.Success() pattern
+        if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+            memberAccess.Name.Identifier.Text == "Success" &&
+            memberAccess.Expression is GenericNameSyntax genericName &&
+            genericName.Identifier.Text == "Result" &&
+            genericName.TypeArgumentList?.Arguments.Count > 0)
+        {
+            var typeArgument = genericName.TypeArgumentList.Arguments[0];
+            return semanticModel.GetTypeInfo(typeArgument).Type;
+        }
+
         return null;
     }
 
@@ -288,4 +330,5 @@ public class ResultPerformanceAnalyzer : DiagnosticAnalyzer
         
         return false;
     }
+
 }

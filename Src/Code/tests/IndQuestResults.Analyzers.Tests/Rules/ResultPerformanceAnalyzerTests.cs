@@ -99,7 +99,7 @@ public class TestClass
     private void ProcessErrors(System.Collections.Generic.List<string> errors) { }
 }";
 
-        var expected = Diagnostic(ResultPerformanceAnalyzer.UnnecessaryToListId, DiagnosticSeverity.Warning, 12, 29);
+        var expected = Diagnostic(ResultPerformanceAnalyzer.UnnecessaryToListId, DiagnosticSeverity.Warning, 12, 43);
 
         await VerifyAnalyzerAsync<ResultPerformanceAnalyzer>(testCode, expected);
     }
@@ -299,7 +299,7 @@ public class TestClass
     private void ProcessResults(List<Result<int>> results) { }
 }";
 
-        var expected = Diagnostic(ResultPerformanceAnalyzer.BoxingInHotPathId, DiagnosticSeverity.Info, 11, 39);
+        var expected = Diagnostic(ResultPerformanceAnalyzer.BoxingInHotPathId, DiagnosticSeverity.Info, 11, 43);
 
         await VerifyAnalyzerAsync<ResultPerformanceAnalyzer>(testCode, expected);
     }
@@ -376,7 +376,7 @@ public class TestClass
         var expected = new[]
         {
             Diagnostic(ResultPerformanceAnalyzer.MultipleValueAccessId, DiagnosticSeverity.Info, 13, 26),
-            Diagnostic(ResultPerformanceAnalyzer.UnnecessaryToListId, DiagnosticSeverity.Warning, 19, 29),
+            Diagnostic(ResultPerformanceAnalyzer.UnnecessaryToListId, DiagnosticSeverity.Warning, 19, 43),
             Diagnostic(ResultPerformanceAnalyzer.BoxingInHotPathId, DiagnosticSeverity.Info, 25, 30)
         };
 

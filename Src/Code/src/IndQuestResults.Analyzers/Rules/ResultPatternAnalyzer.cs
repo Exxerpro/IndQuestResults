@@ -102,6 +102,10 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
 
     private static void AnalyzeInvocation(SyntaxNodeAnalysisContext context)
     {
+        // Skip analysis for IndQuestResults library itself
+        if (IsIndQuestResultsLibrary(context))
+            return;
+            
         var invocation = (InvocationExpressionSyntax)context.Node;
         var symbolInfo = context.SemanticModel.GetSymbolInfo(invocation);
         
@@ -122,10 +126,24 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
                 method.Name);
             context.ReportDiagnostic(diagnostic);
         }
+        else if (invocation.Parent is AwaitExpressionSyntax awaitExpr && 
+                 awaitExpr.Parent is ExpressionStatementSyntax)
+        {
+            // Await result is discarded - this is a problem, point to await
+            var diagnostic = Diagnostic.Create(
+                UnhandledResultRule,
+                awaitExpr.GetLocation(),
+                method.Name);
+            context.ReportDiagnostic(diagnostic);
+        }
     }
 
     private static void AnalyzeMemberAccess(SyntaxNodeAnalysisContext context)
     {
+        // Skip analysis for IndQuestResults library itself
+        if (IsIndQuestResultsLibrary(context))
+            return;
+            
         var memberAccess = (MemberAccessExpressionSyntax)context.Node;
         
         // Check if accessing .Value on a Result<T>
@@ -148,6 +166,10 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
 
     private static void AnalyzeThrowStatement(SyntaxNodeAnalysisContext context)
     {
+        // Skip analysis for IndQuestResults library itself
+        if (IsIndQuestResultsLibrary(context))
+            return;
+            
         var throwStatement = (ThrowStatementSyntax)context.Node;
         
         // Find containing method
@@ -173,6 +195,10 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
 
     private static void AnalyzeReturnStatement(SyntaxNodeAnalysisContext context)
     {
+        // Skip analysis for IndQuestResults library itself
+        if (IsIndQuestResultsLibrary(context))
+            return;
+            
         var returnStatement = (ReturnStatementSyntax)context.Node;
         if (returnStatement.Expression == null)
             return;
@@ -204,37 +230,38 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
             return false;
 
         // Check for Result or Result<T>
-        return type.Name == "Result" && 
-               type.ContainingNamespace?.ToString()?.Contains("IndQuestResults") == true;
-    }
-
-    private static bool HasSuccessCheckInScope(SyntaxNode node, SemanticModel semanticModel)
-    {
-        // Simple heuristic: check if there's an IsSuccess check in the same block
-        var block = node.FirstAncestorOrSelf<BlockSyntax>();
-        if (block == null)
-            return false;
-
-        // Look for IsSuccess property access before the current node
-        var successChecks = block.DescendantNodes()
-            .OfType<MemberAccessExpressionSyntax>()
-            .Where(m => m.Name.Identifier.Text == "IsSuccess")
-            .Where(m => m.SpanStart < node.SpanStart);
-
-        foreach (var check in successChecks)
+        if (type.Name == "Result" && 
+            type.ContainingNamespace?.ToString()?.Contains("IndQuestResults") == true)
         {
-            var checkType = semanticModel.GetTypeInfo(check.Expression).Type;
-            if (IsResultType(checkType))
+            return true;
+        }
+
+        // Check for Task<Result<T>> - unwrap the Task
+        if (type.Name == "Task" && type is INamedTypeSymbol namedType && namedType.IsGenericType)
+        {
+            var taskTypeArg = namedType.TypeArguments.FirstOrDefault();
+            if (taskTypeArg?.Name == "Result" && 
+                taskTypeArg.ContainingNamespace?.ToString()?.Contains("IndQuestResults") == true)
             {
-                // Found an IsSuccess check on a Result type
-                // This is a simplified check - a full implementation would do control flow analysis
                 return true;
             }
         }
 
-        // Also check for Match or Map usage which implicitly handles success
+        return false;
+    }
+
+    private static bool IsIndQuestResultsLibrary(SyntaxNodeAnalysisContext context)
+    {
+        // Check if we're analyzing the IndQuestResults library itself
+        var assemblyName = context.SemanticModel.Compilation.AssemblyName;
+        return assemblyName?.Contains("IndQuestResults") == true;
+    }
+
+    private static bool HasSuccessCheckInScope(SyntaxNode node, SemanticModel semanticModel)
+    {
+        // Check for Match or Map usage which implicitly handles success
         var parent = node.Parent;
-        while (parent != null && parent != block)
+        while (parent != null)
         {
             if (parent is InvocationExpressionSyntax invocation)
             {
@@ -247,9 +274,86 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
                     }
                 }
             }
+            
+            // Check if we're inside an if statement that checks IsSuccess
+            if (parent is IfStatementSyntax ifStatement)
+            {
+                if (IsSuccessCheckCondition(ifStatement.Condition, semanticModel))
+                {
+                    return true;
+                }
+            }
+            
+            // Check if we're inside a switch expression with IsSuccess pattern
+            if (parent is SwitchExpressionSyntax switchExpr)
+            {
+                if (HasSuccessPatternInSwitch(switchExpr, semanticModel))
+                {
+                    return true;
+                }
+            }
+            
             parent = parent.Parent;
         }
 
+        return false;
+    }
+
+    private static bool IsSuccessCheckCondition(ExpressionSyntax condition, SemanticModel semanticModel)
+    {
+        // Handle simple case: result.IsSuccess
+        if (condition is MemberAccessExpressionSyntax memberAccess &&
+            memberAccess.Name.Identifier.Text == "IsSuccess")
+        {
+            var type = semanticModel.GetTypeInfo(memberAccess.Expression).Type;
+            return IsResultType(type);
+        }
+
+        // Handle parenthesized expressions: (result.IsSuccess)
+        if (condition is ParenthesizedExpressionSyntax parenthesized)
+        {
+            return IsSuccessCheckCondition(parenthesized.Expression, semanticModel);
+        }
+
+        // Handle binary expressions with IsSuccess checks
+        if (condition is BinaryExpressionSyntax binary)
+        {
+            return IsSuccessCheckCondition(binary.Left, semanticModel) ||
+                   IsSuccessCheckCondition(binary.Right, semanticModel);
+        }
+
+        return false;
+    }
+
+    private static bool HasSuccessPatternInSwitch(SwitchExpressionSyntax switchExpr, SemanticModel semanticModel)
+    {
+        foreach (var arm in switchExpr.Arms)
+        {
+            if (IsSuccessPattern(arm.Pattern, semanticModel))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static bool IsSuccessPattern(PatternSyntax pattern, SemanticModel semanticModel)
+    {
+        // Handle property patterns like { IsSuccess: true }
+        if (pattern is RecursivePatternSyntax recursive)
+        {
+            if (recursive.PropertyPatternClause != null)
+            {
+                foreach (var subpattern in recursive.PropertyPatternClause.Subpatterns)
+                {
+                    if (subpattern.NameColon?.Name.Identifier.Text == "IsSuccess")
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        
         return false;
     }
 }

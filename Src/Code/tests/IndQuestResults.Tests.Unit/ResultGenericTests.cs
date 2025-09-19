@@ -19,17 +19,17 @@ public class ResultGenericTests
         var result = Result<string>.Success(value);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.True(result.IsSuccessMayBeNull);
-        Assert.True(result.IsSuccessNotNull);
-        Assert.False(result.IsSuccessValueNull);
-        Assert.False(result.IsFailure);
-        Assert.False(result.HasErrors);
-        Assert.False(result.HasWarnings);
-        Assert.True(result.IsRecoverable);
-        Assert.Equal(value, result.Value);
-        Assert.Empty(result.Errors);
-        Assert.Null(result.Error);
+        result.IsSuccess.ShouldBeTrue();
+        result.IsSuccessMayBeNull.ShouldBeTrue();
+        result.IsSuccessNotNull.ShouldBeTrue();
+        result.IsSuccessValueNull.ShouldBeFalse();
+        result.IsFailure.ShouldBeFalse();
+        result.HasErrors.ShouldBeFalse();
+        result.HasWarnings.ShouldBeFalse();
+        result.IsRecoverable.ShouldBeTrue();
+        result.Value.ShouldBe(value);
+        result.Errors.ShouldBeEmpty();
+        result.Error.ShouldBeNullOrWhiteSpace();
     }
 
     /// <summary>
@@ -106,16 +106,16 @@ public class ResultGenericTests
 #pragma warning restore CS8625
 
         // Assert
-        Assert.False(result.IsSuccess); // IsSuccess checks for non-null value
-        Assert.True(result.IsSuccessMayBeNull); // IsSuccessMayBeNull allows null
-        Assert.False(result.IsSuccessNotNull);
-        Assert.True(result.IsSuccessValueNull);
-        Assert.False(result.IsFailure);
-        Assert.False(result.HasErrors);
-        Assert.False(result.HasWarnings);
-        Assert.True(result.IsRecoverable);
-        Assert.Null(result.Value);
-        Assert.Empty(result.Errors);
+        result.IsSuccess.ShouldBeFalse(); // IsSuccess checks for non-null value
+        result.IsSuccessMayBeNull.ShouldBeTrue(); // IsSuccessMayBeNull allows null
+        result.IsSuccessNotNull.ShouldBeFalse();
+        result.IsSuccessValueNull.ShouldBeTrue();
+        result.IsFailure.ShouldBeFalse();
+        result.HasErrors.ShouldBeFalse();
+        result.HasWarnings.ShouldBeFalse();
+        result.IsRecoverable.ShouldBeTrue();
+        result.Value.ShouldBeNull();
+        result.Errors.ShouldBeEmpty();
     }
 
     /// <summary>
@@ -132,17 +132,17 @@ public class ResultGenericTests
         var result = Result<string>.WithFailure(errorMessage, value);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.False(result.IsSuccessMayBeNull);
-        Assert.False(result.IsSuccessNotNull);
-        Assert.False(result.IsSuccessValueNull);
-        Assert.True(result.IsFailure);
-        Assert.True(result.HasErrors);
-        Assert.False(result.HasWarnings);
-        Assert.False(result.IsRecoverable);
-        Assert.Equal(value, result.Value);
-        Assert.Single(result.Errors);
-        Assert.Equal(errorMessage, result.Error);
+        result.IsSuccess.ShouldBeFalse();
+        result.IsSuccessMayBeNull.ShouldBeFalse();
+        result.IsSuccessNotNull.ShouldBeFalse();
+        result.IsSuccessValueNull.ShouldBeFalse();
+        result.IsFailure.ShouldBeTrue();
+        result.HasErrors.ShouldBeTrue();
+        result.HasWarnings.ShouldBeFalse();
+        result.IsRecoverable.ShouldBeFalse();
+        result.Value.ShouldBe(value);
+        result.Errors.ShouldHaveSingleItem();
+        result.Error.ShouldBe(errorMessage);
     }
 
     /// <summary>
@@ -158,14 +158,14 @@ public class ResultGenericTests
         var result = Result<int>.WithFailure(errors);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.True(result.IsFailure);
-        Assert.True(result.HasErrors);
-        Assert.False(result.HasWarnings);
-        Assert.Equal(3, result.Errors.Count());
-        Assert.Equal("Error 1", result.Error);
-        Assert.Contains("Error 2", result.Errors);
-        Assert.Contains("Error 3", result.Errors);
+        result.IsSuccess.ShouldBeFalse();
+        result.IsFailure.ShouldBeTrue();
+        result.HasErrors.ShouldBeTrue();
+        result.HasWarnings.ShouldBeFalse();
+        result.Errors.Count().ShouldBe(3);
+        result.Error.ShouldBe("Error 1");
+        result.Errors.ShouldContain("Error 2");
+        result.Errors.ShouldContain("Error 3");
     }
 
     /// <summary>
@@ -182,18 +182,18 @@ public class ResultGenericTests
         var result = Result<string>.WithWarnings(warnings, value);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.True(result.IsSuccessMayBeNull);
-        Assert.True(result.IsSuccessNotNull);
-        Assert.False(result.IsSuccessValueNull);
-        Assert.False(result.IsFailure);
-        Assert.True(result.HasErrors); // HasErrors includes warnings
-        Assert.True(result.HasWarnings);
-        Assert.True(result.IsRecoverable);
-        Assert.Equal(value, result.Value);
-        Assert.Equal(2, result.Errors.Count());
-        Assert.Contains("Warning 1", result.Errors);
-        Assert.Contains("Warning 2", result.Errors);
+        result.IsSuccess.ShouldBeTrue();
+        result.IsSuccessMayBeNull.ShouldBeTrue();
+        result.IsSuccessNotNull.ShouldBeTrue();
+        result.IsSuccessValueNull.ShouldBeFalse();
+        result.IsFailure.ShouldBeFalse();
+        result.HasErrors.ShouldBeTrue(); // HasErrors includes warnings
+        result.HasWarnings.ShouldBeTrue();
+        result.IsRecoverable.ShouldBeTrue();
+        result.Value.ShouldBe(value);
+        result.Errors.Count().ShouldBe(2);
+        result.Errors.ShouldContain("Warning 1");
+        result.Errors.ShouldContain("Warning 2");
     }
 
     /// <summary>
@@ -212,21 +212,21 @@ public class ResultGenericTests
         var result = Result<string>.WithWarnings(warnings, value, confidence, missing);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.True(result.HasWarnings);
-        Assert.True(result.IsRecoverable);
-        Assert.Equal(value, result.Value);
+        result.IsSuccess.ShouldBeTrue();
+        result.HasWarnings.ShouldBeTrue();
+        result.IsRecoverable.ShouldBeTrue();
+        result.Value.ShouldBe(value);
         // Warnings should be exposed
-        Assert.NotNull(result.Warnings);
-        Assert.Contains("Low confidence due to partial input", result.Warnings);
-        Assert.Contains("Heuristic used", result.Warnings);
+        result.Warnings.ShouldNotBeNull();
+        result.Warnings.ShouldContain("Low confidence due to partial input");
+        result.Warnings.ShouldContain("Heuristic used");
         // For backward-compat expectations in docs/tests
-        Assert.NotNull(result.Errors);
-        Assert.Contains("Low confidence due to partial input", result.Errors);
-        Assert.Contains("Heuristic used", result.Errors);
+        result.Errors.ShouldNotBeNull();
+        result.Errors.ShouldContain("Low confidence due to partial input");
+        result.Errors.ShouldContain("Heuristic used");
         // Metadata
-        Assert.Equal(confidence, result.Confidence, 3);
-        Assert.Equal(missing, result.MissingDataRatio, 3);
+        result.Confidence.ShouldBe(confidence, 3);
+        result.MissingDataRatio.ShouldBe(missing, 3);
     }
 
     /// <summary>
@@ -243,10 +243,10 @@ public class ResultGenericTests
         var resultHigh = Result<string>.WithWarnings(warnings, "v", confidence: 2.5, missingDataRatio: 3.0);
 
         // Assert
-        Assert.Equal(0.0, resultLow.Confidence, 3);
-        Assert.Equal(0.0, resultLow.MissingDataRatio, 3);
-        Assert.Equal(1.0, resultHigh.Confidence, 3);
-        Assert.Equal(1.0, resultHigh.MissingDataRatio, 3);
+        resultLow.Confidence.ShouldBe(0.0, 3);
+        resultLow.MissingDataRatio.ShouldBe(0.0, 3);
+        resultHigh.Confidence.ShouldBe(1.0, 3);
+        resultHigh.MissingDataRatio.ShouldBe(1.0, 3);
     }
 
     /// <summary>
@@ -259,9 +259,9 @@ public class ResultGenericTests
         var result = Result<string>.Success("ok");
 
         // Assert
-        Assert.Equal(1.0, result.Confidence, 3);
-        Assert.Equal(0.0, result.MissingDataRatio, 3);
-        Assert.False(result.HasWarnings);
+        result.Confidence.ShouldBe(1.0, 3);
+        result.MissingDataRatio.ShouldBe(0.0, 3);
+        result.HasWarnings.ShouldBeFalse();
     }
 
     /// <summary>
@@ -274,9 +274,9 @@ public class ResultGenericTests
         Result<int> result = 42;
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Equal(42, result.Value);
-        Assert.Empty(result.Errors);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe(42);
+        result.Errors.ShouldBeEmpty();
     }
 
     /// <summary>
@@ -292,8 +292,8 @@ public class ResultGenericTests
         Result nonGenericResult = genericResult;
 
         // Assert
-        Assert.True(nonGenericResult.IsSuccess);
-        Assert.Empty(nonGenericResult.Errors);
+        nonGenericResult.IsSuccess.ShouldBeTrue();
+        nonGenericResult.Errors.ShouldBeEmpty();
     }
 
     /// <summary>
@@ -310,8 +310,8 @@ public class ResultGenericTests
         Result nonGenericResult = genericResult;
 
         // Assert
-        Assert.False(nonGenericResult.IsSuccess);
-        Assert.Equal(errors, nonGenericResult.Errors);
+        nonGenericResult.IsSuccess.ShouldBeFalse();
+        nonGenericResult.Errors.ShouldBe(errors);
     }
 
     /// <summary>
@@ -327,9 +327,9 @@ public class ResultGenericTests
         var (succeeded, data, errors) = result;
 
         // Assert
-        Assert.True(succeeded);
-        Assert.Equal("test value", data);
-        Assert.Empty(errors);
+        succeeded.ShouldBeTrue();
+        data.ShouldBe("test value");
+        errors.ShouldBeEmpty();
     }
 
     /// <summary>
@@ -346,8 +346,8 @@ public class ResultGenericTests
         var returnedResult = result.OnSuccess(value => capturedValue = value);
 
         // Assert
-        Assert.Equal("test value", capturedValue);
-        Assert.Same(result, returnedResult);
+        capturedValue.ShouldBe("test value");
+        returnedResult.ShouldBeSameAs(result);
     }
 
     /// <summary>
@@ -364,8 +364,8 @@ public class ResultGenericTests
         var returnedResult = result.OnSuccess(_ => executed = true);
 
         // Assert
-        Assert.False(executed);
-        Assert.Same(result, returnedResult);
+        executed.ShouldBeFalse();
+        returnedResult.ShouldBeSameAs(result);
     }
 
     /// <summary>
@@ -381,8 +381,8 @@ public class ResultGenericTests
         var mappedResult = result.Map(s => s.Length);
 
         // Assert
-        Assert.True(mappedResult.IsSuccess);
-        Assert.Equal(5, mappedResult.Value);
+        mappedResult.IsSuccess.ShouldBeTrue();
+        mappedResult.Value.ShouldBe(5);
     }
 
     /// <summary>
@@ -399,9 +399,9 @@ public class ResultGenericTests
         var mappedResult = result.Map(s => s.Length);
 
         // Assert
-        Assert.False(mappedResult.IsSuccess);
-        Assert.Equal(errors, mappedResult.Errors);
-        Assert.Equal(0, mappedResult.Value); // Default value for int
+        mappedResult.IsSuccess.ShouldBeFalse();
+        mappedResult.Errors.ShouldBe(errors);
+        mappedResult.Value.ShouldBe(0); // Default value for int
     }
 
     /// <summary>
@@ -414,14 +414,14 @@ public class ResultGenericTests
         var result = Result<string>.Success("42");
 
         // Act
-        var boundResult = result.Bind(s => 
-            int.TryParse(s, out var number) 
-                ? Result<int>.Success(number) 
+        var boundResult = result.Bind(s =>
+            int.TryParse(s, out var number)
+                ? Result<int>.Success(number)
                 : Result<int>.WithFailure("Parse failed"));
 
         // Assert
-        Assert.True(boundResult.IsSuccess);
-        Assert.Equal(42, boundResult.Value);
+        boundResult.IsSuccess.ShouldBeTrue();
+        boundResult.Value.ShouldBe(42);
     }
 
     /// <summary>
@@ -438,8 +438,8 @@ public class ResultGenericTests
         var boundResult = result.Bind(s => Result<int>.Success(42));
 
         // Assert
-        Assert.False(boundResult.IsSuccess);
-        Assert.Equal(errors, boundResult.Errors);
+        boundResult.IsSuccess.ShouldBeFalse();
+        boundResult.Errors.ShouldBe(errors);
     }
 
     /// <summary>
@@ -455,8 +455,8 @@ public class ResultGenericTests
         var ensuredResult = result.Ensure(s => s.Length > 0, "String cannot be empty");
 
         // Assert
-        Assert.Same(result, ensuredResult);
-        Assert.True(ensuredResult.IsSuccess);
+        ensuredResult.ShouldBeSameAs(result);
+        ensuredResult.IsSuccess.ShouldBeTrue();
     }
 
     /// <summary>
@@ -472,9 +472,9 @@ public class ResultGenericTests
         var ensuredResult = result.Ensure(s => s.Length > 10, "String too short");
 
         // Assert
-        Assert.False(ensuredResult.IsSuccess);
-        Assert.Single(ensuredResult.Errors);
-        Assert.Equal("String too short", ensuredResult.Error);
+        ensuredResult.IsSuccess.ShouldBeFalse();
+        ensuredResult.Errors.ShouldHaveSingleItem();
+        ensuredResult.Error.ShouldBe("String too short");
     }
 
     /// <summary>
@@ -492,8 +492,8 @@ public class ResultGenericTests
         var ensuredResult = result.Ensure(s => s.Length > 0, "String cannot be empty");
 
         // Assert
-        Assert.False(ensuredResult.IsSuccess);
-        Assert.Contains(ResultConstants.ConditionEvaluationWithNullValue, ensuredResult.Error);
+        ensuredResult.IsSuccess.ShouldBeFalse();
+        ensuredResult.Error.ShouldContain(ResultConstants.ConditionEvaluationWithNullValue);
     }
 
     /// <summary>
@@ -513,8 +513,8 @@ public class ResultGenericTests
         );
 
         // Assert
-        Assert.True(matchResult.IsSuccess);
-        Assert.Equal("Success: hello", matchResult.Value);
+        matchResult.IsSuccess.ShouldBeTrue();
+        matchResult.Value.ShouldBe("Success: hello");
     }
 
     /// <summary>
@@ -533,8 +533,8 @@ public class ResultGenericTests
         );
 
         // Assert
-        Assert.True(matchResult.IsSuccess);
-        Assert.Equal("Failure: Error", matchResult.Value);
+        matchResult.IsSuccess.ShouldBeTrue();
+        matchResult.Value.ShouldBe("Failure: Error");
     }
 
     /// <summary>
@@ -567,9 +567,9 @@ public class ResultGenericTests
         var recoveredResult = result.Recover(() => Result<string>.Success("recovered"));
 
         // Assert
-        Assert.NotSame(result, recoveredResult);
-        Assert.True(recoveredResult.IsSuccess);
-        Assert.Equal("recovered", recoveredResult.Value);
+        recoveredResult.ShouldNotBeSameAs(result);
+        recoveredResult.IsSuccess.ShouldBeTrue();
+        recoveredResult.Value.ShouldBe("recovered");
     }
 
     /// <summary>
@@ -585,8 +585,8 @@ public class ResultGenericTests
         var recoveredResult = result.RecoverWith<object>(() => Result<object>.Success("fallback"));
 
         // Assert
-        Assert.True(recoveredResult.IsSuccess);
-        Assert.Equal("42", recoveredResult.Value);
+        recoveredResult.IsSuccess.ShouldBeTrue();
+        recoveredResult.Value.ShouldBe("42");
     }
 
     /// <summary>
@@ -602,8 +602,8 @@ public class ResultGenericTests
         var recoveredResult = result.RecoverWith<int>(() => Result<int>.Success(42));
 
         // Assert
-        Assert.False(recoveredResult.IsSuccess);
-        Assert.Contains("Cannot convert", recoveredResult.Error);
+        recoveredResult.IsSuccess.ShouldBeFalse();
+        recoveredResult.Error.ShouldContain("Cannot convert");
     }
 
     /// <summary>
@@ -630,8 +630,8 @@ public class ResultGenericTests
         var resultString = result.ToString();
 
         // Assert
-        Assert.StartsWith(ResultConstants.SuccessPrefix, resultString);
-        Assert.Contains("test value", resultString);
+        resultString.ShouldStartWith(ResultConstants.SuccessPrefix);
+        resultString.ShouldContain("test value");
     }
 
     /// <summary>
@@ -648,9 +648,9 @@ public class ResultGenericTests
         var resultString = result.ToString();
 
         // Assert
-        Assert.StartsWith(ResultConstants.FailurePrefix, resultString);
-        Assert.Contains("Error 1", resultString);
-        Assert.Contains("Error 2", resultString);
+        resultString.ShouldStartWith(ResultConstants.FailurePrefix);
+        resultString.ShouldContain("Error 1");
+        resultString.ShouldContain("Error 2");
     }
 
     /// <summary>
@@ -660,14 +660,13 @@ public class ResultGenericTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("test")]
-    /// <param name="value">The input string value to validate behavior against.</param>
     public void Success_WithVariousStringValues_ShouldHandleCorrectly(string? value)
     {
         // Act - Use pattern matching for proper null checking
-        var result = value is not null 
-            ? Result<string>.Success(value) 
+        var result = value is not null
+            ? Result<string>.Success(value)
             : CreateResultWithNullValue();
-        
+
         // Helper method to handle null case with proper warning suppression
         static Result<string> CreateResultWithNullValue()
         {
@@ -677,23 +676,20 @@ public class ResultGenericTests
         }
 
         // Assert
-        Assert.True(result.IsSuccessMayBeNull);
-        Assert.Equal(value, result.Value);
+        result.IsSuccessMayBeNull.ShouldBeTrue();
+        result.Value.ShouldBe(value);
 
         if (value is not null)
         {
-            Assert.True(result.IsSuccess);
-            Assert.True(result.IsSuccessNotNull);
-            Assert.False(result.IsSuccessValueNull);
+            result.IsSuccess.ShouldBeTrue();
+            result.IsSuccessNotNull.ShouldBeTrue();
+            result.IsSuccessValueNull.ShouldBeFalse();
         }
         else
         {
-            Assert.False(result.IsSuccess);
-            Assert.False(result.IsSuccessNotNull);
-            Assert.True(result.IsSuccessValueNull);
+            result.IsSuccess.ShouldBeFalse();
+            result.IsSuccessNotNull.ShouldBeFalse();
+            result.IsSuccessValueNull.ShouldBeTrue();
         }
     }
 }
-
-
-

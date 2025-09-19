@@ -15,8 +15,8 @@
     
     <!-- Package metadata only -->
     <PackageDescription>Enterprise-grade Result&lt;T&gt; library for functional error handling in .NET applications.</PackageDescription>
-    <PackageVersion>1.0.4</PackageVersion>
-    <AssemblyVersion>1.0.4</AssemblyVersion>
+    <PackageVersion>1.0.5</PackageVersion>
+    <AssemblyVersion>1.0.5</AssemblyVersion>
   </PropertyGroup>
 
 
@@ -27,6 +27,7 @@
     <!-- Force treat warnings as errors for this production package -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+
 
   <!-- Relax warnings during mutation testing runs (opt-in via env var) -->
   <PropertyGroup Condition="'$(STRYKER_MUTATION_TEST)' == 'true'">

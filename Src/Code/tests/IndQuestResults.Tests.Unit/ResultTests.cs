@@ -17,10 +17,10 @@ public class ResultTests
         var result = Result.Success();
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.False(result.IsFailure);
-        Assert.Empty(result.Errors);
-        Assert.Null(result.Error);
+        result.IsSuccess.ShouldBeTrue();
+        result.IsFailure.ShouldBeFalse();
+        result.Errors.ShouldBeEmpty();
+        result.Error.ShouldBeNull();
     }
 
     /// <summary>
@@ -47,10 +47,10 @@ public class ResultTests
         var result = Result.WithFailure(errorMessage);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.True(result.IsFailure);
-        Assert.Single(result.Errors);
-        Assert.Equal(errorMessage, result.Error);
+        result.IsSuccess.ShouldBeFalse();
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldHaveSingleItem();
+        result.Error.ShouldBe(errorMessage);
     }
 
     /// <summary>
@@ -66,12 +66,12 @@ public class ResultTests
         var result = Result.WithFailure(errors);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.True(result.IsFailure);
-        Assert.Equal(3, result.Errors.Count());
-        Assert.Equal("Error 1", result.Error);
-        Assert.Contains("Error 2", result.Errors);
-        Assert.Contains("Error 3", result.Errors);
+        result.IsSuccess.ShouldBeFalse();
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.Count().ShouldBe(3);
+        result.Error.ShouldBe("Error 1");
+        result.Errors.ShouldContain("Error 2");
+        result.Errors.ShouldContain("Error 3");
     }
 
     /// <summary>
@@ -102,10 +102,10 @@ public class ResultTests
         var result = Result.WithFailure((IEnumerable<string>)null!);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.True(result.IsFailure);
-        Assert.Single(result.Errors);
-        Assert.Equal(ResultConstants.DefaultErrorMessage, result.Error);
+        result.IsSuccess.ShouldBeFalse();
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldHaveSingleItem();
+        result.Error.ShouldBe(ResultConstants.DefaultErrorMessage);
     }
 
     /// <summary>
@@ -118,10 +118,10 @@ public class ResultTests
         var result = Result.WithFailure([]);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.True(result.IsFailure);
-        Assert.Single(result.Errors);
-        Assert.Equal(ResultConstants.DefaultErrorMessage, result.Error);
+        result.IsSuccess.ShouldBeFalse();
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldHaveSingleItem();
+        result.Error.ShouldBe(ResultConstants.DefaultErrorMessage);
     }
 
     /// <summary>
@@ -138,8 +138,8 @@ public class ResultTests
         var returnedResult = result.OnSuccess(() => executed = true);
 
         // Assert
-        Assert.True(executed);
-        Assert.Same(result, returnedResult);
+        executed.ShouldBeTrue();
+        returnedResult.ShouldBeSameAs(result);
     }
 
     /// <summary>
@@ -156,8 +156,8 @@ public class ResultTests
         var returnedResult = result.OnSuccess(() => executed = true);
 
         // Assert
-        Assert.False(executed);
-        Assert.Same(result, returnedResult);
+        executed.ShouldBeFalse();
+        returnedResult.ShouldBeSameAs(result);
     }
 
     /// <summary>
@@ -193,9 +193,9 @@ public class ResultTests
         var returnedResult = result.OnFailure(errs => capturedErrors = errs);
 
         // Assert
-        Assert.NotNull(capturedErrors);
-        Assert.Equal(errors, capturedErrors);
-        Assert.Same(result, returnedResult);
+        capturedErrors.ShouldNotBeNull();
+        capturedErrors.ShouldBe(errors);
+        returnedResult.ShouldBeSameAs(result);
     }
 
     /// <summary>
@@ -211,8 +211,8 @@ public class ResultTests
         var mappedResult = result.Map(() => "mapped value");
 
         // Assert
-        Assert.True(mappedResult.IsSuccess);
-        Assert.Equal("mapped value", mappedResult.Value);
+        mappedResult.IsSuccess.ShouldBeTrue();
+        mappedResult.Value.ShouldBe("mapped value");
     }
 
     /// <summary>
@@ -229,9 +229,9 @@ public class ResultTests
         var mappedResult = result.Map(() => "mapped value");
 
         // Assert
-        Assert.False(mappedResult.IsSuccess);
-        Assert.Equal(errors, mappedResult.Errors);
-        Assert.Equal(default, mappedResult.Value);
+        mappedResult.IsSuccess.ShouldBeFalse();
+        mappedResult.Errors.ShouldBe(errors);
+        mappedResult.Value.ShouldBe(default(string));
     }
 
     /// <summary>
@@ -247,8 +247,8 @@ public class ResultTests
         var boundResult = result.Bind(() => Result<int>.Success(42));
 
         // Assert
-        Assert.True(boundResult.IsSuccess);
-        Assert.Equal(42, boundResult.Value);
+        boundResult.IsSuccess.ShouldBeTrue();
+        boundResult.Value.ShouldBe(42);
     }
 
     /// <summary>
@@ -265,8 +265,8 @@ public class ResultTests
         var boundResult = result.Bind(() => Result<int>.Success(42));
 
         // Assert
-        Assert.False(boundResult.IsSuccess);
-        Assert.Equal(errors, boundResult.Errors);
+        boundResult.IsSuccess.ShouldBeFalse();
+        boundResult.Errors.ShouldBe(errors);
     }
 
     /// <summary>
@@ -282,8 +282,8 @@ public class ResultTests
         var ensuredResult = result.Ensure(() => true, "Condition failed");
 
         // Assert
-        Assert.True(ensuredResult.IsSuccess);
-        Assert.Same(result, ensuredResult);
+        ensuredResult.IsSuccess.ShouldBeTrue();
+        ensuredResult.ShouldBeSameAs(result);
     }
 
     /// <summary>
@@ -299,9 +299,9 @@ public class ResultTests
         var ensuredResult = result.Ensure(() => false, "Condition failed");
 
         // Assert
-        Assert.False(ensuredResult.IsSuccess);
-        Assert.Single(ensuredResult.Errors);
-        Assert.Equal("Condition failed", ensuredResult.Error);
+        ensuredResult.IsSuccess.ShouldBeFalse();
+        ensuredResult.Errors.ShouldHaveSingleItem();
+        ensuredResult.Error.ShouldBe("Condition failed");
     }
 
     /// <summary>
@@ -317,7 +317,7 @@ public class ResultTests
         var ensuredResult = result.Ensure(() => false, "Condition failed");
 
         // Assert
-        Assert.Same(result, ensuredResult);
+        ensuredResult.ShouldBeSameAs(result);
     }
 
     /// <summary>
@@ -335,8 +335,8 @@ public class ResultTests
         var combinedResult = result1.Combine(result2, result3);
 
         // Assert
-        Assert.True(combinedResult.IsSuccess);
-        Assert.Empty(combinedResult.Errors);
+        combinedResult.IsSuccess.ShouldBeTrue();
+        combinedResult.Errors.ShouldBeEmpty();
     }
 
     /// <summary>
@@ -354,11 +354,11 @@ public class ResultTests
         var combinedResult = result1.Combine(result2, result3);
 
         // Assert
-        Assert.False(combinedResult.IsSuccess);
-        Assert.Equal(3, combinedResult.Errors.Count());
-        Assert.Contains("Error 2", combinedResult.Errors);
-        Assert.Contains("Error 3a", combinedResult.Errors);
-        Assert.Contains("Error 3b", combinedResult.Errors);
+        combinedResult.IsSuccess.ShouldBeFalse();
+        combinedResult.Errors.Count().ShouldBe(3);
+        combinedResult.Errors.ShouldContain("Error 2");
+        combinedResult.Errors.ShouldContain("Error 3a");
+        combinedResult.Errors.ShouldContain("Error 3b");
     }
 
     /// <summary>
@@ -377,7 +377,7 @@ public class ResultTests
         );
 
         // Assert
-        Assert.Equal("success", matchResult);
+        matchResult.ShouldBe("success");
     }
 
     /// <summary>
@@ -396,7 +396,7 @@ public class ResultTests
         );
 
         // Assert
-        Assert.Equal("failure: Error", matchResult);
+        matchResult.ShouldBe("failure: Error");
     }
 
     /// <summary>
@@ -412,8 +412,8 @@ public class ResultTests
         var recoveredResult = result.Recover(() => Result.WithFailure("Recovery error"));
 
         // Assert
-        Assert.Same(result, recoveredResult);
-        Assert.True(recoveredResult.IsSuccess);
+        recoveredResult.ShouldBeSameAs(result);
+        recoveredResult.IsSuccess.ShouldBeTrue();
     }
 
     /// <summary>
@@ -429,8 +429,8 @@ public class ResultTests
         var recoveredResult = result.Recover(Result.Success);
 
         // Assert
-        Assert.NotSame(result, recoveredResult);
-        Assert.True(recoveredResult.IsSuccess);
+        recoveredResult.ShouldNotBeSameAs(result);
+        recoveredResult.IsSuccess.ShouldBeTrue();
     }
 
     /// <summary>
@@ -443,7 +443,7 @@ public class ResultTests
         var result = Result.Success();
 
         // Assert
-        Assert.Equal(ResultConstants.SuccessPrefix, result.ToString());
+        result.ToString().ShouldBe(ResultConstants.SuccessPrefix);
     }
 
     /// <summary>
@@ -460,9 +460,9 @@ public class ResultTests
         var resultString = result.ToString();
 
         // Assert
-        Assert.StartsWith(ResultConstants.FailurePrefix, resultString);
-        Assert.Contains("Error 1", resultString);
-        Assert.Contains("Error 2", resultString);
+        resultString.ShouldStartWith(ResultConstants.FailurePrefix);
+        resultString.ShouldContain("Error 1");
+        resultString.ShouldContain("Error 2");
     }
 }
 

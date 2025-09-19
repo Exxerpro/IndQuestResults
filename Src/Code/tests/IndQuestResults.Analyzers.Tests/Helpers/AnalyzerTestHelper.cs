@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
+using IndQuestResults;
 
 namespace IndQuestResults.Analyzers.Tests.Helpers;
 
@@ -99,7 +100,9 @@ public static class AnalyzerTestHelper
         {
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(Result).Assembly.Location)
+            MetadataReference.CreateFromFile(typeof(Result).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(System.Linq.Enumerable).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(System.Collections.Generic.List<>).Assembly.Location)
         };
 
         return CSharpCompilation.Create(
