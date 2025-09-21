@@ -11,6 +11,9 @@ public class ExternalComparisonBenchmarks
 {
     private IEnumerable<int> _inputs = null!;
 
+    /// <summary>
+    /// Initializes shared input data for all benchmark runs.
+    /// </summary>
     [GlobalSetup]
     public void Setup()
     {
@@ -19,6 +22,9 @@ public class ExternalComparisonBenchmarks
 
     // --- IndQuestResults baselines ---
 
+    /// <summary>
+    /// Baseline: sequences a collection of successful <see cref="Result{T}"/> values.
+    /// </summary>
     [Benchmark(Baseline = true)]
     public Result<IEnumerable<int>> IQR_Sequence_Success()
     {
@@ -26,6 +32,9 @@ public class ExternalComparisonBenchmarks
         return IndQuestResults.Collections.ResultCollections.Sequence(results);
     }
 
+    /// <summary>
+    /// Sequences a collection that contains failures every 10 items.
+    /// </summary>
     [Benchmark]
     public Result<IEnumerable<int>> IQR_Sequence_Failure()
     {
@@ -33,14 +42,16 @@ public class ExternalComparisonBenchmarks
         return IndQuestResults.Collections.ResultCollections.Sequence(results);
     }
 
+    /// <summary>
+    /// Traverses inputs and maps/binds, producing failures for multiples of 33.
+    /// </summary>
     [Benchmark]
     public Result<IEnumerable<int>> IQR_Traverse_MapBind()
     {
-        return IndQuestResults.Collections.ResultCollections.Traverse(_inputs, x =>
-        {
-            if (x % 33 == 0) return Result<int>.WithFailure("bad");
-            return Result<int>.Success(x * 2);
-        });
+        return IndQuestResults.Collections.ResultCollections.Traverse(
+            _inputs,
+            x => x % 33 == 0 ? Result<int>.WithFailure("bad") : Result<int>.Success(x * 2)
+        );
     }
 
 #if FLUENTRESULTS
