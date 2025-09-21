@@ -6,45 +6,67 @@ namespace IndQuestResults.Tests.Unit.Operations;
 public class ResultErrorExtensionsTests
 {
     [Fact]
-    public void MapError_OnFailure_TransformsErrors()
+    public void MapError_NonGeneric_TransformsErrors_OnFailure()
     {
-        var r = Result.WithFailure(new[] { "a", "b" });
-        var mapped = r.MapError(errs => errs.Select(e => e.ToUpperInvariant()));
-
-        mapped.IsFailure.ShouldBeTrue();
-        mapped.Errors.ShouldContain("A");
-        mapped.Errors.ShouldContain("B");
+        var r = Result.WithFailure(new[] { "e1", "e2" });
+        var transformed = r.MapError(errs => errs.Select(e => $"X:{e}"));
+        transformed.IsFailure.ShouldBeTrue();
+        transformed.Errors.ShouldBe(new[] { "X:e1", "X:e2" });
     }
 
     [Fact]
-    public void MapError_OnSuccess_NoChange()
+    public void MapError_NonGeneric_NoChange_OnSuccess()
     {
         var r = Result.Success();
-        var mapped = r.MapError(errs => new[] { "X" });
-        mapped.ShouldBeSameAs(r);
-        mapped.IsSuccess.ShouldBeTrue();
+        var transformed = r.MapError(errs => errs.Select(e => $"X:{e}"));
+        transformed.ShouldBeSameAs(r);
+        transformed.IsSuccess.ShouldBeTrue();
     }
 
     [Fact]
-    public void Recover_WithErrors_RecoversGeneric()
+    public void MapError_Generic_TransformsErrors_OnFailure()
     {
-        var r = Result<int>.WithFailure(new[] { "boom" });
-        var recovered = r.Recover(errs => Result<int>.Success(5));
+        var r = Result<int>.WithFailure(new[] { "e" }, 1);
+        var transformed = r.MapError(errs => errs.Select(e => e + "!"));
+        transformed.IsFailure.ShouldBeTrue();
+        transformed.Errors.ShouldBe(new[] { "e!" });
+        transformed.Value.ShouldBe(1);
+    }
+
+    [Fact]
+    public void TapError_Invokes_OnFailure_Only()
+    {
+        var called = false;
+        Result.WithFailure("e").TapError(_ => called = true);
+        called.ShouldBeTrue();
+        called = false;
+        Result.Success().TapError(_ => called = true);
+        called.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Recover_ErrorAware_NonGeneric_UsesErrors()
+    {
+        var r = Result.WithFailure(new[] { "e1", "e2" });
+        var recovered = r.Recover(errs =>
+        {
+            errs.ShouldBe(new[] { "e1", "e2" });
+            return Result.Success();
+        });
         recovered.IsSuccess.ShouldBeTrue();
-        recovered.Value.ShouldBe(5);
     }
 
     [Fact]
-    public void TapError_InvokesOnFailure_GenericAndNonGeneric()
+    public void Recover_ErrorAware_Generic_UsesErrors()
     {
-        var ng = Result.WithFailure("e1");
-        var g = Result<string>.WithFailure("e2");
-        var c1 = 0;
-        var c2 = 0;
-        ng.TapError(_ => c1++);
-        g.TapError(_ => c2++);
-        c1.ShouldBe(1);
-        c2.ShouldBe(1);
+        var r = Result<string>.WithFailure(new[] { "e" }, value: "keep");
+        var recovered = r.Recover(errs =>
+        {
+            errs.ShouldContain("e");
+            return Result<string>.Success("ok");
+        });
+        recovered.IsSuccess.ShouldBeTrue();
+        recovered.Value.ShouldBe("ok");
     }
 }
 

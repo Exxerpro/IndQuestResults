@@ -1,9 +1,12 @@
 using IndQuestResults.Validation;
+using System.Linq;
+using System.Threading;
 
 namespace IndQuestResults.Operations;
 
 /// <summary>
-/// Extension methods for Result{T} following Open/Closed Principle
+/// Extension methods for Result and Result{T} providing ergonomic helpers for cancellation,
+/// validation, chaining, and composition while preserving functional semantics.
 /// </summary>
 public static class ResultExtensions
 {
@@ -29,8 +32,8 @@ public static class ResultExtensions
     /// <summary>
     /// Determines whether the result represents a cancelled operation.
     /// </summary>
-    /// <param name="result">The result to check.</param>
-    /// <returns><c>true</c> if the result contains an operation cancelled error; otherwise, <c>false</c>.</returns>
+    /// <param name="result">The result to examine.</param>
+    /// <returns>True if the result contains the standard cancellation error.</returns>
     public static bool IsCancelled(this Result result)
     {
         return result != null && result.Errors != null && result.Errors.Any(e => e == ResultErrors.OperationCancelled);
@@ -40,8 +43,8 @@ public static class ResultExtensions
     /// Determines whether the generic result represents a cancelled operation.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
-    /// <param name="result">The result to check.</param>
-    /// <returns><c>true</c> if the result contains an operation cancelled error; otherwise, <c>false</c>.</returns>
+    /// <param name="result">The result to examine.</param>
+    /// <returns>True if the result contains the standard cancellation error.</returns>
     public static bool IsCancelled<T>(this Result<T> result)
     {
         return result != null && result.Errors != null && result.Errors.Any(e => e == ResultErrors.OperationCancelled);
@@ -225,6 +228,8 @@ public static class ResultExtensions
             : Result<TOut>.WithFailure(result.Errors);
     }
 
+    // (Conventional async wrappers like BindAsync/MapAsync/TapAsync are available under IndQuestResults.Async.ResultAsync.)
+
     /// <summary>
     /// Maps a successful result value synchronously within an async chain.
     /// </summary>
@@ -324,6 +329,8 @@ public static class ResultExtensions
             ? result
             : Result<T>.WithFailure(validation.Errors, result.Value);
     }
+
+    // (Async recovery helpers are available under IndQuestResults.Async.ResultAsync.)
 
     /// <summary>
     /// Ensures a condition is met, otherwise returns failure.
@@ -549,4 +556,6 @@ public static class ResultExtensions
             ? result.Value
             : defaultValue;
     }
+
+    // (Async collection helpers like SequenceAsync/TraverseAsync/TraverseParallelAsync are available under IndQuestResults.Async.ResultAsync.)
 }

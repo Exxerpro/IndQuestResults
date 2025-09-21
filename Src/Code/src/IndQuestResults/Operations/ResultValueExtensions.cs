@@ -12,6 +12,10 @@ public static class ResultValueExtensions
     /// <summary>
     /// Gets the value for a successful result or the provided default when failed or value is null.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="defaultValue">The fallback value when not successful.</param>
+    /// <returns>The successful value or the provided default.</returns>
     public static T ValueOr<T>(this Result<T> result, T defaultValue)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -21,6 +25,10 @@ public static class ResultValueExtensions
     /// <summary>
     /// Gets the value for a successful result or computes a default when failed or value is null.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="defaultFactory">Factory to compute a fallback value.</param>
+    /// <returns>The successful value or the computed default.</returns>
     public static T ValueOr<T>(this Result<T> result, Func<T> defaultFactory)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -31,6 +39,10 @@ public static class ResultValueExtensions
     /// <summary>
     /// Returns the same result if successful, or the provided fallback when failed.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="fallback">The fallback Result when failed.</param>
+    /// <returns>The original Result or the fallback.</returns>
     public static Result<T> OrElse<T>(this Result<T> result, Result<T> fallback)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -41,6 +53,10 @@ public static class ResultValueExtensions
     /// <summary>
     /// Returns the same result if successful, or computes a fallback when failed.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="fallbackFactory">Factory to produce a fallback Result.</param>
+    /// <returns>The original Result or the computed fallback.</returns>
     public static Result<T> OrElse<T>(this Result<T> result, Func<Result<T>> fallbackFactory)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -51,6 +67,10 @@ public static class ResultValueExtensions
     /// <summary>
     /// Async: gets the value or default after awaiting.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="resultTask">The task producing a Result.</param>
+    /// <param name="defaultValue">The fallback value when failed.</param>
+    /// <returns>A task returning the value or default.</returns>
     public static async Task<T> ValueOrAsync<T>(this Task<Result<T>> resultTask, T defaultValue)
     {
         ArgumentNullException.ThrowIfNull(resultTask);
@@ -61,6 +81,10 @@ public static class ResultValueExtensions
     /// <summary>
     /// Async: returns the same result or fallback after awaiting.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="resultTask">The task producing a Result.</param>
+    /// <param name="fallbackFactory">Async factory to produce a fallback Result.</param>
+    /// <returns>A task returning the original or fallback Result.</returns>
     public static async Task<Result<T>> OrElseAsync<T>(this Task<Result<T>> resultTask, Func<Task<Result<T>>> fallbackFactory)
     {
         ArgumentNullException.ThrowIfNull(resultTask);
@@ -72,6 +96,12 @@ public static class ResultValueExtensions
     /// <summary>
     /// Returns a plain value selected from success or failure branch.
     /// </summary>
+    /// <typeparam name="T">The source value type.</typeparam>
+    /// <typeparam name="TOut">The return value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="onSuccess">Function for the success branch.</param>
+    /// <param name="onFailure">Function for the failure branch.</param>
+    /// <returns>The value produced by the matching branch.</returns>
     public static TOut MatchValue<T, TOut>(this Result<T> result, Func<T, TOut> onSuccess, Func<IEnumerable<string>, TOut> onFailure)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -88,6 +118,11 @@ public static class ResultValueExtensions
     /// <summary>
     /// Non-generic variant for convenience.
     /// </summary>
+    /// <typeparam name="TOut">The return value type.</typeparam>
+    /// <param name="result">The input non-generic Result.</param>
+    /// <param name="onSuccess">Function for the success branch.</param>
+    /// <param name="onFailure">Function for the failure branch.</param>
+    /// <returns>The value produced by the matching branch.</returns>
     public static TOut MatchValue<TOut>(this Result result, Func<TOut> onSuccess, Func<IEnumerable<string>, TOut> onFailure)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -99,6 +134,10 @@ public static class ResultValueExtensions
     /// <summary>
     /// Executes side-effect regardless of success or failure and returns the same result.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="action">Action to execute on both branches.</param>
+    /// <returns>The original Result.</returns>
     public static Result<T> OnBoth<T>(this Result<T> result, Action action)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -110,6 +149,11 @@ public static class ResultValueExtensions
     /// <summary>
     /// Executes side-effects for success and failure (branch-aware), returns the same result.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="onSuccess">Action to execute when successful.</param>
+    /// <param name="onFailure">Action to execute when failed.</param>
+    /// <returns>The original Result.</returns>
     public static Result<T> OnBoth<T>(this Result<T> result, Action<T> onSuccess, Action<IEnumerable<string>> onFailure)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -129,6 +173,10 @@ public static class ResultValueExtensions
     /// <summary>
     /// Non-generic branch-aware side-effect.
     /// </summary>
+    /// <param name="result">The input non-generic Result.</param>
+    /// <param name="onSuccess">Action to execute when successful.</param>
+    /// <param name="onFailure">Action to execute when failed.</param>
+    /// <returns>The original Result.</returns>
     public static Result OnBoth(this Result result, Action onSuccess, Action<IEnumerable<string>> onFailure)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -149,6 +197,10 @@ public static class ResultValueExtensions
     /// <summary>
     /// Alias for OnBoth(Action) to mirror semantics of finally.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="action">Action to execute on both branches.</param>
+    /// <returns>The original Result.</returns>
     public static Result<T> Finally<T>(this Result<T> result, Action action)
     {
         return result.OnBoth(action);
@@ -157,6 +209,12 @@ public static class ResultValueExtensions
     /// <summary>
     /// Maps both branches into a new Result value, preserving Result wrapper.
     /// </summary>
+    /// <typeparam name="T">The source value type.</typeparam>
+    /// <typeparam name="TOut">The mapped value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="onSuccess">Mapping for the success branch.</param>
+    /// <param name="onFailure">Mapping for the failure branch.</param>
+    /// <returns>The mapped Result.</returns>
     public static Result<TOut> MapBoth<T, TOut>(this Result<T> result, Func<T, TOut> onSuccess, Func<IEnumerable<string>, TOut> onFailure)
     {
         ArgumentNullException.ThrowIfNull(result);

@@ -53,6 +53,13 @@
     <ThresholdStat>total</ThresholdStat>
   </PropertyGroup>
 
+  <!-- Remove Microsoft Testing Platform packages during Stryker runs -->
+  <ItemGroup Condition="'$(STRYKER_MUTATION_TEST)' != ''">
+    <PackageReference Remove="Microsoft.Testing.Platform" />
+    <PackageReference Remove="Microsoft.Testing.Platform.MSBuild" />
+    <PackageReference Remove="Microsoft.Testing.Extensions.TrxReport" />
+  </ItemGroup>
+
   
   <ItemGroup Label="xUnit v3">
     <PackageReference Include="xunit.v3" />
@@ -130,6 +137,7 @@
     <ProjectCapability Include="TestingPlatformServer" />
     <ProjectCapability Include="TestContainer" />
   </ItemGroup>
+
   <PropertyGroup>
     
     <!-- Suppress additional warnings for unit test projects -->

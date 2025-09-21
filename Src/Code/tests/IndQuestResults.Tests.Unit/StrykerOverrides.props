@@ -1,0 +1,14 @@
+<Project>
+  <!-- Force-disable Microsoft Testing Platform and switch to VS Test adapter for Stryker runs -->
+  <PropertyGroup>
+    <UseMicrosoftTestingPlatformRunner>false</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>false</TestingPlatformDotnetTestSupport>
+    <TestingPlatformServer>false</TestingPlatformServer>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Remove="Microsoft.Testing.Platform" />
+    <PackageReference Remove="Microsoft.Testing.Platform.MSBuild" />
+    <PackageReference Remove="Microsoft.Testing.Extensions.TrxReport" />
+  </ItemGroup>
+</Project>
+

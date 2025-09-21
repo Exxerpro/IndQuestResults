@@ -11,17 +11,17 @@
 
 A battle-tested, enterprise-grade Result<T> library for functional error handling in .NET applications. Provides type-safe, performant, and expressive ways to represent operation outcomes without exceptions.
 
-## ✨ Key Features
+## Key Features
 
-- **🛡️ Type Safety**: Eliminates null reference exceptions and runtime errors
-- **⚡ Performance Optimized**: 70% reduction in allocations with Span<T> optimizations
-- **🔄 Functional Programming**: Full monadic operations (Map, Bind, Match, Recover)
-- **🧵 Thread-Safe**: Immutable design with readonly fields
-- **📊 JSON Serializable**: Built-in support for API responses and data persistence
-- **⚠️ Warning Support**: Distinguish between errors and diagnostic warnings
-- **🎯 Enterprise Ready**: Extensive mutation testing with 85% quality threshold
+- Type safety: eliminate null-reference exceptions in control flow
+- Performance: Span-based optimizations and reduced allocations
+- Functional: Map, Bind, Match, Recover with fluent composition
+- Thread-safe: immutable design, no shared mutable state
+- JSON serializable: API responses and persistence ready
+- Warnings on success: diagnostics with quality metadata
+- Quality: mutation-tested, high coverage
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -35,15 +35,15 @@ dotnet add package IndQuestResults
 using IndQuestResults;
 
 // Success results
-var success = Result.Success();
-var successWithValue = Result<string>.Success("Hello World");
+var ok = Result.Success();
+var okWithValue = Result<string>.Success("Hello World");
 
 // Failure results
-var failure = Result.WithFailure("Operation failed");
-var failureWithValue = Result<int>.WithFailure("Parse error", defaultValue: 0);
+var fail = Result.WithFailure("Operation failed");
+var failWithValue = Result<int>.WithFailure("Parse error", value: 0);
 
 // Multiple errors
-var multipleErrors = Result.WithFailure(new[] { "Error 1", "Error 2" });
+var many = Result.WithFailure(new[] { "Error 1", "Error 2" });
 
 // Warnings (successful with diagnostics)
 var withWarnings = Result<string>.WithWarnings(
@@ -63,80 +63,84 @@ Console.WriteLine(withWarnsAndMeta.MissingDataRatio);  // 0.25
 Console.WriteLine(string.Join(", ", withWarnsAndMeta.Warnings));
 ```
 
-### Functional Programming
+### Functional Programming (Sync)
 
 ```csharp
-return await _dataService
-    .GetUserAsync(userId)
-    .Bind(user => _validator.ValidateUser(user))
-    .Map(user => user.ToDto())
-    .Tap(dto => _logger.LogSuccess($"User {dto.Id} processed"))
-    .Recover(errors => CreateDefaultUserDto())
-    .Match(
-        onSuccess: dto => Ok(dto),
-        onFailure: errors => BadRequest(errors)
-    );
+using IndQuestResults;
+
+Result<UserDto> CreateUser(string userId)
+{
+    return Result<string>.Success(userId)
+        .Ensure(id => !string.IsNullOrWhiteSpace(id), "empty id")
+        .Bind(id => LoadUser(id))
+        .Map(user => user.ToDto())
+        .Tap(dto => _logger.LogInformation($"User {dto.Id} processed"))
+        .Recover(() => Result<UserDto>.Success(UserDto.Default));
+}
 ```
 
-## 📚 Package Information
+## Async
 
-- **Target Framework**: .NET 10.0+
-- **Dependencies**: None (zero external dependencies)
-- **Package ID**: IndQuestResults
-- **License**: MIT
-- **Source**: Battle-tested patterns from enterprise codebase
-- **Coverage**: 74.5% with comprehensive test suite (353 tests)
-- **Quality**: 85%+ mutation testing score
+Use the async API in `IndQuestResults.Async.ResultAsync` for fluent async composition.
+
+```csharp
+using IndQuestResults;
+using IndQuestResults.Async;
+
+var dto = await ResultAsync
+    .BindAsync(GetUserAsync(userId), user => ValidateUserAsync(user))
+    .MapAsync(valid => valid.ToDtoAsync())
+    .TapAsync(dto => CacheAsync(dto))
+    .RecoverAsync(() => GetDefaultUserDtoAsync());
+
+// Collections
+var users = await ResultAsync.TraverseParallelAsync(
+    userIds,
+    id => GetUserAsync(id),
+    maxDegreeOfParallelism: 4
+);
+```
+
+Full API and patterns: docs/Result-Manual.md
+
+Note: Optional analyzers are available in `IndQuestResults.Analyzers` to guide async usage. Rule IQR0001 suggests using `ResultAsync` for async chaining and includes a one-click code fix.
+
+## Package Information
+
+- Target Framework: .NET 10.0+
+- Dependencies: none (zero external dependencies)
+- Package ID: IndQuestResults
+- License: MIT
+- Coverage: 74.5% with comprehensive test suite
+- Quality: 85%+ mutation testing score
 
 ### Release Notes & Download
+
 - Recommended: `Release/IndQuestResults.1.0.4.nupkg`
 - Previous: `Release/IndQuestResults.1.0.3.nupkg`, `Release/IndQuestResults.1.0.2.nupkg`, `Release/IndQuestResults.1.0.1.nupkg`
-- See [CHANGELOG.md](CHANGELOG.md) for details
+- See CHANGELOG.md for details
 
-## 🤝 Contributing
+## Contributing
 
-We welcome high-quality contributions! IndQuestResults maintains strict quality standards:
+We welcome high-quality contributions! See CONTRIBUTING.md and CODE_OF_CONDUCT.md.
 
-### Quick Start for Contributors
-1. **Read our [Contributing Guidelines](CONTRIBUTING.md)** (mandatory)
-2. **Check our [Code of Conduct](CODE_OF_CONDUCT.md)**
-3. **Review existing [Issues](../../issues)** and [Discussions](../../discussions)
+- 100% unit test coverage for new code
+- Mutation testing score ≥ 85%
+- Zero compilation warnings (warnings as errors)
+- XML documentation for public APIs
+- Benchmarks for performance-sensitive changes
 
-### Quality Requirements
-- ✅ **100% unit test coverage** for new code
-- ✅ **Mutation testing score ≥85%**
-- ✅ **Zero compilation warnings** (warnings as errors)
-- ✅ **XML documentation** for all public APIs
-- ✅ **Performance benchmarks** for performance-critical changes
+## License
 
-### 🚨 Before Opening Issues
-- **Bug reports** MUST include a reproducible repository
-- **Feature requests** MUST include business justification and technical design
-- **Performance issues** MUST include benchmark data and profiling results
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-[📋 Full Contributing Guidelines →](CONTRIBUTING.md)
+## Support & Community
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🏆 Recognition
-
-IndQuestResults serves as a reference implementation for enterprise-grade functional programming in .NET. Contributors who maintain our quality standards are recognized in release notes and project documentation.
-
-### Contributor Levels
-- **Bronze**: First merged contribution
-- **Silver**: 5+ contributions with sustained quality  
-- **Gold**: 20+ contributions with architectural improvements
-- **Platinum**: Core maintainer with mutation testing expertise
-
-## 📞 Support & Community
-
-- 💬 **[GitHub Discussions](../../discussions)** - Questions and community support
-- 🐛 **[GitHub Issues](../../issues)** - Bug reports and feature requests  
-- 📚 **[Documentation](README.md)** - Comprehensive usage guide
-- 🎯 **[Examples](Src/Code/samples/)** - Practical implementation samples
+- Discussions: GitHub Discussions
+- Issues: GitHub Issues
+- Documentation: docs/Result-Manual.md
+- Examples: Src/Code/samples/
 
 ---
 
-**Quality First**: We maintain enterprise-grade standards because this library powers production applications. Every contribution makes the .NET ecosystem stronger! 🚀
+Quality First: We maintain enterprise-grade standards because this library powers production applications. Every contribution makes the .NET ecosystem stronger!

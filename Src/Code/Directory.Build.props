@@ -88,10 +88,10 @@
 
   <PropertyGroup>
     <!-- Version Information -->
-    <VersionPrefix>1.0.5</VersionPrefix>
+    <VersionPrefix>1.0.6</VersionPrefix>
     <VersionSuffix Condition="'$(Configuration)' == 'Debug'">dev</VersionSuffix>
-    <FileVersion>1.0.5</FileVersion>
-    <AssemblyVersion>1.0.5</AssemblyVersion>
+    <FileVersion>1.0.6</FileVersion>
+    <AssemblyVersion>1.0.6</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup>

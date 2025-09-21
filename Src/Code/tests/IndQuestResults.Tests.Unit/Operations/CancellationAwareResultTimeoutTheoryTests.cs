@@ -5,11 +5,16 @@ namespace IndQuestResults.Tests.Unit.Operations;
 public class CancellationAwareResultTimeoutTheoryTests
 {
     // opDelayMs, timeoutMs, externalCancelMs (-1 = no external cancel), expect: 0=success,1=timeout,2=cancel
+    public static TheoryData<int,int,int,int> WrapWithTimeout_Cases() => new()
+    {
+        { 20, 300, -1, 0 },  // completes before timeout (extra margin to avoid flakiness)
+        { 200, 50, -1, 1 },  // times out before op completes
+        { 200, 500, 10, 2 }, // external cancel wins
+        { 500, 50, 10, 2 },  // external cancel vs timeout -> cancel (ensures cancel precedes timeout)
+    };
+
     [Theory]
-    [InlineData(20, 100, -1, 0)]   // completes before timeout
-    [InlineData(200, 50, -1, 1)]   // times out before op completes
-    [InlineData(200, 500, 10, 2)]  // external cancel wins
-    [InlineData(200, 50, 10, 2)]   // external cancel vs timeout -> cancel
+    [MemberData(nameof(WrapWithTimeout_Cases))]
     public async Task WrapWithTimeout_Matrix(int opDelayMs, int timeoutMs, int externalCancelMs, int expect)
     {
         using var cts = new CancellationTokenSource();

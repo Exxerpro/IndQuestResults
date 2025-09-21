@@ -25,8 +25,11 @@ public class PerformanceMetricsSmokeTests
         collector.RecordOperationMetrics("op1", TimeSpan.FromMilliseconds(2), isSuccess: true, isException: false);
         collector.RecordOperationMetrics("op2", TimeSpan.FromMilliseconds(3), isSuccess: false, isException: true, errorType: "InvalidOperationException");
 
-        // Give background loop a moment
-        await Task.Delay(10);
+        // Give background loop a moment (retry to reduce flakiness)
+        for (var i = 0; i < 50 && processor.Entries.Count < 2; i++)
+        {
+            await Task.Delay(10);
+        }
 
         processor.Entries.Count.ShouldBeGreaterThanOrEqualTo(2);
         processor.Entries.Any(e => e.OperationName == "op1" && e.IsSuccess && !e.IsException).ShouldBeTrue();

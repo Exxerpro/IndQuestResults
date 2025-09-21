@@ -30,6 +30,7 @@
     <PackageVersion Include="xunit.v3.runner.inproc.console" Version="3.0.1" />
 
     <!-- Legacy xUnit v2 (removed - replaced with v3) -->
+    
 
     <!-- Coverage -->
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />

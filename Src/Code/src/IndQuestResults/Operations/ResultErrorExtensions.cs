@@ -12,6 +12,9 @@ public static class ResultErrorExtensions
     /// <summary>
     /// Transforms the errors of a failed non-generic Result. Success returns the same instance.
     /// </summary>
+    /// <param name="result">The input Result.</param>
+    /// <param name="map">Function that transforms the error collection.</param>
+    /// <returns>The transformed failed Result or the original Result when successful.</returns>
     public static Result MapError(this Result result, Func<IEnumerable<string>, IEnumerable<string>> map)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -24,6 +27,10 @@ public static class ResultErrorExtensions
     /// <summary>
     /// Transforms the errors of a failed Result{T}. Success returns the same instance.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="map">Function that transforms the error collection.</param>
+    /// <returns>The transformed failed Result or the original Result when successful.</returns>
     public static Result<T> MapError<T>(this Result<T> result, Func<IEnumerable<string>, IEnumerable<string>> map)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -36,6 +43,9 @@ public static class ResultErrorExtensions
     /// <summary>
     /// Executes an action with the errors of a failed non-generic Result without changing it.
     /// </summary>
+    /// <param name="result">The input Result.</param>
+    /// <param name="action">Action to execute with the error collection.</param>
+    /// <returns>The original Result instance.</returns>
     public static Result TapError(this Result result, Action<IEnumerable<string>> action)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -50,6 +60,10 @@ public static class ResultErrorExtensions
     /// <summary>
     /// Executes an action with the errors of a failed Result{T} without changing it.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="action">Action to execute with the error collection.</param>
+    /// <returns>The original Result instance.</returns>
     public static Result<T> TapError<T>(this Result<T> result, Action<IEnumerable<string>> action)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -64,6 +78,9 @@ public static class ResultErrorExtensions
     /// <summary>
     /// Error-aware recovery for non-generic Result.
     /// </summary>
+    /// <param name="result">The input Result.</param>
+    /// <param name="recover">Function that produces a recovery Result from the errors.</param>
+    /// <returns>The recovered Result or the original when successful.</returns>
     public static Result Recover(this Result result, Func<IEnumerable<string>, Result> recover)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -76,6 +93,10 @@ public static class ResultErrorExtensions
     /// <summary>
     /// Error-aware recovery for Result{T}.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="recover">Function that produces a recovery Result from the errors.</param>
+    /// <returns>The recovered Result or the original when successful.</returns>
     public static Result<T> Recover<T>(this Result<T> result, Func<IEnumerable<string>, Result<T>> recover)
     {
         ArgumentNullException.ThrowIfNull(result);
