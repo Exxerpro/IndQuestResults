@@ -2,8 +2,15 @@ using IndQuestResults.Async;
 
 namespace IndQuestResults.Tests.Unit.Async;
 
+/// <summary>
+/// Edge and theory tests for async traversal and parallel traversal helpers in ResultAsync.
+/// Validates null arguments, empty inputs, cancellation, and timeout behavior.
+/// </summary>
 public class ResultAsyncEdgeAndTheoryTests
 {
+    /// <summary>
+    /// Ensures TraverseAsync throws when inputs collection is null.
+    /// </summary>
     [Fact]
     public async Task TraverseAsync_NullInputs_Throws()
     {
@@ -11,6 +18,9 @@ public class ResultAsyncEdgeAndTheoryTests
             await ResultAsync.TraverseAsync<string, int>((IEnumerable<string>)null!, _ => Task.FromResult(Result<int>.Success(0))));
     }
 
+    /// <summary>
+    /// Ensures TraverseAsync throws when mapping function is null.
+    /// </summary>
     [Fact]
     public async Task TraverseAsync_NullFunc_Throws()
     {
@@ -19,6 +29,9 @@ public class ResultAsyncEdgeAndTheoryTests
             await ResultAsync.TraverseAsync<string, int>(inputs, null!));
     }
 
+    /// <summary>
+    /// Ensures TraverseAsync with empty inputs returns a successful empty result set.
+    /// </summary>
     [Fact]
     public async Task TraverseAsync_EmptyInputs_SucceedsWithEmpty()
     {
@@ -27,6 +40,9 @@ public class ResultAsyncEdgeAndTheoryTests
         res.Value!.ShouldBeEmpty();
     }
 
+    /// <summary>
+    /// Ensures TraverseParallelAsync returns a cancelled result when token is cancelled mid-execution.
+    /// </summary>
     [Fact]
     public async Task TraverseParallelAsync_CancelMidway_ReturnsCancelled()
     {
@@ -38,6 +54,9 @@ public class ResultAsyncEdgeAndTheoryTests
         res.Error.ShouldBe(ResultErrors.OperationCancelled);
     }
 
+    /// <summary>
+    /// Ensures pre-cancelled token produces a cancelled result for TraverseAsync.
+    /// </summary>
     [Fact]
     public async Task TraverseAsync_PreCancelled_ReturnsCancelled()
     {

@@ -1,7 +1,14 @@
 namespace IndQuestResults.Tests.Unit.Async;
 
+/// <summary>
+/// Tests for async Map and Traverse helpers ensuring transformation, error propagation,
+/// exception handling, and cancellation behavior in async pipelines.
+/// </summary>
 public class ResultAsyncMapAndTraverseTests
 {
+    /// <summary>
+    /// Ensures MapAsync transforms values on success.
+    /// </summary>
     [Fact]
     public async Task MapAsync_WithSuccessfulResult_TransformsValue()
     {
@@ -12,6 +19,9 @@ public class ResultAsyncMapAndTraverseTests
         mapped.Value.ShouldBe(10);
     }
 
+    /// <summary>
+    /// Ensures MapAsync propagates errors when the input is failed.
+    /// </summary>
     [Fact]
     public async Task MapAsync_WithFailedResult_PropagatesErrors()
     {
@@ -22,6 +32,9 @@ public class ResultAsyncMapAndTraverseTests
         mapped.Errors.ShouldContain("e1");
     }
 
+    /// <summary>
+    /// Ensures MapAsync returns failure when the mapper throws an exception.
+    /// </summary>
     [Fact]
     public async Task MapAsync_WithException_ReturnsFailure()
     {
@@ -33,6 +46,9 @@ public class ResultAsyncMapAndTraverseTests
         mapped.Error!.ShouldContain("boom");
     }
 
+    /// <summary>
+    /// Ensures MapAsync returns cancelled when the cancellation token is cancelled.
+    /// </summary>
     [Fact]
     public async Task MapAsync_WithCancellation_ReturnsCancelled()
     {
@@ -45,6 +61,9 @@ public class ResultAsyncMapAndTraverseTests
         mapped.Error.ShouldBe(ResultErrors.OperationCancelled);
     }
 
+    /// <summary>
+    /// Ensures TraverseAsync produces all outputs when all inputs succeed.
+    /// </summary>
     [Fact]
     public async Task TraverseAsync_AllSuccess_ShouldSucceedWithAllOutputs()
     {
@@ -58,6 +77,9 @@ public class ResultAsyncMapAndTraverseTests
         res.Value!.ShouldBe([1, 4, 9, 16, 25]);
     }
 
+    /// <summary>
+    /// Ensures TraverseAsync aggregates errors when some inputs fail.
+    /// </summary>
     [Fact]
     public async Task TraverseAsync_WithFailures_ShouldAggregateErrors()
     {
@@ -70,6 +92,9 @@ public class ResultAsyncMapAndTraverseTests
         res.Errors.ShouldContain("bad-2");
     }
 
+    /// <summary>
+    /// Ensures TraverseAsync respects cancellation tokens.
+    /// </summary>
     [Fact]
     public async Task TraverseAsync_Cancellation_ReturnsCancelled()
     {
@@ -84,6 +109,9 @@ public class ResultAsyncMapAndTraverseTests
         res.Error.ShouldBe(ResultErrors.OperationCancelled);
     }
 
+    /// <summary>
+    /// Ensures SequenceAsync aggregates failures from a set of tasks.
+    /// </summary>
     [Fact]
     public async Task SequenceAsync_MixedResults_ShouldAggregate()
     {
@@ -98,6 +126,9 @@ public class ResultAsyncMapAndTraverseTests
         res.Errors.ShouldContain("nope");
     }
 
+    /// <summary>
+    /// Ensures TraverseParallelAsync succeeds under concurrency.
+    /// </summary>
     [Fact]
     public async Task TraverseParallelAsync_AllSuccess_ShouldSucceed()
     {
@@ -109,6 +140,9 @@ public class ResultAsyncMapAndTraverseTests
         res.Value!.ShouldBe(Enumerable.Range(2, 8));
     }
 
+    /// <summary>
+    /// Ensures TraverseParallelAsync validates degree of parallelism argument.
+    /// </summary>
     [Fact]
     public async Task TraverseParallelAsync_InvalidDegree_ShouldThrow()
     {

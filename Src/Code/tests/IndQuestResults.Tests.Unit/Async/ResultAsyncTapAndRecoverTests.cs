@@ -1,7 +1,14 @@
 namespace IndQuestResults.Tests.Unit.Async;
 
+/// <summary>
+/// Tests for async Tap and Recover helpers ensuring side effects, error preservation,
+/// exception handling, and cancellation semantics.
+/// </summary>
 public class ResultAsyncTapAndRecoverTests
 {
+    /// <summary>
+    /// Ensures TapAsync executes action on success and returns the original result.
+    /// </summary>
     [Fact]
     public async Task TapAsync_OnSuccess_InvokesAction_AndReturnsOriginal()
     {
@@ -14,6 +21,9 @@ public class ResultAsyncTapAndRecoverTests
         res.Value.ShouldBe(3);
     }
 
+    /// <summary>
+    /// Ensures TapAsync does not execute action for failures and returns the failure.
+    /// </summary>
     [Fact]
     public async Task TapAsync_OnFailure_DoesNotInvokeAction_ReturnsFailure()
     {
@@ -26,6 +36,9 @@ public class ResultAsyncTapAndRecoverTests
         res.Errors.ShouldContain("x");
     }
 
+    /// <summary>
+    /// Ensures TapAsync returns a failure when the action throws.
+    /// </summary>
     [Fact]
     public async Task TapAsync_ActionThrows_ReturnsFailure()
     {
@@ -37,6 +50,9 @@ public class ResultAsyncTapAndRecoverTests
         res.Error!.ShouldContain("boom");
     }
 
+    /// <summary>
+    /// Ensures TapAsync returns cancelled when the cancellation token is cancelled.
+    /// </summary>
     [Fact]
     public async Task TapAsync_CancellationTokenCancelled_ReturnsCancelled()
     {
@@ -49,6 +65,9 @@ public class ResultAsyncTapAndRecoverTests
         res.Error.ShouldBe(ResultErrors.OperationCancelled);
     }
 
+    /// <summary>
+    /// Ensures RecoverAsync bypasses recovery when original result is successful.
+    /// </summary>
     [Fact]
     public async Task RecoverAsync_OnSuccess_ReturnsOriginal_NoRecoveryCall()
     {
@@ -61,6 +80,9 @@ public class ResultAsyncTapAndRecoverTests
         res.Value.ShouldBe(5);
     }
 
+    /// <summary>
+    /// Ensures RecoverAsync executes recovery on failure and returns recovered result.
+    /// </summary>
     [Fact]
     public async Task RecoverAsync_OnFailure_CallsRecovery_AndReturnsRecovered()
     {
@@ -73,6 +95,9 @@ public class ResultAsyncTapAndRecoverTests
         res.Value.ShouldBe(9);
     }
 
+    /// <summary>
+    /// Ensures RecoverAsync returns failure when recovery throws an exception.
+    /// </summary>
     [Fact]
     public async Task RecoverAsync_RecoveryThrows_ReturnsFailure()
     {
@@ -84,6 +109,9 @@ public class ResultAsyncTapAndRecoverTests
         res.Error!.ShouldContain("oops");
     }
 
+    /// <summary>
+    /// Ensures RecoverAsync returns cancelled when token is cancelled.
+    /// </summary>
     [Fact]
     public async Task RecoverAsync_CancellationTokenCancelled_ReturnsCancelled()
     {
@@ -96,6 +124,9 @@ public class ResultAsyncTapAndRecoverTests
         res.Error.ShouldBe(ResultErrors.OperationCancelled);
     }
 
+    /// <summary>
+    /// Ensures RecoverAsync converts OperationCanceledException into a cancelled result.
+    /// </summary>
     [Fact]
     public async Task RecoverAsync_RecoveryThrowsOperationCanceledException_ReturnsCancelled()
     {

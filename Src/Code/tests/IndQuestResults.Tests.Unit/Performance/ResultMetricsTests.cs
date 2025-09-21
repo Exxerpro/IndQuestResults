@@ -2,6 +2,10 @@ using IndQuestResults.Performance;
 
 namespace IndQuestResults.Tests.Unit.Performance;
 
+/// <summary>
+/// Tests for ResultMetrics non-blocking metrics collection and scoping helpers.
+/// Verifies recording on success, exceptions, async cancellation, and scoped names.
+/// </summary>
 public class ResultMetricsTests
 {
     private sealed class InMemoryProcessor : IMetricsProcessor

@@ -3,6 +3,10 @@ using IndQuestResults.Reactive;
 
 namespace IndQuestResults.Tests.Unit.Reactive;
 
+/// <summary>
+/// Tests for reactive collection helpers that aggregate IObservable streams into Result values.
+/// Covers success aggregation, error propagation, timeouts, and cancellation.
+/// </summary>
 public class CollectResultsBranchTests
 {
     private sealed class TestObservable<T> : IObservable<T>

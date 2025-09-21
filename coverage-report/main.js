@@ -213,21 +213,21 @@ var assemblies = [
   {
     "name": "IndQuestResults",
     "classes": [
-      { "name": "IndQuestResults.Extensions.Async.ResultAsync", "rp": "IndQuestResults_ResultAsync.html", "cl": 87, "ucl": 17, "cal": 104, "tl": 368, "cb": 24, "tb": 28, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Async.ResultAsync", "rp": "IndQuestResults_ResultAsync.html", "cl": 87, "ucl": 78, "cal": 165, "tl": 368, "cb": 24, "tb": 50, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Extensions.Collections.ResultCollections", "rp": "IndQuestResults_ResultCollections.html", "cl": 50, "ucl": 1, "cal": 51, "tl": 280, "cb": 39, "tb": 44, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Extensions.Functional.ResultApplicative", "rp": "IndQuestResults_ResultApplicative.html", "cl": 84, "ucl": 0, "cal": 84, "tl": 300, "cb": 99, "tb": 104, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Extensions.Observables.CollectionObserver<T>", "rp": "IndQuestResults_CollectionObserver_1.html", "cl": 12, "ucl": 0, "cal": 12, "tl": 583, "cb": 3, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Extensions.Observables.ReplayBridgeObserver<T>", "rp": "IndQuestResults_ReplayBridgeObserver_1.html", "cl": 9, "ucl": 0, "cal": 9, "tl": 549, "cb": 1, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Extensions.Observables.ReplayResultSubject<T>", "rp": "IndQuestResults_ReplayResultSubject_1.html", "cl": 20, "ucl": 10, "cal": 30, "tl": 397, "cb": 11, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Extensions.Observables.ResultBridgeObserver<T>", "rp": "IndQuestResults_ResultBridgeObserver_1.html", "cl": 10, "ucl": 4, "cal": 14, "tl": 435, "cb": 2, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Extensions.Observables.ResultObservableBridge", "rp": "IndQuestResults_ResultObservableBridge.html", "cl": 72, "ucl": 0, "cal": 72, "tl": 312, "cb": 11, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Extensions.Observables.ResultObserver<T>", "rp": "IndQuestResults_ResultObserver_1.html", "cl": 25, "ucl": 1, "cal": 26, "tl": 409, "cb": 14, "tb": 20, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Observables.CollectionObserver<T>", "rp": "IndQuestResults_CollectionObserver_1.html", "cl": 12, "ucl": 5, "cal": 17, "tl": 583, "cb": 3, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Observables.ReplayBridgeObserver<T>", "rp": "IndQuestResults_ReplayBridgeObserver_1.html", "cl": 9, "ucl": 5, "cal": 14, "tl": 549, "cb": 1, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Observables.ReplayResultSubject<T>", "rp": "IndQuestResults_ReplayResultSubject_1.html", "cl": 20, "ucl": 29, "cal": 49, "tl": 397, "cb": 11, "tb": 28, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Observables.ResultBridgeObserver<T>", "rp": "IndQuestResults_ResultBridgeObserver_1.html", "cl": 10, "ucl": 10, "cal": 20, "tl": 435, "cb": 2, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Observables.ResultObservableBridge", "rp": "IndQuestResults_ResultObservableBridge.html", "cl": 72, "ucl": 16, "cal": 88, "tl": 312, "cb": 11, "tb": 20, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Observables.ResultObserver<T>", "rp": "IndQuestResults_ResultObserver_1.html", "cl": 25, "ucl": 8, "cal": 33, "tl": 409, "cb": 14, "tb": 30, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Extensions.Observables.ResultSubject<T>", "rp": "IndQuestResults_ResultSubject_1.html", "cl": 56, "ucl": 3, "cal": 59, "tl": 332, "cb": 15, "tb": 18, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Extensions.Observables.ResultSubscriptionsCore", "rp": "IndQuestResults_ResultSubscriptionsCore.html", "cl": 36, "ucl": 0, "cal": 36, "tl": 129, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Extensions.Observables.RouteResultsObserver<T>", "rp": "IndQuestResults_RouteResultsObserver_1.html", "cl": 14, "ucl": 0, "cal": 14, "tl": 520, "cb": 5, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Extensions.Observables.SelectResultObserver<T1, T2>", "rp": "IndQuestResults_SelectResultObserver_2.html", "cl": 16, "ucl": 3, "cal": 19, "tl": 480, "cb": 3, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Extensions.Observables.Subscription", "rp": "IndQuestResults_Subscription.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 432, "cb": 3, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Extensions.Observables.SubscriptionManager", "rp": "IndQuestResults_SubscriptionManager.html", "cl": 19, "ucl": 0, "cal": 19, "tl": 509, "cb": 6, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Observables.RouteResultsObserver<T>", "rp": "IndQuestResults_RouteResultsObserver_1.html", "cl": 14, "ucl": 8, "cal": 22, "tl": 520, "cb": 5, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Observables.SelectResultObserver<T1, T2>", "rp": "IndQuestResults_SelectResultObserver_2.html", "cl": 16, "ucl": 9, "cal": 25, "tl": 480, "cb": 3, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Observables.Subscription", "rp": "IndQuestResults_Subscription.html", "cl": 7, "ucl": 5, "cal": 12, "tl": 432, "cb": 3, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Extensions.Observables.SubscriptionManager", "rp": "IndQuestResults_SubscriptionManager.html", "cl": 19, "ucl": 12, "cal": 31, "tl": 509, "cb": 6, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Extensions.Performance.ChannelMetricsCollector", "rp": "IndQuestResults_ChannelMetricsCollector.html", "cl": 41, "ucl": 5, "cal": 46, "tl": 310, "cb": 4, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Extensions.Performance.MetricEntry", "rp": "IndQuestResults_MetricEntry.html", "cl": 14, "ucl": 0, "cal": 14, "tl": 359, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Extensions.Performance.MetricsScope", "rp": "IndQuestResults_MetricsScope.html", "cl": 13, "ucl": 0, "cal": 13, "tl": 416, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -239,7 +239,7 @@ var assemblies = [
       { "name": "IndQuestResults.Operations.Result", "rp": "IndQuestResults_Result.html", "cl": 118, "ucl": 7, "cal": 125, "tl": 550, "cb": 106, "tb": 114, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Operations.Result<T>", "rp": "IndQuestResults_Result_1.html", "cl": 94, "ucl": 36, "cal": 130, "tl": 559, "cb": 78, "tb": 138, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Operations.ResultConstants", "rp": "IndQuestResults_ResultConstants.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 50, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "IndQuestResults.Operations.ResultExtensions", "rp": "IndQuestResults_ResultExtensions.html", "cl": 56, "ucl": 2, "cal": 58, "tl": 560, "cb": 54, "tb": 56, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "IndQuestResults.Operations.ResultExtensions", "rp": "IndQuestResults_ResultExtensions.html", "cl": 56, "ucl": 2, "cal": 58, "tl": 561, "cb": 54, "tb": 56, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Performance.ConcurrentCache<T1, T2>", "rp": "IndQuestResults_ConcurrentCache_2.html", "cl": 0, "ucl": 61, "cal": 61, "tl": 328, "cb": 0, "tb": 16, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Performance.MemoryOptimizations", "rp": "IndQuestResults_MemoryOptimizations.html", "cl": 0, "ucl": 45, "cal": 45, "tl": 328, "cb": 0, "tb": 36, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "IndQuestResults.Performance.SpanOptimizations", "rp": "IndQuestResults_SpanOptimizations.html", "cl": 0, "ucl": 83, "cal": 83, "tl": 293, "cb": 0, "tb": 82, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -309,6 +309,12 @@ var riskHotspots = [
       { "value": 10, "exceeded": false },
     ]},
   {
+    "assembly": "IndQuestResults", "class": "IndQuestResults.Extensions.Observables.ReplayResultSubject<T>", "reportPath": "IndQuestResults_ReplayResultSubject_1.html", "methodName": "Subscribe(System.Action`1<T>,System.Action`1<System.Collections.Generic.IEnumerable`1<System.String>>,System.Action)", "methodShortName": "Subscribe(...)", "fileIndex": 0, "line": 361,
+    "metrics": [
+      { "value": 72, "exceeded": true },
+      { "value": 8, "exceeded": false },
+    ]},
+  {
     "assembly": "IndQuestResults", "class": "IndQuestResults.Operations.Result<T>", "reportPath": "IndQuestResults_Result_1.html", "methodName": "Tap(System.Action`1<T>)", "methodShortName": "Tap(...)", "fileIndex": 0, "line": 419,
     "metrics": [
       { "value": 72, "exceeded": true },
@@ -337,6 +343,18 @@ var riskHotspots = [
     "metrics": [
       { "value": 72, "exceeded": true },
       { "value": 8, "exceeded": false },
+    ]},
+  {
+    "assembly": "IndQuestResults", "class": "IndQuestResults.Extensions.Async.ResultAsync", "reportPath": "IndQuestResults_ResultAsync.html", "methodName": "MapAsync()", "methodShortName": "MapAsync()", "fileIndex": 0, "line": 96,
+    "metrics": [
+      { "value": 42, "exceeded": true },
+      { "value": 6, "exceeded": false },
+    ]},
+  {
+    "assembly": "IndQuestResults", "class": "IndQuestResults.Extensions.Observables.CollectionObserver<T>", "reportPath": "IndQuestResults_CollectionObserver_1.html", "methodName": ".ctor(System.Collections.Generic.List`1<T>,System.Collections.Generic.List`1<System.String>,System.Threading.Tasks.TaskCompletionSource`1<System.Boolean>)", "methodShortName": ".ctor(...)", "fileIndex": 0, "line": 560,
+    "metrics": [
+      { "value": 42, "exceeded": true },
+      { "value": 6, "exceeded": false },
     ]},
   {
     "assembly": "IndQuestResults", "class": "IndQuestResults.Operations.Result<T>", "reportPath": "IndQuestResults_Result_1.html", "methodName": "WithFailure(T,System.Collections.Generic.IEnumerable`1<System.String>)", "methodShortName": "WithFailure(...)", "fileIndex": 0, "line": 199,

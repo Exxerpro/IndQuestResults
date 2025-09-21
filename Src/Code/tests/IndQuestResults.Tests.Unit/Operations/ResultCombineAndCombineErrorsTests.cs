@@ -1,5 +1,9 @@
 namespace IndQuestResults.Tests.Unit.Operations;
 
+/// <summary>
+/// Tests for <see cref="Result.Combine(Result[])"/> and <see cref="IndQuestResults.Result.CombineErrors(System.Collections.Generic.IEnumerable{string}?, System.Collections.Generic.IEnumerable{string}?)"/>
+/// covering error aggregation, empty inputs, and special cases.
+/// </summary>
 public class ResultCombineAndCombineErrorsTests
 {
     [Fact]

@@ -1,5 +1,9 @@
 namespace IndQuestResults.Tests.Unit.Operations;
 
+/// <summary>
+/// Edge tests for async extension helpers from <see cref="IndQuestResults.Operations.ResultExtensions"/>.
+/// Validates exception propagation, short-circuiting, and branching behavior.
+/// </summary>
 public class ResultAsyncExtensionsEdgeTests
 {
     [Fact]

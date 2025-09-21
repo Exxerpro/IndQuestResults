@@ -5,6 +5,10 @@ using IndQuestResults.Async;
 
 namespace IndQuestResults.Tests.Unit.Async;
 
+/// <summary>
+/// Additional async tests covering IAsyncEnumerable sequencing and traversal helpers.
+/// Verifies error aggregation and mapping behavior for async streams.
+/// </summary>
 public class ResultAsyncExtraTests
 {
     private static async IAsyncEnumerable<Result<int>> GetAsyncResults([EnumeratorCancellation] CancellationToken ct = default)
@@ -16,6 +20,9 @@ public class ResultAsyncExtraTests
         yield return Result<int>.Success(3);
     }
 
+    /// <summary>
+    /// Ensures that SequenceAsync over an async stream aggregates failures.
+    /// </summary>
     [Fact]
     public async Task SequenceAsync_IAsyncEnumerable_CollectsErrors()
     {
@@ -24,6 +31,9 @@ public class ResultAsyncExtraTests
         r.Errors.ShouldContain("err");
     }
 
+    /// <summary>
+    /// Ensures that TraverseAsync over an async stream maps values successfully.
+    /// </summary>
     [Fact]
     public async Task TraverseAsync_IAsyncEnumerable_MapsValues()
     {

@@ -142,7 +142,7 @@
     
     <!-- Suppress additional warnings for unit test projects -->
     <!-- xUnit1051: Suppress CancellationToken analyzer rule until migration is complete -->
-    <NoWarn>$(NoWarn);CS1591;CS8625;CA1861;IDE0004;IDE0028;IDE0200;IDE0011;CA2201;IDE0300;IDE0350;CA1852;IDE0053;CA1829;xUnit1051</NoWarn>
+    <NoWarn>$(NoWarn);CS1591;CS8625;CA1861;IDE0004;IDE0028;IDE0200;IDE0011;CA2201;IDE0300;IDE0350;CA1852;IDE0053;CA1829;xUnit1051;IL2026</NoWarn>
   </PropertyGroup>
 
 

@@ -270,7 +270,9 @@ public sealed class Result<T>
     /// </summary>
     private static double Clamp01(double v)
     {
-        return v < 0.0 ? 0.0 : (v > 1.0 ? 1.0 : v);
+        return double.IsNaN(v) || double.IsNegativeInfinity(v) || v < 0.0
+            ? 0.0
+            : double.IsPositiveInfinity(v) || v > 1.0 ? 1.0 : v;
     }
 
     /// <summary>

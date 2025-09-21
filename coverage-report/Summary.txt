@@ -1,0 +1,56 @@
+Summary
+  Generated on: 9/21/2025 - 7:22:05 AM
+  Coverage date: 9/18/2025 - 4:42:02 AM - 9/18/2025 - 8:46:37 AM
+  Parser: MultiReport (5x Cobertura)
+  Assemblies: 1
+  Classes: 34
+  Files: 17
+  Line coverage: 69.4%
+  Covered lines: 1084
+  Uncovered lines: 476
+  Coverable lines: 1560
+  Total lines: 5273
+  Branch coverage: 61.4% (543 of 884)
+  Covered branches: 543
+  Total branches: 884
+  Method coverage: 84.5% (263 of 311)
+  Full method coverage: 54.3% (169 of 311)
+  Covered methods: 263
+  Fully covered methods: 169
+  Total methods: 311
+
+IndQuestResults                                                         69.4%
+  IndQuestResults.Extensions.Async.ResultAsync                          52.7%
+  IndQuestResults.Extensions.Collections.ResultCollections                98%
+  IndQuestResults.Extensions.Functional.ResultApplicative                100%
+  IndQuestResults.Extensions.Observables.CollectionObserver<T>          70.5%
+  IndQuestResults.Extensions.Observables.ReplayBridgeObserver<T>        64.2%
+  IndQuestResults.Extensions.Observables.ReplayResultSubject<T>         40.8%
+  IndQuestResults.Extensions.Observables.ResultBridgeObserver<T>          50%
+  IndQuestResults.Extensions.Observables.ResultObservableBridge         81.8%
+  IndQuestResults.Extensions.Observables.ResultObserver<T>              75.7%
+  IndQuestResults.Extensions.Observables.ResultSubject<T>               94.9%
+  IndQuestResults.Extensions.Observables.ResultSubscriptionsCore         100%
+  IndQuestResults.Extensions.Observables.RouteResultsObserver<T>        63.6%
+  IndQuestResults.Extensions.Observables.SelectResultObserver<T1, T2>     64%
+  IndQuestResults.Extensions.Observables.Subscription                   58.3%
+  IndQuestResults.Extensions.Observables.SubscriptionManager            61.2%
+  IndQuestResults.Extensions.Performance.ChannelMetricsCollector        89.1%
+  IndQuestResults.Extensions.Performance.MetricEntry                     100%
+  IndQuestResults.Extensions.Performance.MetricsScope                    100%
+  IndQuestResults.Extensions.Performance.ResultMetrics                  67.6%
+  IndQuestResults.Extensions.Performance.ResultTiming                     78%
+  IndQuestResults.Extensions.Performance.TimedResult                     100%
+  IndQuestResults.Extensions.Performance.TimedResult<T>                  100%
+  IndQuestResults.Operations.CancellationAwareResult                    78.7%
+  IndQuestResults.Operations.Result                                     94.4%
+  IndQuestResults.Operations.Result<T>                                  72.3%
+  IndQuestResults.Operations.ResultConstants                             100%
+  IndQuestResults.Operations.ResultExtensions                           96.5%
+  IndQuestResults.Performance.ConcurrentCache<T1, T2>                      0%
+  IndQuestResults.Performance.MemoryOptimizations                          0%
+  IndQuestResults.Performance.SpanOptimizations                            0%
+  IndQuestResults.Validation.MultipleNullArgumentsError                  100%
+  IndQuestResults.Validation.NullArgumentError                           100%
+  IndQuestResults.Validation.NullArgumentValidation                      100%
+  IndQuestResults.Validation.ValidationResult                            100%

@@ -1,0 +1,56 @@
+Summary
+  Generated on: 9/21/2025 - 7:24:31 AM
+  Coverage date: 9/18/2025 - 11:16:36 AM
+  Parser: MultiReport (2x Cobertura)
+  Assemblies: 1
+  Classes: 34
+  Files: 17
+  Line coverage: 85.1%
+  Covered lines: 1201
+  Uncovered lines: 209
+  Coverable lines: 1410
+  Total lines: 5824
+  Branch coverage: 77.4% (621 of 802)
+  Covered branches: 621
+  Total branches: 802
+  Method coverage: 92.3% (241 of 261)
+  Full method coverage: 75.4% (197 of 261)
+  Covered methods: 241
+  Fully covered methods: 197
+  Total methods: 261
+
+IndQuestResults                                           85.1%
+  IndQuestResults.Async.ResultAsync                       83.6%
+  IndQuestResults.Collections.ResultCollections             98%
+  IndQuestResults.Functional.ResultApplicative             100%
+  IndQuestResults.Operations.CancellationAwareResult      78.7%
+  IndQuestResults.Operations.ResultExtensions             96.5%
+  IndQuestResults.Performance.ChannelMetricsCollector     89.1%
+  IndQuestResults.Performance.ConcurrentCache<T1, T2>     73.7%
+  IndQuestResults.Performance.MemoryOptimizations         57.7%
+  IndQuestResults.Performance.MetricEntry                  100%
+  IndQuestResults.Performance.MetricsScope                 100%
+  IndQuestResults.Performance.ResultMetrics               67.6%
+  IndQuestResults.Performance.ResultTiming                  78%
+  IndQuestResults.Performance.SpanOptimizations           55.4%
+  IndQuestResults.Performance.TimedResult                  100%
+  IndQuestResults.Performance.TimedResult<T>               100%
+  IndQuestResults.Reactive.CollectionObserver<T>           100%
+  IndQuestResults.Reactive.ReplayBridgeObserver<T>         100%
+  IndQuestResults.Reactive.ReplayResultSubject<T>         66.6%
+  IndQuestResults.Reactive.ResultBridgeObserver<T>        71.4%
+  IndQuestResults.Reactive.ResultObservableBridge          100%
+  IndQuestResults.Reactive.ResultObserver<T>              96.1%
+  IndQuestResults.Reactive.ResultSubject<T>               94.9%
+  IndQuestResults.Reactive.ResultSubscriptionsCore         100%
+  IndQuestResults.Reactive.RouteResultsObserver<T>         100%
+  IndQuestResults.Reactive.SelectResultObserver<T1, T2>   84.2%
+  IndQuestResults.Reactive.Subscription                    100%
+  IndQuestResults.Reactive.SubscriptionManager             100%
+  IndQuestResults.Result                                  94.4%
+  IndQuestResults.Result<T>                               72.3%
+  IndQuestResults.ResultConstants                          100%
+  IndQuestResults.Validation.MultipleNullArgumentsError    100%
+  IndQuestResults.Validation.NullArgumentError             100%
+  IndQuestResults.Validation.NullArgumentValidation        100%
+  IndQuestResults.Validation.ValidationResult              100%

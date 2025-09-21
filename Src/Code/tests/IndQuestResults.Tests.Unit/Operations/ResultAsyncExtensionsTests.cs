@@ -1,5 +1,10 @@
 namespace IndQuestResults.Tests.Unit.Operations;
 
+/// <summary>
+/// Tests for async extension methods defined on Result tasks in ResultExtensions.
+/// Covers chaining, mapping, side effects, validation, combining, switching,
+/// recovery, logging, and defaulting behaviors.
+/// </summary>
 public class ResultAsyncExtensionsTests
 {
     [Fact]

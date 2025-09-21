@@ -2,6 +2,10 @@ using IndQuestResults;
 
 namespace IndQuestResults.Tests.Unit.Reactive;
 
+/// <summary>
+/// Tests for the ResultBridgeObserver which converts observable values and errors
+/// into Result instances for downstream processing.
+/// </summary>
 public class ResultBridgeObserverAdditionalTests
 {
     [Fact]
