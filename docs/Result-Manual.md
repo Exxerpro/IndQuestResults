@@ -41,12 +41,13 @@ var profile = await GetUserAsync(id)
 - Create: `Result.Success()`, `Result.WithFailure("err")`, `Result<T>.Success(v)`, `Result<T>.WithFailure("err")`
 - Map/Bind: `.Map(f)`, `.Bind(f)`; LINQ: `from x in r1 from y in r2 select ...`
 - Ensure/Tap: `.Ensure(pred, "err")`, `.Tap(a)`; side-effects without breaking the chain
-- Match: `.Match(onSuccess, onFailure)` returns `Result<TOut>` for generic; use `MatchValue` for plain values
+- Match: `.Match(onSuccess, onFailure)` returns a plain value for generic; use `MatchValue` for explicit value selection or `MapBoth` to produce a `Result<TOut>`
 - Combine: `r.Combine(r2, r3)` aggregates errors; `Result.CombineErrors(e1, e2)` merges sets
 - Value helpers: `.ValueOr(default)`, `.OrElse(fallback)`
 - Error helpers: `.MapError(map)`, `.TapError(log)`, `.Recover(errors => ...)`
 - Async: `.ThenAsync`, `.ThenMap`, `.ThenTap`, `.ThenValidate`, `.ThenRecover`, `.CombineAsync`
 - Cancellation: `ResultExtensions.Cancelled<T>()`, `.IsCancelled()`
+- Serialization: `Result<T>` is JSON-serializable via `System.Text.Json` attributes (`[JsonConstructor]`); custom converters are not required
 - Warnings: `Result<T>.WithWarnings(warnings, value, confidence, missingDataRatio)`
 
 ---

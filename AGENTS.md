@@ -4,7 +4,7 @@ This AGENTS.md applies to the entire repository. Keep changes small, focused, an
 
 ## Project Structure & Module Organization
 - Root: `README.md`, `LICENSE`, `build/`, `.github/workflows/`.
-- Solution: `Src/Code/IndQuestResults.All.sln`.
+- Solution: `Src/Code/IndQuestResults.sln`.
 - Library: `Src/Code/src/IndQuestResults/` (primary package) and `Src/Code/src/IndQuestResults.Analyzers/`.
 - Tests: `Src/Code/tests/` (e.g., `IndQuestResults.Tests.Unit/`, `IndQuestResults.Tests.Performance/`).
 - Benchmarks: `Src/Code/benchmarks/IndQuestResults.Benchmarks/`.
@@ -13,7 +13,7 @@ This AGENTS.md applies to the entire repository. Keep changes small, focused, an
 ## Build, Test, and Development Commands
 - Build all: `pwsh ./build/build.ps1 -Configuration Release` (restore, build, test, benchmarks, pack).
 - Skip phases: `pwsh ./build/build.ps1 -SkipTests -SkipPack`.
-- Direct dotnet: `dotnet restore Src/Code/IndQuestResults.All.sln`; `dotnet build Src/Code/IndQuestResults.All.sln -c Release`; `dotnet test Src/Code/IndQuestResults.All.sln -c Release`.
+- Direct dotnet: `dotnet restore Src/Code/IndQuestResults.sln`; `dotnet build Src/Code/IndQuestResults.sln -c Release`; `dotnet test Src/Code/IndQuestResults.sln -c Release`.
 - Pack library: `dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj -c Release`.
 - Run benchmarks: `dotnet run --project Src/Code/benchmarks/IndQuestResults.Benchmarks -c Release`.
 
@@ -26,7 +26,7 @@ This AGENTS.md applies to the entire repository. Keep changes small, focused, an
 ## Testing Guidelines
 - Framework: xUnit with Shouldly assertions (tests under `Src/Code/tests/*`).
 - Coverage: aim for 90%+ lines/branches in core modules.
-- Commands: `dotnet test Src/Code/IndQuestResults.All.sln -c Release`.
+- Commands: `dotnet test Src/Code/IndQuestResults.sln -c Release`.
 - Mutation (optional): use Stryker locally if installed; check `build/mutation-loop.ps1`.
 
 ## Commit & Pull Request Guidelines

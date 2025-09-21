@@ -1,6 +1,6 @@
 ## IndQuestResults Specifications Index
 
-This is the entry point for all Result-related specifications and documentation.
+This is the entry point for all Result-related specifications and documentation. See also the consolidated docs index at `../README.md`.
 
 ### Documents
 

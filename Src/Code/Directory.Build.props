@@ -88,10 +88,10 @@
 
   <PropertyGroup>
     <!-- Version Information -->
-    <VersionPrefix>1.0.6</VersionPrefix>
+    <VersionPrefix>1.0.7</VersionPrefix>
     <VersionSuffix Condition="'$(Configuration)' == 'Debug'">dev</VersionSuffix>
-    <FileVersion>1.0.6</FileVersion>
-    <AssemblyVersion>1.0.6</AssemblyVersion>
+    <FileVersion>1.0.7</FileVersion>
+    <AssemblyVersion>1.0.7</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -105,7 +105,7 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
@@ -147,5 +147,18 @@
     <None Include="$(MSBuildThisFileDirectory)..\\..\\README.md" Pack="true" PackagePath="/" Link="README.md" />
     <!-- Include icon if it exists -->
     <None Include="$(MSBuildThisFileDirectory)src/IndQuestResults/IconIndQuestResult.png" Pack="true" PackagePath="/" />
+    <!-- Source Link (dependency-free runtime) -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
+
+  <!-- Symbols and SourceLink for all packable projects -->
+  <PropertyGroup Condition="'$(IsPackable)' == 'true'">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- CI systems usually set CI=true; keep local deterministic builds optional -->
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Create snupkg alongside nupkg -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
 </Project>

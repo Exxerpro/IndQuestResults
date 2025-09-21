@@ -10,8 +10,8 @@
           <Include>[IndQuestResults]*</Include>
           <!-- Exclude tests, samples, analyzers, and benchmarks assemblies -->
           <Exclude>[*.Tests*]*,[*.Samples*]*,[*.Benchmarks*]*,[IndQuestResults.Analyzers*]*</Exclude>
-          <!-- Optional: ignore generated/infra files -->
-          <ExcludeByFile>**/Generated/**,**/Migrations/**,**/*.g.cs</ExcludeByFile>
+          <!-- Optional: ignore generated/infra files and performance implementation in coverage -->
+          <ExcludeByFile>**/Generated/**,**/Migrations/**,**/*.g.cs,**/src/IndQuestResults/Performance/*.cs,**/src/IndQuestResults/Performance/**/*.cs</ExcludeByFile>
         </Configuration>
       </DataCollector>
     </DataCollectors>

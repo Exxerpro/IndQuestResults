@@ -1,5 +1,7 @@
 # Architecture Overview
 
+For navigation and related documents, see `docs/README.md`.
+
 ## Design Principles
 
 IndQuestResults follows key functional programming and performance principles:
@@ -23,7 +25,7 @@ IndQuestResults follows key functional programming and performance principles:
 ### 4. Enterprise Features
 - Warning system for diagnostics
 - Cancellation support
-- JSON serialization
+- JSON serialization (System.Text.Json)
 - Comprehensive validation
 
 ## Core Components
@@ -72,7 +74,7 @@ IndQuestResults follows key functional programming and performance principles:
 └─────────────────────────┘
 
 ┌─────────────────────────┐
-│ ResultFluentExtensions  │  Railway-oriented programming methods
+│ ResultExtensions (async chaining)  │  Railway-oriented programming methods
 ├─────────────────────────┤
 │  + ThenAsync<T,TOut>()  │
 │  + ThenValidate<T>()    │

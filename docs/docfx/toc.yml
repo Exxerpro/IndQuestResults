@@ -1,0 +1,10 @@
+- name: Home
+  href: index.md
+- name: Manual
+  href: ../Result-Manual.md
+- name: Architecture
+  href: ../architecture.md
+- name: Specifications
+  href: ../specs/index.md
+- name: API Reference
+  href: api/index.md

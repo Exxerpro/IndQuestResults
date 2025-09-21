@@ -5,9 +5,9 @@
 [![Coverage](https://img.shields.io/badge/coverage-74.5%25-green)](#)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#)
 [![.NET Version](https://img.shields.io/badge/.NET-10.0+-blue)](#)
-[![NuGet](https://img.shields.io/badge/NuGet-v1.0.4-blue)](#release-notes)
+[![NuGet](https://img.shields.io/badge/NuGet-v1.0.7-blue)](#release-notes)
 [![Contributors](https://img.shields.io/badge/contributors-welcome-brightgreen)](#contributing)
-[![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-enforced-blue)](#code-of-conduct)
+[![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-enforced-blue)](#code-of-conduct) [![Docs](https://img.shields.io/badge/docs-available-brightgreen)](docs/README.md)
 
 A battle-tested, enterprise-grade Result<T> library for functional error handling in .NET applications. Provides type-safe, performant, and expressive ways to represent operation outcomes without exceptions.
 
@@ -17,7 +17,7 @@ A battle-tested, enterprise-grade Result<T> library for functional error handlin
 - Performance: Span-based optimizations and reduced allocations
 - Functional: Map, Bind, Match, Recover with fluent composition
 - Thread-safe: immutable design, no shared mutable state
-- JSON serializable: API responses and persistence ready
+- JSON serializable: API responses and persistence ready (System.Text.Json)
 - Warnings on success: diagnostics with quality metadata
 - Quality: mutation-tested, high coverage
 
@@ -103,6 +103,8 @@ var users = await ResultAsync.TraverseParallelAsync(
 
 Full API and patterns: docs/Result-Manual.md
 
+More docs: docs/README.md
+
 Note: Optional analyzers are available in `IndQuestResults.Analyzers` to guide async usage. Rule IQR0001 suggests using `ResultAsync` for async chaining and includes a one-click code fix.
 
 ## Package Information
@@ -116,8 +118,8 @@ Note: Optional analyzers are available in `IndQuestResults.Analyzers` to guide a
 
 ### Release Notes & Download
 
-- Recommended: `Release/IndQuestResults.1.0.4.nupkg`
-- Previous: `Release/IndQuestResults.1.0.3.nupkg`, `Release/IndQuestResults.1.0.2.nupkg`, `Release/IndQuestResults.1.0.1.nupkg`
+- Recommended: `Release/IndQuestResults.1.0.7.nupkg`
+- Previous: `Release/IndQuestResults.1.0.5.nupkg`, `Release/IndQuestResults.1.0.4.nupkg`, `Release/IndQuestResults.1.0.3.nupkg`, `Release/IndQuestResults.1.0.2.nupkg`, `Release/IndQuestResults.1.0.1.nupkg`
 - See CHANGELOG.md for details
 
 ## Contributing

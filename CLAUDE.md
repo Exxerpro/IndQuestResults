@@ -23,7 +23,7 @@ This unified architecture eliminates dependency complexity while providing power
 ### Building and Testing
 ```bash
 # Build the entire solution (primary command)
-dotnet build Src/Code/IndQuestResults.All.sln
+dotnet build Src/Code/IndQuestResults.sln
 
 # Build the main project only
 dotnet build Src/Code/src/IndQuestResults/IndQuestResults.csproj

@@ -1,5 +1,20 @@
 # Changelog
-# Changelog
+
+## 1.0.7 - 2025-09-21
+- Build: Renamed solution to `IndQuestResults.sln` and aligned scripts/docs
+- Packaging: Bumped package and assembly version to 1.0.7
+- Docs: Updated README badges, folder structure, and internal guides
+
+## 1.0.6 - 2025-09-21
+- Docs: Consolidated documentation under `docs/` with a central index; archived drafts under `docs/archive/`
+- Build/Tests: Added coverage testing behavior and refined test configuration
+- Packaging: Bumped package and assembly version to 1.0.6; updated README badges and release pointers
+
+## 1.0.5 - 2025-09-19
+- Core: Added async, LINQ, and error-handling extensions; enhanced `Result<T>` with warnings metadata
+- Analyzers: Refactored analyzers and improved diagnostics coverage
+- Tests: Expanded testing coverage for new extensions and behaviors
+- Docs: General documentation updates
 
 ## 1.0.4 - 2025-09-19
 - Core: Result<T>.WithWarnings now exposes warnings via Errors for backward compatibility

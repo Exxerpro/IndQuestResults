@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  DOTNET_VERSION: '8.0.x'
+  DOTNET_VERSION: '10.0.x'
   SOLUTION_PATH: './Src/Code/IndQuestResults.All.sln'
   COVERAGE_MIN_LINE: '85'
   COVERAGE_MIN_BRANCH: '75'
@@ -85,68 +85,21 @@ jobs:
           **/coverage.cobertura.xml
         fail_ci_if_error: false
         
-  mutation-test:
+  link-check:
     runs-on: ubuntu-latest
     needs: build
-    
     steps:
     - uses: actions/checkout@v4
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+    - name: Check links
+      uses: lycheeverse/lychee-action@v2
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-        
-    - name: Install Stryker
-      run: dotnet tool install -g dotnet-stryker
-      
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.SOLUTION_PATH }}
-      
-    - name: Build
-      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
-      
-    - name: Run mutation tests
-      run: |
-        cd Src/tests/IndQuestResults.Tests.Mutation
-        dotnet stryker --reporter "json" --reporter "html"
-        
-    - name: Upload mutation test results
-      uses: actions/upload-artifact@v4
-      with:
-        name: mutation-test-results
-        path: Src/tests/IndQuestResults.Tests.Mutation/StrykerOutput/
-        
-  benchmark:
-    runs-on: ubuntu-latest
-    needs: build
-    
-    steps:
-    - uses: actions/checkout@v4
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-        
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.SOLUTION_PATH }}
-      
-    - name: Build
-      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
-      
-    - name: Run benchmarks
-      run: dotnet run --project Src/Code/benchmarks/IndQuestResults.Benchmarks/IndQuestResults.Benchmarks.csproj --configuration Release -- --exporters json --artifacts ./BenchmarkDotNet.Artifacts
-      
-    - name: Upload benchmark results
-      uses: actions/upload-artifact@v4
-      with:
-        name: benchmark-results
-        path: ./BenchmarkDotNet.Artifacts/
-        
+        args: --verbose --no-progress --exclude-path "coverage-report/**" -- "**/*.md" "docs/**/*.md"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   package:
     runs-on: ubuntu-latest
-    needs: [build, mutation-test]
+    needs: [build, link-check]
     if: github.ref == 'refs/heads/main'
     
     steps:

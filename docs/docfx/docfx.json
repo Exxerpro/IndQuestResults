@@ -1,0 +1,29 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": ["Src/Code/src/IndQuestResults/IndQuestResults.csproj"],
+          "exclude": ["**/bin/**", "**/obj/**"]
+        }
+      ],
+      "dest": "api",
+      "filter": "filterConfig.yml"
+    }
+  ],
+  "build": {
+    "content": [
+      { "files": ["**/*.md", "docs/**/*.md", "README.md"], "exclude": ["docs/archive/**"] },
+      { "files": ["api/**.yml", "api/index.md"] }
+    ],
+    "resource": [
+      { "files": ["docs/**/images/**"] }
+    ],
+    "dest": "_site",
+    "globalMetadata": {
+      "_appTitle": "IndQuestResults Documentation",
+      "_enableSearch": true
+    },
+    "markdownEngineName": "markdig"
+  }
+}

@@ -6,12 +6,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace IndQuestResults.Analyzers.Analyzers;
 
-[DiagnosticAnalyzer(LanguageNames.CSharp)]
 /// <summary>
 /// Analyzer that recommends using the async-specific Result API under
 /// <c>IndQuestResults.Async.ResultAsync</c> instead of <c>ResultExtensions.ThenAsync</c>.
 /// Encourages consistent async chaining via <c>BindAsync</c>/<c>MapAsync</c>/<c>TapAsync</c>.
 /// </summary>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class PreferResultAsyncAnalyzer : DiagnosticAnalyzer
 {
     /// <summary>
