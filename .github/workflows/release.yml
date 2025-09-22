@@ -22,10 +22,10 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Restore
-      run: dotnet restore Src/Code/IndQuestResults.All.sln
+      run: dotnet restore Src/Code/IndQuestResults.sln
 
     - name: Build
-      run: dotnet build Src/Code/IndQuestResults.All.sln -c Release --no-restore
+      run: dotnet build Src/Code/IndQuestResults.sln -c Release --no-restore
 
     - name: Pack
       run: dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj -c Release --no-build -o ./packages
