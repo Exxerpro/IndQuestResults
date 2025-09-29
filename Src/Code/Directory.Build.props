@@ -4,7 +4,7 @@
   <Import Project="$(MSBuildThisFileDirectory)Common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -88,10 +88,10 @@
 
   <PropertyGroup>
     <!-- Version Information -->
-    <VersionPrefix>1.0.7</VersionPrefix>
+  <VersionPrefix>1.0.9</VersionPrefix>
     <VersionSuffix Condition="'$(Configuration)' == 'Debug'">dev</VersionSuffix>
-    <FileVersion>1.0.7</FileVersion>
-    <AssemblyVersion>1.0.7</AssemblyVersion>
+  <FileVersion>1.0.9</FileVersion>
+  <AssemblyVersion>1.0.9</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup>

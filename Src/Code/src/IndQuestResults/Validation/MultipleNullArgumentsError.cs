@@ -1,3 +1,5 @@
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace IndQuestResults.Validation;
 
 /// <summary>
@@ -18,17 +20,25 @@ public sealed class MultipleNullArgumentsError
         }
 
         ParameterNames = parameterNames.Where(name => !string.IsNullOrWhiteSpace(name)).ToArray();
-        
+
         if (ParameterNames.Length == 0)
         {
             throw new ArgumentException("All parameter names cannot be null or whitespace.", nameof(parameterNames));
         }
+
+        var errors = ParameterNames.Select(name => new NullArgumentError(name));
+        Errors = (IReadOnlyList<NullArgumentError>)errors;
     }
 
     /// <summary>
     /// Gets the names of the parameters that are null.
     /// </summary>
     public string[] ParameterNames { get; }
+
+    /// <summary>
+    /// Collection of null argument errors
+    /// </summary>
+    public IReadOnlyList<NullArgumentError> Errors { get; }
 
     /// <summary>
     /// Returns a string representation of the error.
