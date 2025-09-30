@@ -1,5 +1,3 @@
-using IndQuestResults.Async;
-
 namespace IndQuestResults.Tests.Unit.Async;
 
 /// <summary>

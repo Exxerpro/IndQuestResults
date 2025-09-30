@@ -1,5 +1,3 @@
-using IndQuestResults.Operations;
-
 namespace IndQuestResults.Tests.Unit.Operations;
 
 public class CancellationAwareResultExceptionTests

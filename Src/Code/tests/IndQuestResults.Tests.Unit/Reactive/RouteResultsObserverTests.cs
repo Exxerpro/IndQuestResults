@@ -1,10 +1,3 @@
-using IndQuestResults.Reactive;
-using IndQuestResults.Operations;
-using Shouldly;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
-
 namespace IndQuestResults.Tests.Unit.Reactive;
 
 /// <summary>

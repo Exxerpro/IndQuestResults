@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 namespace IndQuestResults.Tests.Unit.Serialization;
 
 public class ResultSerializationTests

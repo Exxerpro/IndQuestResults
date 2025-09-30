@@ -1,5 +1,3 @@
-using global::IndQuestResults.Operations;
-
 namespace IndQuestResults.Tests.Unit.Operations;
 
 /// <summary>

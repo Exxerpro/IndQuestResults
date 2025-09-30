@@ -1,5 +1,3 @@
-using IndQuestResults.Performance;
-
 namespace IndQuestResults.Tests.Unit.Performance;
 
 public class MemoryOptimizationsTests

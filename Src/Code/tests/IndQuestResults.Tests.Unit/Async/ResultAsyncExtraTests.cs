@@ -1,8 +1,3 @@
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using IndQuestResults;
-using IndQuestResults.Async;
-
 namespace IndQuestResults.Tests.Unit.Async;
 
 /// <summary>

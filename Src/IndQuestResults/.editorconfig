@@ -1,0 +1,2 @@
+[*.cs]
+csharp_prefer_expression_bodied_methods = true:suggestion

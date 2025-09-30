@@ -1,9 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using global::IndQuestResults.Operations;
-
 namespace IndQuestResults.Tests.Unit.Operations;
 
 /// <summary>

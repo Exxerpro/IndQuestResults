@@ -1,6 +1,3 @@
-using System.Runtime.CompilerServices;
-using System.Threading.Channels;
-
 namespace IndQuestResults.Tests.Unit.Async;
 
 public class ResultAsyncValueTaskEdgeTests
