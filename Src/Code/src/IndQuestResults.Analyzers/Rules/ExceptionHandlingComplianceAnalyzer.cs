@@ -130,26 +130,64 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         // Check if WithFailure call includes exception parameter
         var arguments = invocation.ArgumentList.Arguments;
 
-        // Check if any argument references the exception variable
-        var hasExceptionArgument = arguments.Any(arg =>
+        // Check if exception is passed as a parameter (not just used in arguments)
+        // We need to check if the exception is passed as the exception parameter,
+        // not just if it's used in string concatenation (e.g., ex.Message)
+        var exceptionPassedAsParameter = false;
+        
+        // First, try to determine which parameter position corresponds to the exception parameter
+        // by checking the method signature
+        var exceptionParameterIndex = -1;
+        
+        if (methodSymbol.Parameters.Any(p => p.Name == "exception"))
         {
-            if (arg.Expression is IdentifierNameSyntax identifier &&
+            exceptionParameterIndex = methodSymbol.Parameters
+                .Select((p, i) => new { p, i })
+                .FirstOrDefault(x => x.p.Name == "exception")?.i ?? -1;
+        }
+        else if (methodSymbol.Parameters.Length == 1 && methodSymbol.Parameters[0].Type.Name == "Exception")
+        {
+            exceptionParameterIndex = 0;
+        }
+        else if (methodSymbol.Parameters.Length >= 3)
+        {
+            // Check if any parameter is of type Exception
+            var exceptionParam = methodSymbol.Parameters
+                .Select((p, i) => new { p, i })
+                .FirstOrDefault(x => x.p.Type.Name == "Exception");
+            if (exceptionParam != null)
+            {
+                exceptionParameterIndex = exceptionParam.i;
+            }
+        }
+
+        // Check if exception is passed as a parameter
+        if (exceptionParameterIndex >= 0 && exceptionParameterIndex < arguments.Count)
+        {
+            var exceptionArg = arguments[exceptionParameterIndex];
+            if (exceptionArg.Expression is IdentifierNameSyntax identifier &&
                 identifier.Identifier.Text == exceptionVariable)
             {
-                return true;
+                exceptionPassedAsParameter = true;
             }
+        }
 
-            // Check for named argument with exception
-            if (arg.NameColon != null &&
+        // Check for named parameter "exception"
+        if (!exceptionPassedAsParameter)
+        {
+            exceptionPassedAsParameter = arguments.Any(arg =>
+                arg.NameColon != null &&
                 arg.NameColon.Name.Identifier.Text == "exception" &&
                 arg.Expression is IdentifierNameSyntax exprIdentifier &&
-                exprIdentifier.Identifier.Text == exceptionVariable)
-            {
-                return true;
-            }
+                exprIdentifier.Identifier.Text == exceptionVariable);
+        }
 
-            return false;
-        });
+        // Also check if exception is used anywhere in the arguments (e.g., ex.Message in string concatenation)
+        // This is used to determine if we should report the diagnostic
+        var exceptionUsedInArguments = arguments.Any(arg =>
+            arg.Expression.DescendantNodesAndSelf()
+                .OfType<IdentifierNameSyntax>()
+                .Any(id => id.Identifier.Text == exceptionVariable));
 
         // Check if method signature supports exception parameter
         // WithFailure has multiple overloads - check ALL overloads, not just the resolved one
@@ -182,7 +220,13 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         }
 
         // If the method supports exception parameter but it's not provided, report diagnostic
-        if (hasExceptionOverload && !hasExceptionArgument)
+        // Report IQR301 when:
+        // 1. The method supports an exception parameter
+        // 2. The exception is not passed as a parameter
+        // 3. The exception is used in arguments (e.g., ex.Message in string concatenation)
+        // Note: We only report when exception is actually used in arguments to avoid false positives
+        // when exception variable exists but is never used
+        if (hasExceptionOverload && !exceptionPassedAsParameter && exceptionUsedInArguments)
         {
             var diagnostic = Diagnostic.Create(
                 MissingExceptionRule,
@@ -280,6 +324,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         if (exceptionUsed && !hasWithFailure)
         {
             // Exception is used but not passed to WithFailure - report diagnostic
+            // This is IQR302: exception is used but not passed to WithFailure
             var diagnostic = Diagnostic.Create(
                 ExceptionNotPreservedRule,
                 catchClause.GetLocation());
@@ -297,18 +342,72 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
             var exceptionPassedToWithFailure = withFailureInvocations.Any(inv =>
             {
                 var args = inv.ArgumentList.Arguments;
-                return args.Any(arg =>
+                
+                // Check for named parameter "exception"
+                if (args.Any(arg =>
+                    arg.NameColon != null &&
+                    arg.NameColon.Name.Identifier.Text == "exception" &&
+                    arg.Expression is IdentifierNameSyntax namedIdentifier &&
+                    namedIdentifier.Identifier.Text == exceptionVariable))
                 {
-                    if (arg.Expression is IdentifierNameSyntax identifier &&
-                        identifier.Identifier.Text == exceptionVariable)
+                    return true;
+                }
+                
+                // Check if exception is passed as a direct identifier (as a parameter, not just used in arguments)
+                // We need to check if it's passed as the exception parameter, not just used in string concatenation
+                var symbolInfo = context.SemanticModel.GetSymbolInfo(inv, context.CancellationToken);
+                if (symbolInfo.Symbol is IMethodSymbol methodSymbol)
+                {
+                    // Find the exception parameter index
+                    var exceptionParamIndex = -1;
+                    if (methodSymbol.Parameters.Any(p => p.Name == "exception"))
                     {
-                        return true;
+                        exceptionParamIndex = methodSymbol.Parameters
+                            .Select((p, i) => new { p, i })
+                            .FirstOrDefault(x => x.p.Name == "exception")?.i ?? -1;
                     }
-                    return false;
-                });
+                    else if (methodSymbol.Parameters.Length == 1 && methodSymbol.Parameters[0].Type.Name == "Exception")
+                    {
+                        exceptionParamIndex = 0;
+                    }
+                    else if (methodSymbol.Parameters.Length >= 3)
+                    {
+                        var exceptionParam = methodSymbol.Parameters
+                            .Select((p, i) => new { p, i })
+                            .FirstOrDefault(x => x.p.Type.Name == "Exception");
+                        if (exceptionParam != null)
+                        {
+                            exceptionParamIndex = exceptionParam.i;
+                        }
+                    }
+                    
+                    // Check if exception is passed at the exception parameter position
+                    if (exceptionParamIndex >= 0 && exceptionParamIndex < args.Count)
+                    {
+                        var exceptionArg = args[exceptionParamIndex];
+                        if (exceptionArg.Expression is IdentifierNameSyntax identifier &&
+                            identifier.Identifier.Text == exceptionVariable)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                
+                return false;
             });
 
-            if (!exceptionPassedToWithFailure)
+            // Only report IQR302 if exception is used but not passed to WithFailure
+            // AND the exception is not used in WithFailure arguments (which would trigger IQR301)
+            // Check if exception is used in WithFailure arguments
+            var exceptionUsedInWithFailureArgs = withFailureInvocations.Any(inv =>
+                inv.ArgumentList.Arguments.Any(arg =>
+                    arg.Expression.DescendantNodesAndSelf()
+                        .OfType<IdentifierNameSyntax>()
+                        .Any(id => id.Identifier.Text == exceptionVariable)));
+
+            // If exception is used in WithFailure arguments, IQR301 will be reported by AnalyzeInvocation
+            // So we should not report IQR302 here
+            if (!exceptionPassedToWithFailure && !exceptionUsedInWithFailureArgs)
             {
                 var diagnostic = Diagnostic.Create(
                     ExceptionNotPreservedRule,

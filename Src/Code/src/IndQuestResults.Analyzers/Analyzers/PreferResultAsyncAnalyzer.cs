@@ -84,55 +84,61 @@ public sealed class PreferResultAsyncAnalyzer : DiagnosticAnalyzer
         {
             symbol = symbolInfo.CandidateSymbols[0] as IMethodSymbol;
         }
+
+        // Check if receiver is Task<Result<T>> - this is the primary check
+        var receiverType = memberAccess.Expression != null
+            ? context.SemanticModel.GetTypeInfo(memberAccess.Expression).Type
+            : null;
+
+        var isTaskResult = receiverType?.Name == "Task" &&
+                          receiverType is INamedTypeSymbol namedType &&
+                          namedType.IsGenericType &&
+                          namedType.TypeArguments.FirstOrDefault()?.Name == "Result" &&
+                          namedType.TypeArguments.FirstOrDefault()?.ContainingNamespace?.ToDisplayString()?.Contains("IndQuestResults") == true;
+
+        // Check if IndQuestResults.Operations namespace is in scope
+        // Also check for base IndQuestResults namespace as fallback
+        var root = memberAccess.SyntaxTree?.GetRoot();
+        var hasOperationsUsing = false;
+        var hasIndQuestResultsUsing = false;
+        if (root is CompilationUnitSyntax compilationUnit)
+        {
+            hasOperationsUsing = compilationUnit.Usings.Any(u =>
+            {
+                var name = u.Name?.ToString();
+                return name == "IndQuestResults.Operations" ||
+                       name?.StartsWith("IndQuestResults.Operations", StringComparison.OrdinalIgnoreCase) == true;
+            });
+            
+            // Also check for base IndQuestResults namespace as fallback
+            hasIndQuestResultsUsing = compilationUnit.Usings.Any(u =>
+            {
+                var name = u.Name?.ToString();
+                return name == "IndQuestResults" ||
+                       name?.StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase) == true;
+            });
+        }
+
+        // If symbol is null and we have Task<Result<T>> with Operations or IndQuestResults namespace, report diagnostic
+        if (symbol is null && isTaskResult && (hasOperationsUsing || hasIndQuestResultsUsing))
+        {
+            var diag = Diagnostic.Create(Rule, memberAccess.Name.GetLocation());
+            context.ReportDiagnostic(diag);
+            return;
+        }
+        
+        // If symbol is null and we don't have the right conditions, return early
         if (symbol is null)
         {
-            // Fallback: Check if receiver is Task<Result<T>> and namespace is in scope
-            if (memberAccess.Expression is not null)
-            {
-                var receiverType = context.SemanticModel.GetTypeInfo(memberAccess.Expression).Type;
-                if (receiverType?.Name == "Task" && receiverType is INamedTypeSymbol namedType && namedType.IsGenericType)
-                {
-                    // Check if it's Task<Result<T>> by checking generic argument
-                    var taskTypeArg = namedType.TypeArguments.FirstOrDefault();
-                    if (taskTypeArg?.Name == "Result" &&
-                        taskTypeArg.ContainingNamespace?.ToDisplayString()?.Contains("IndQuestResults") == true)
-                    {
-                        // Check if IndQuestResults.Operations namespace is in scope
-                        // Check using statements in the syntax tree
-                        var root = memberAccess.SyntaxTree?.GetRoot();
-                        if (root is CompilationUnitSyntax compilationUnit)
-                        {
-                            var hasOperationsUsing = compilationUnit.Usings.Any(u =>
-                                u.Name?.ToString() == "IndQuestResults.Operations" ||
-                                u.Name?.ToString().StartsWith("IndQuestResults.Operations", StringComparison.OrdinalIgnoreCase) == true);
-                            
-                            if (hasOperationsUsing)
-                            {
-                                // Receiver is Task<Result<T>> and namespace is in scope - report diagnostic
-                                var diag = Diagnostic.Create(Rule, memberAccess.Name.GetLocation());
-                                context.ReportDiagnostic(diag);
-                                return;
-                            }
-                        }
-                        
-                        // Also check if IndQuestResults namespace is in scope (might use fully qualified)
-                        if (root is CompilationUnitSyntax cu)
-                        {
-                            var hasIndQuestResultsUsing = cu.Usings.Any(u =>
-                                u.Name?.ToString() == "IndQuestResults" ||
-                                u.Name?.ToString().StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase) == true);
-                            
-                            if (hasIndQuestResultsUsing)
-                            {
-                                // Receiver is Task<Result<T>> and IndQuestResults namespace is in scope - report diagnostic
-                                var diag = Diagnostic.Create(Rule, memberAccess.Name.GetLocation());
-                                context.ReportDiagnostic(diag);
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
+            return;
+        }
+        
+        // If we have Task<Result<T>> with Operations or IndQuestResults namespace, report diagnostic
+        // This handles both cases: when symbol is resolved and when it's not
+        if (isTaskResult && (hasOperationsUsing || hasIndQuestResultsUsing))
+        {
+            var diagnostic2 = Diagnostic.Create(Rule, memberAccess.Name.GetLocation());
+            context.ReportDiagnostic(diagnostic2);
             return;
         }
 
@@ -152,14 +158,14 @@ public sealed class PreferResultAsyncAnalyzer : DiagnosticAnalyzer
         var fullContaining = containingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         var simpleName = containingType.Name;
         var namespaceName = containingType.ContainingNamespace?.ToDisplayString() ?? string.Empty;
-        
+
         // Check if it's ResultExtensions in IndQuestResults.Operations namespace
         // Also check if it's in IndQuestResults namespace (for test scenarios)
         var isResultExtensions = simpleName == "ResultExtensions";
-        var isInOperationsNamespace = namespaceName.Contains("IndQuestResults.Operations") || 
+        var isInOperationsNamespace = namespaceName.Contains("IndQuestResults.Operations") ||
                                       fullContaining.Contains("IndQuestResults.Operations.ResultExtensions") ||
                                       namespaceName.Contains("IndQuestResults");
-        
+
         if (!isResultExtensions || !isInOperationsNamespace)
         {
             return;
