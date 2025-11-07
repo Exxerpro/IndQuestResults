@@ -149,9 +149,9 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         {
             exceptionParameterIndex = 0;
         }
-        else if (methodSymbol.Parameters.Length >= 3)
+        else if (methodSymbol.Parameters.Length >= 2)
         {
-            // Check if any parameter is of type Exception
+            // Check if any parameter is of type Exception (works for 2+ parameter methods)
             var exceptionParam = methodSymbol.Parameters
                 .Select((p, i) => new { p, i })
                 .FirstOrDefault(x => x.p.Type.Name == "Exception");
@@ -185,20 +185,38 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         // Also check if exception is used anywhere in the arguments (e.g., ex.Message in string concatenation)
         // This is used to determine if we should report the diagnostic
         var exceptionUsedInArguments = arguments.Any(arg =>
-            arg.Expression.DescendantNodesAndSelf()
+        {
+            // Check for direct identifier usage: ex
+            if (arg.Expression.DescendantNodesAndSelf()
                 .OfType<IdentifierNameSyntax>()
-                .Any(id => id.Identifier.Text == exceptionVariable));
+                .Any(id => id.Identifier.Text == exceptionVariable))
+            {
+                return true;
+            }
+            
+            // Check for member access: ex.Message, ex.ToString(), etc.
+            if (arg.Expression.DescendantNodesAndSelf()
+                .OfType<MemberAccessExpressionSyntax>()
+                .Any(memberAccess => memberAccess.Expression is IdentifierNameSyntax identifier &&
+                                    identifier.Identifier.Text == exceptionVariable))
+            {
+                return true;
+            }
+            
+            return false;
+        });
 
         // Check if method signature supports exception parameter
         // WithFailure has multiple overloads - check ALL overloads, not just the resolved one
         var hasExceptionParameter = methodSymbol.Parameters.Any(p => p.Name == "exception");
 
-        // Also check if the method has 3+ parameters (error, value, exception pattern)
-        // or if it's a single-parameter overload that takes Exception
+        // Also check if the method has 1+ parameters with Exception type
+        // This covers single-parameter methods, 2-parameter methods (e.g., WithFailure(string, Exception)),
+        // and 3+ parameter methods (e.g., WithFailure(string, T, Exception))
         var parameterCount = methodSymbol.Parameters.Length;
         var hasExceptionOverload = hasExceptionParameter ||
                                    (parameterCount == 1 && methodSymbol.Parameters[0].Type.Name == "Exception") ||
-                                   (parameterCount >= 3 && methodSymbol.Parameters.Any(p => p.Type.Name == "Exception"));
+                                   (parameterCount >= 2 && methodSymbol.Parameters.Any(p => p.Type.Name == "Exception"));
 
         // If the resolved overload doesn't support exception, check all overloads
         if (!hasExceptionOverload)
@@ -215,7 +233,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
                 var paramCount = overload.Parameters.Length;
                 return hasExceptionParam ||
                        (paramCount == 1 && overload.Parameters[0].Type.Name == "Exception") ||
-                       (paramCount >= 3 && overload.Parameters.Any(p => p.Type.Name == "Exception"));
+                       (paramCount >= 2 && overload.Parameters.Any(p => p.Type.Name == "Exception"));
             });
         }
 
@@ -325,9 +343,12 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         {
             // Exception is used but not passed to WithFailure - report diagnostic
             // This is IQR302: exception is used but not passed to WithFailure
+            // Report on the try block to match test expectations
+            var tryStatement = catchClause.FirstAncestorOrSelf<TryStatementSyntax>();
+            var location = tryStatement?.TryKeyword.GetLocation() ?? catchClause.GetLocation();
             var diagnostic = Diagnostic.Create(
                 ExceptionNotPreservedRule,
-                catchClause.GetLocation());
+                location);
             context.ReportDiagnostic(diagnostic);
         }
         else if (exceptionUsed && hasWithFailure)
@@ -370,8 +391,9 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
                     {
                         exceptionParamIndex = 0;
                     }
-                    else if (methodSymbol.Parameters.Length >= 3)
+                    else if (methodSymbol.Parameters.Length >= 2)
                     {
+                        // Check if any parameter is of type Exception (works for 2+ parameter methods)
                         var exceptionParam = methodSymbol.Parameters
                             .Select((p, i) => new { p, i })
                             .FirstOrDefault(x => x.p.Type.Name == "Exception");
@@ -409,9 +431,12 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
             // So we should not report IQR302 here
             if (!exceptionPassedToWithFailure && !exceptionUsedInWithFailureArgs)
             {
+                // Report on the try block to match test expectations
+                var tryStatement = catchClause.FirstAncestorOrSelf<TryStatementSyntax>();
+                var location = tryStatement?.TryKeyword.GetLocation() ?? catchClause.GetLocation();
                 var diagnostic = Diagnostic.Create(
                     ExceptionNotPreservedRule,
-                    catchClause.GetLocation());
+                    location);
                 context.ReportDiagnostic(diagnostic);
             }
         }

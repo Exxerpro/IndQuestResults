@@ -1,0 +1,92 @@
+  IndQuestResults.Analyzers.Tests (3 tests) [0:14.802] Failed: 3 tests failed
+   IndQuestResults.Analyzers.Tests (3 tests) [0:14.802] Failed: 3 tests failed
+    Rules (1 test) [0:10.466] Failed: 1 test failed
+     ExceptionHandlingComplianceAnalyzerTests (1 test) [0:01.685] Failed: One or more child tests failed: 1 test failed
+      MissingExceptionParameter_InCatchBlock_ReportsWarning [0:00.072] Failed: Shouldly.ShouldAssertException: analyzerDiagnostics.Length
+Shouldly.ShouldAssertException
+analyzerDiagnostics.Length
+    should be
+1
+    but was
+0
+
+Additional Info:
+    Expected 1 diagnostics but got 0
+   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyAnalyzerAsync[TAnalyzer](String source, ExpectedDiagnostic[] expectedDiagnostics) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 41
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at IndQuestResults.Analyzers.Tests.Rules.ExceptionHandlingComplianceAnalyzerTests.MissingExceptionParameter_InCatchBlock_ReportsWarning() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Rules\ExceptionHandlingComplianceAnalyzerTests.cs:line 41
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.TestInvoker`1.<>c__DisplayClass46_0.<<InvokeTestMethodAsync>b__1>d.MoveNext() in /_/src/xunit.execution/Sdk/Frameworks/Runners/TestInvoker.cs:line 253
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExecutionTimer.AggregateAsync(Func`1 asyncAction) in /_/src/xunit.execution/Sdk/Frameworks/ExecutionTimer.cs:line 48
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
+
+
+    PreferResultAsyncAnalyzerTests (1 test) [0:01.438] Failed: One or more child tests failed: 1 test failed
+     ThenAsync_OnTaskResult_ProducesDiagnostic [0:00.116] Failed: Shouldly.ShouldAssertException: actualColumn
+Shouldly.ShouldAssertException
+actualColumn
+    should be
+26
+    but was
+25
+
+Additional Info:
+    Diagnostic 0 is on wrong column
+   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyAnalyzerAsync[TAnalyzer](String source, ExpectedDiagnostic[] expectedDiagnostics) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 57
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at IndQuestResults.Analyzers.Tests.PreferResultAsyncAnalyzerTests.ThenAsync_OnTaskResult_ProducesDiagnostic() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\PreferResultAsyncAnalyzerTests.cs:line 30
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.TestInvoker`1.<>c__DisplayClass46_0.<<InvokeTestMethodAsync>b__1>d.MoveNext() in /_/src/xunit.execution/Sdk/Frameworks/Runners/TestInvoker.cs:line 253
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExecutionTimer.AggregateAsync(Func`1 asyncAction) in /_/src/xunit.execution/Sdk/Frameworks/ExecutionTimer.cs:line 48
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
+
+
+    PreferResultAsyncCodeFixProviderTests (1 test) [0:01.426] Failed: One or more child tests failed: 1 test failed
+     CodeFix_Rewrites_ThenAsync_To_ResultAsync_BindAsync [0:01.395] Failed: Shouldly.ShouldAssertException: fixedCode
+Shouldly.ShouldAssertException
+fixedCode
+    should contain (case insensitive comparison)
+"IndQuestResults.Async.ResultAsync.BindAsync"
+    but was actually
+"using System.Threading.Tasks;
+using IndQuestResults;
+using IndQuestResults.Operations;
+class C {
+   ..."
+   at IndQuestResults.Analyzers.Tests.PreferResultAsyncCodeFixProviderTests.CodeFix_Rewrites_ThenAsync_To_ResultAsync_BindAsync() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\PreferResultAsyncCodeFixProviderTests.cs:line 32
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.TestInvoker`1.<>c__DisplayClass46_0.<<InvokeTestMethodAsync>b__1>d.MoveNext() in /_/src/xunit.execution/Sdk/Frameworks/Runners/TestInvoker.cs:line 253
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExecutionTimer.AggregateAsync(Func`1 asyncAction) in /_/src/xunit.execution/Sdk/Frameworks/ExecutionTimer.cs:line 48
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
+

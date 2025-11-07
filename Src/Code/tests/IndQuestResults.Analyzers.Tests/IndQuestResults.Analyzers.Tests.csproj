@@ -60,6 +60,10 @@
     <!-- Snapshot testing for verifying outputs -->
     <PackageReference Include="EmptyFiles" Version="7.0.0" />
     
+    <!-- Logging for debugging analyzer tests -->
+    <PackageReference Include="Meziantou.Extensions.Logging.Xunit" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+    
     <!-- Performance Testing (if needed for analyzer performance tests) -->
     <!-- Pin Roslyn to 4.14.0 transitively via BenchmarkDotNet by selecting a compatible version -->
     <PackageReference Include="BenchmarkDotNet" Version="0.13.12" Condition="'$(Configuration)' == 'Release'" />

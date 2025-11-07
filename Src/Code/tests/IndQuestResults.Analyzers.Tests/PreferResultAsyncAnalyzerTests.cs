@@ -1,8 +1,13 @@
 using System.Threading.Tasks;
 using IndQuestResults.Analyzers.Analyzers;
 using IndQuestResults.Analyzers.Tests.Helpers;
+using IndQuestResults.Analyzers.Tests.Rules;
 using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
+using Meziantou.Extensions.Logging.Xunit;
 
 namespace IndQuestResults.Analyzers.Tests;
 
@@ -11,6 +16,17 @@ namespace IndQuestResults.Analyzers.Tests;
 /// </summary>
 public sealed class PreferResultAsyncAnalyzerTests
 {
+    private readonly ILogger _logger;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PreferResultAsyncAnalyzerTests"/> class.
+    /// </summary>
+    /// <param name="output"></param>
+    public PreferResultAsyncAnalyzerTests(ITestOutputHelper output)
+    {
+        _logger = XUnitLogger.CreateLogger<PreferResultAsyncAnalyzerTests>(output);
+    }
+
     /// <summary>
     /// Verifies that calling ThenAsync on Task&lt;Result&lt;T&gt;&gt; produces IQR0001.
     /// </summary>
@@ -29,6 +45,7 @@ class C {
 
         await AnalyzerTestHelper.VerifyAnalyzerAsync<PreferResultAsyncAnalyzer>(
             src,
+            _logger,
             AnalyzerTestHelper.Diagnostic(PreferResultAsyncAnalyzer.DiagnosticId, DiagnosticSeverity.Info, line: 7, column: 26));
     }
 
@@ -51,13 +68,3 @@ class C {
         await AnalyzerTestHelper.VerifyNoDiagnosticsAsync<PreferResultAsyncAnalyzer>(src);
     }
 }
-
-
-
-
-
-
-
-
-
-

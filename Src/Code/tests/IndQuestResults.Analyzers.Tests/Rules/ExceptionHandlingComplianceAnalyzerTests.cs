@@ -1,7 +1,11 @@
 using IndQuestResults.Analyzers.Rules;
 using IndQuestResults.Analyzers.Tests.Helpers;
+using Meziantou.Extensions.Logging.Xunit;
 using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 using static IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper;
 
 namespace IndQuestResults.Analyzers.Tests.Rules;
@@ -11,6 +15,18 @@ namespace IndQuestResults.Analyzers.Tests.Rules;
 /// </summary>
 public class ExceptionHandlingComplianceAnalyzerTests
 {
+    private readonly ILogger _logger;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExceptionHandlingComplianceAnalyzerTests"/> class.
+    /// </summary>
+    /// <param name="output"></param>
+    public ExceptionHandlingComplianceAnalyzerTests(ITestOutputHelper output)
+    {
+        _logger = XUnitLogger.CreateLogger<ExceptionHandlingComplianceAnalyzerTests>(output);
+        ;
+    }
+
     /// <summary>
     /// Verifies that missing exception parameter in WithFailure call is reported.
     /// </summary>
@@ -38,7 +54,7 @@ public class TestClass
 
         var expected = Diagnostic(ExceptionHandlingComplianceAnalyzer.MissingExceptionParameterId, DiagnosticSeverity.Warning, 14, 20);
 
-        await VerifyAnalyzerAsync<ExceptionHandlingComplianceAnalyzer>(testCode, expected);
+        await VerifyAnalyzerAsync<ExceptionHandlingComplianceAnalyzer>(testCode, _logger, expected);
     }
 
     /// <summary>
@@ -152,7 +168,6 @@ public class TestClass
 
         var expected = Diagnostic(ExceptionHandlingComplianceAnalyzer.ExceptionNotPreservedId, DiagnosticSeverity.Warning, 9, 9);
 
-        await VerifyAnalyzerAsync<ExceptionHandlingComplianceAnalyzer>(testCode, expected);
+        await VerifyAnalyzerAsync<ExceptionHandlingComplianceAnalyzer>(testCode, _logger, expected);
     }
 }
-
