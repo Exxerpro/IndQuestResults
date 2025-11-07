@@ -43,6 +43,7 @@ public class TestClass
     {
         try
         {
+            throw new Exception(""Test exception"");
             return Result<int>.Success(42);
         }
         catch (Exception ex)
@@ -169,5 +170,27 @@ public class TestClass
         var expected = Diagnostic(ExceptionHandlingComplianceAnalyzer.ExceptionNotPreservedId, DiagnosticSeverity.Warning, 9, 9);
 
         await VerifyAnalyzerAsync<ExceptionHandlingComplianceAnalyzer>(testCode, _logger, expected);
+    }
+}
+
+/// <summary>
+/// Test class with a method that triggers the MissingExceptionParameterId diagnostic.
+/// </summary>
+public class TestClass2
+{
+    /// <summary>
+    /// Method that triggers the diagnostic.
+    /// </summary>
+    /// <returns></returns>
+    public Result<int> GetValue2()
+    {
+        try
+        {
+            return Result<int>.Success(42);
+        }
+        catch (Exception ex)
+        {
+            return Result<int>.WithFailure("Operation failed: " + ex.Message); // Should trigger IQR301
+        }
     }
 }

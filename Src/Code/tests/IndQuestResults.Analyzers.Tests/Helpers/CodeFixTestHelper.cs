@@ -26,8 +26,8 @@ internal static class CodeFixTestHelper
         var projectInfo = ProjectInfo.Create(
             projectId,
             VersionStamp.Create(),
-            name: "TestProject",
-            assemblyName: "TestProject",
+            name: "TestAssembly",
+            assemblyName: "TestAssembly",
             language: LanguageNames.CSharp,
             compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
             parseOptions: new CSharpParseOptions(LanguageVersion.Preview));

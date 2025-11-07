@@ -91,7 +91,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         {
             return;
         }
-
+        //Here is returning because is returning Success
         var name = memberAccess.Name.Identifier.Text;
         if (name != "WithFailure")
         {
@@ -134,11 +134,11 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         // We need to check if the exception is passed as the exception parameter,
         // not just if it's used in string concatenation (e.g., ex.Message)
         var exceptionPassedAsParameter = false;
-        
+
         // First, try to determine which parameter position corresponds to the exception parameter
         // by checking the method signature
         var exceptionParameterIndex = -1;
-        
+
         if (methodSymbol.Parameters.Any(p => p.Name == "exception"))
         {
             exceptionParameterIndex = methodSymbol.Parameters
@@ -193,7 +193,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
             {
                 return true;
             }
-            
+
             // Check for member access: ex.Message, ex.ToString(), etc.
             if (arg.Expression.DescendantNodesAndSelf()
                 .OfType<MemberAccessExpressionSyntax>()
@@ -202,7 +202,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
             {
                 return true;
             }
-            
+
             return false;
         });
 
@@ -327,7 +327,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
                 {
                     return true;
                 }
-                
+
                 // Member access: ex.Message, ex.ToString(), etc.
                 if (node is MemberAccessExpressionSyntax memberAccess &&
                     memberAccess.Expression is IdentifierNameSyntax memberIdentifier &&
@@ -335,7 +335,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
                 {
                     return true;
                 }
-                
+
                 return false;
             }) ?? false;
 
@@ -363,7 +363,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
             var exceptionPassedToWithFailure = withFailureInvocations.Any(inv =>
             {
                 var args = inv.ArgumentList.Arguments;
-                
+
                 // Check for named parameter "exception"
                 if (args.Any(arg =>
                     arg.NameColon != null &&
@@ -373,7 +373,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
                 {
                     return true;
                 }
-                
+
                 // Check if exception is passed as a direct identifier (as a parameter, not just used in arguments)
                 // We need to check if it's passed as the exception parameter, not just used in string concatenation
                 var symbolInfo = context.SemanticModel.GetSymbolInfo(inv, context.CancellationToken);
@@ -402,7 +402,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
                             exceptionParamIndex = exceptionParam.i;
                         }
                     }
-                    
+
                     // Check if exception is passed at the exception parameter position
                     if (exceptionParamIndex >= 0 && exceptionParamIndex < args.Count)
                     {
@@ -414,7 +414,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
                         }
                     }
                 }
-                
+
                 return false;
             });
 

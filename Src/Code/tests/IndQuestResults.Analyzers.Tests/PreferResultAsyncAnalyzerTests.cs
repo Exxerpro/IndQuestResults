@@ -46,7 +46,7 @@ class C {
         await AnalyzerTestHelper.VerifyAnalyzerAsync<PreferResultAsyncAnalyzer>(
             src,
             _logger,
-            AnalyzerTestHelper.Diagnostic(PreferResultAsyncAnalyzer.DiagnosticId, DiagnosticSeverity.Info, line: 7, column: 26));
+            AnalyzerTestHelper.Diagnostic(PreferResultAsyncAnalyzer.DiagnosticId, DiagnosticSeverity.Info, line: 7, column: 25));
     }
 
     /// <summary>
