@@ -129,10 +129,12 @@ public class ResultAsyncExtensionsEdgeTests
     }
 
     [Fact]
-    public void ToFailureOf_OnSuccess_Throws()
+    public void ToFailureOf_OnSuccess_ReturnsFailure()
     {
         var ok = Result<string>.Success("x");
-        Should.Throw<InvalidOperationException>(() => ok.ToFailureOf<string, int>());
+        var result = ok.ToFailureOf<string, int>();
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldContain("Cannot convert successful result to failure");
     }
 
     [Fact]

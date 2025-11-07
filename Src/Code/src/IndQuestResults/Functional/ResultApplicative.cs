@@ -49,9 +49,20 @@ public static class ResultApplicative
         Result<T2> result2,
         Func<T1, T2, TResult> func)
     {
-        ArgumentNullException.ThrowIfNull(result1);
-        ArgumentNullException.ThrowIfNull(result2);
-        ArgumentNullException.ThrowIfNull(func);
+        if (result1 is null)
+        {
+            return Result<TResult>.WithFailure("First result cannot be null");
+        }
+        
+        if (result2 is null)
+        {
+            return Result<TResult>.WithFailure("Second result cannot be null");
+        }
+        
+        if (func is null)
+        {
+            return Result<TResult>.WithFailure("Function cannot be null");
+        }
 
         // Both successful - apply function
         if (result1.IsSuccess && result2.IsSuccess)
@@ -85,10 +96,25 @@ public static class ResultApplicative
         Result<T3> result3,
         Func<T1, T2, T3, TResult> func)
     {
-        ArgumentNullException.ThrowIfNull(result1);
-        ArgumentNullException.ThrowIfNull(result2);
-        ArgumentNullException.ThrowIfNull(result3);
-        ArgumentNullException.ThrowIfNull(func);
+        if (result1 is null)
+        {
+            return Result<TResult>.WithFailure("First result cannot be null");
+        }
+        
+        if (result2 is null)
+        {
+            return Result<TResult>.WithFailure("Second result cannot be null");
+        }
+        
+        if (result3 is null)
+        {
+            return Result<TResult>.WithFailure("Third result cannot be null");
+        }
+        
+        if (func is null)
+        {
+            return Result<TResult>.WithFailure("Function cannot be null");
+        }
 
         // All successful - apply function
         if (result1.IsSuccess && result2.IsSuccess && result3.IsSuccess)
@@ -128,11 +154,30 @@ public static class ResultApplicative
         Result<T4> result4,
         Func<T1, T2, T3, T4, TResult> func)
     {
-        ArgumentNullException.ThrowIfNull(result1);
-        ArgumentNullException.ThrowIfNull(result2);
-        ArgumentNullException.ThrowIfNull(result3);
-        ArgumentNullException.ThrowIfNull(result4);
-        ArgumentNullException.ThrowIfNull(func);
+        if (result1 is null)
+        {
+            return Result<TResult>.WithFailure("First result cannot be null");
+        }
+        
+        if (result2 is null)
+        {
+            return Result<TResult>.WithFailure("Second result cannot be null");
+        }
+        
+        if (result3 is null)
+        {
+            return Result<TResult>.WithFailure("Third result cannot be null");
+        }
+        
+        if (result4 is null)
+        {
+            return Result<TResult>.WithFailure("Fourth result cannot be null");
+        }
+        
+        if (func is null)
+        {
+            return Result<TResult>.WithFailure("Function cannot be null");
+        }
 
         // All successful - apply function
         if (result1.IsSuccess && result2.IsSuccess && result3.IsSuccess && result4.IsSuccess)
@@ -178,12 +223,35 @@ public static class ResultApplicative
         Result<T5> result5,
         Func<T1, T2, T3, T4, T5, TResult> func)
     {
-        ArgumentNullException.ThrowIfNull(result1);
-        ArgumentNullException.ThrowIfNull(result2);
-        ArgumentNullException.ThrowIfNull(result3);
-        ArgumentNullException.ThrowIfNull(result4);
-        ArgumentNullException.ThrowIfNull(result5);
-        ArgumentNullException.ThrowIfNull(func);
+        if (result1 is null)
+        {
+            return Result<TResult>.WithFailure("First result cannot be null");
+        }
+        
+        if (result2 is null)
+        {
+            return Result<TResult>.WithFailure("Second result cannot be null");
+        }
+        
+        if (result3 is null)
+        {
+            return Result<TResult>.WithFailure("Third result cannot be null");
+        }
+        
+        if (result4 is null)
+        {
+            return Result<TResult>.WithFailure("Fourth result cannot be null");
+        }
+        
+        if (result5 is null)
+        {
+            return Result<TResult>.WithFailure("Fifth result cannot be null");
+        }
+        
+        if (func is null)
+        {
+            return Result<TResult>.WithFailure("Function cannot be null");
+        }
 
         // All successful - apply function
         if (result1.IsSuccess && result2.IsSuccess && result3.IsSuccess && result4.IsSuccess && result5.IsSuccess)
@@ -245,8 +313,15 @@ public static class ResultApplicative
         Func<TResult> func,
         params Result[] results)
     {
-        ArgumentNullException.ThrowIfNull(func);
-        ArgumentNullException.ThrowIfNull(results);
+        if (func is null)
+        {
+            return Result<TResult>.WithFailure("Function cannot be null");
+        }
+        
+        if (results is null)
+        {
+            return Result<TResult>.WithFailure("Results array cannot be null");
+        }
 
         var errors = new List<string>();
         var allSuccessful = true;

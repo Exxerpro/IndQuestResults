@@ -385,58 +385,73 @@ public class ResultApplicativeTests
     #region Null Argument Tests
 
     [Fact]
-    public void Apply_NullResult1_ThrowsArgumentNullException()
+    public void Apply_NullResult1_ReturnsFailure()
     {
         // Arrange
         Result<string> nullResult = null!;
         var emailResult = Result<string>.Success("email");
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            ResultApplicative.Apply(nullResult, emailResult, (n, e) => new User(n, e)));
+        // Act
+        var result = ResultApplicative.Apply(nullResult, emailResult, (n, e) => new User(n, e));
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldContain("cannot be null");
     }
 
     [Fact]
-    public void Apply_NullResult2_ThrowsArgumentNullException()
+    public void Apply_NullResult2_ReturnsFailure()
     {
         // Arrange
         var nameResult = Result<string>.Success("name");
         Result<string> nullResult = null!;
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            ResultApplicative.Apply(nameResult, nullResult, (n, e) => new User(n, e)));
+        // Act
+        var result = ResultApplicative.Apply(nameResult, nullResult, (n, e) => new User(n, e));
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldContain("cannot be null");
     }
 
     [Fact]
-    public void Apply_NullFunction_ThrowsArgumentNullException()
+    public void Apply_NullFunction_ReturnsFailure()
     {
         // Arrange
         var nameResult = Result<string>.Success("name");
         var emailResult = Result<string>.Success("email");
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            ResultApplicative.Apply(nameResult, emailResult, (Func<string, string, User>)null!));
+        // Act
+        var result = ResultApplicative.Apply(nameResult, emailResult, (Func<string, string, User>)null!);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldContain("cannot be null");
     }
 
     [Fact]
-    public void Validate_NullFunction_ThrowsArgumentNullException()
+    public void Validate_NullFunction_ReturnsFailure()
     {
         // Arrange
         var results = new[] { Result.Success() };
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            ResultApplicative.Validate((Func<string>)null!, results));
+        // Act
+        var result = ResultApplicative.Validate((Func<string>)null!, results);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldContain("cannot be null");
     }
 
     [Fact]
-    public void Validate_NullResults_ThrowsArgumentNullException()
+    public void Validate_NullResults_ReturnsFailure()
     {
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            ResultApplicative.Validate(() => "test", null!));
+        // Act
+        var result = ResultApplicative.Validate(() => "test", null!);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldContain("cannot be null");
     }
 
     #endregion Null Argument Tests

@@ -54,8 +54,9 @@ public static class ResultObservableBridge
         Action<Result<T>> onNext,
         Action? onCompleted = null)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(onNext);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (source is null || onNext is null) { return NoOpDisposable.Instance; }
+#pragma warning restore IDE0046
 
         // Create a bridge observer that converts IObservable values to Result values
         var observer = new ResultBridgeObserver<T>(onNext, onCompleted);
@@ -88,9 +89,9 @@ public static class ResultObservableBridge
         Action<Result<TResult>> onNext,
         Action? onCompleted = null)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(selector);
-        ArgumentNullException.ThrowIfNull(onNext);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (source is null || selector is null || onNext is null) { return NoOpDisposable.Instance; }
+#pragma warning restore IDE0046
 
         var observer = new SelectResultObserver<TSource, TResult>(selector, onNext, onCompleted);
         return source.Subscribe(observer);
@@ -122,9 +123,9 @@ public static class ResultObservableBridge
         Action<TResult> onSuccess,
         Action? onCompleted = null)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(selector);
-        ArgumentNullException.ThrowIfNull(onSuccess);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (source is null || selector is null || onSuccess is null) { return NoOpDisposable.Instance; }
+#pragma warning restore IDE0046
 
         return source.SelectResult(
             selector,
@@ -168,10 +169,9 @@ public static class ResultObservableBridge
         Action<IEnumerable<string>> onFailure,
         Action? onCompleted = null)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(selector);
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (source is null || selector is null || onSuccess is null || onFailure is null) { return NoOpDisposable.Instance; }
+#pragma warning restore IDE0046
 
         return source.SelectResult(
             selector,
@@ -217,7 +217,9 @@ public static class ResultObservableBridge
         TimeSpan timeout,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(source);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (source is null) { return Result<IEnumerable<T>>.WithFailure("Source observable cannot be null"); }
+#pragma warning restore IDE0046
 
         var results = new List<T>();
         var errors = new List<string>();
@@ -268,9 +270,9 @@ public static class ResultObservableBridge
         IResultSubject<T> successSubject,
         IResultSubject<string> failureSubject)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(successSubject);
-        ArgumentNullException.ThrowIfNull(failureSubject);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (source is null || successSubject is null || failureSubject is null) { return NoOpDisposable.Instance; }
+#pragma warning restore IDE0046
 
         var observer = new RouteResultsObserver<T>(successSubject, failureSubject);
         return source.Subscribe(observer);
@@ -298,10 +300,20 @@ public static class ResultObservableBridge
         this IObservable<T> source,
         int bufferSize = 1)
     {
-        ArgumentNullException.ThrowIfNull(source);
+        if (source is null)
+        {
+            // Return a subject that's already completed (no-op behavior)
+            var nullSubject = ResultSubscriptionsCore.CreateResultSubject<T>();
+            nullSubject.Dispose();
+            return nullSubject;
+        }
+        
         if (bufferSize <= 0)
         {
-            throw new ArgumentException("Buffer size must be positive", nameof(bufferSize));
+            // Return a subject that's already completed (no-op behavior)
+            var invalidSubject = ResultSubscriptionsCore.CreateResultSubject<T>();
+            invalidSubject.Dispose();
+            return invalidSubject;
         }
 
         var subject = new ReplayResultSubject<T>(bufferSize);

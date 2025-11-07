@@ -45,8 +45,11 @@ public static class ResultValueExtensions
     /// <returns>The original Result or the fallback.</returns>
     public static Result<T> OrElse<T>(this Result<T> result, Result<T> fallback)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(fallback);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<T>.WithFailure("Result cannot be null"); }
+        if (fallback is null) { return Result<T>.WithFailure("Fallback result cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.IsFailure ? fallback : result;
     }
 
@@ -59,8 +62,11 @@ public static class ResultValueExtensions
     /// <returns>The original Result or the computed fallback.</returns>
     public static Result<T> OrElse<T>(this Result<T> result, Func<Result<T>> fallbackFactory)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(fallbackFactory);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<T>.WithFailure("Result cannot be null"); }
+        if (fallbackFactory is null) { return Result<T>.WithFailure("Fallback factory function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.IsFailure ? fallbackFactory() : result;
     }
 
@@ -87,8 +93,16 @@ public static class ResultValueExtensions
     /// <returns>A task returning the original or fallback Result.</returns>
     public static async Task<Result<T>> OrElseAsync<T>(this Task<Result<T>> resultTask, Func<Task<Result<T>>> fallbackFactory)
     {
-        ArgumentNullException.ThrowIfNull(resultTask);
-        ArgumentNullException.ThrowIfNull(fallbackFactory);
+        if (resultTask is null)
+        {
+            return Result<T>.WithFailure("Result task cannot be null");
+        }
+        
+        if (fallbackFactory is null)
+        {
+            return Result<T>.WithFailure("Fallback factory function cannot be null");
+        }
+        
         var result = await resultTask.ConfigureAwait(false);
         return result.IsFailure ? await fallbackFactory().ConfigureAwait(false) : result;
     }
@@ -140,8 +154,16 @@ public static class ResultValueExtensions
     /// <returns>The original Result.</returns>
     public static Result<T> OnBoth<T>(this Result<T> result, Action action)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(action);
+        if (result is null)
+        {
+            return Result<T>.WithFailure("Result cannot be null");
+        }
+        
+        if (action is null)
+        {
+            return Result<T>.WithFailure("Action cannot be null");
+        }
+        
         action();
         return result;
     }
@@ -156,9 +178,21 @@ public static class ResultValueExtensions
     /// <returns>The original Result.</returns>
     public static Result<T> OnBoth<T>(this Result<T> result, Action<T> onSuccess, Action<IEnumerable<string>> onFailure)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
+        if (result is null)
+        {
+            return Result<T>.WithFailure("Result cannot be null");
+        }
+        
+        if (onSuccess is null)
+        {
+            return Result<T>.WithFailure("OnSuccess action cannot be null");
+        }
+        
+        if (onFailure is null)
+        {
+            return Result<T>.WithFailure("OnFailure action cannot be null");
+        }
+        
         if (result.IsRecoverable)
         {
             onSuccess(result.Value!);
@@ -179,9 +213,21 @@ public static class ResultValueExtensions
     /// <returns>The original Result.</returns>
     public static Result OnBoth(this Result result, Action onSuccess, Action<IEnumerable<string>> onFailure)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
+        if (result is null)
+        {
+            return Result.WithFailure("Result cannot be null");
+        }
+        
+        if (onSuccess is null)
+        {
+            return Result.WithFailure("OnSuccess action cannot be null");
+        }
+        
+        if (onFailure is null)
+        {
+            return Result.WithFailure("OnFailure action cannot be null");
+        }
+        
         if (result.IsSuccess)
         {
             onSuccess();
@@ -217,9 +263,12 @@ public static class ResultValueExtensions
     /// <returns>The mapped Result.</returns>
     public static Result<TOut> MapBoth<T, TOut>(this Result<T> result, Func<T, TOut> onSuccess, Func<IEnumerable<string>, TOut> onFailure)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<TOut>.WithFailure("Result cannot be null"); }
+        if (onSuccess is null) { return Result<TOut>.WithFailure("OnSuccess function cannot be null"); }
+        if (onFailure is null) { return Result<TOut>.WithFailure("OnFailure function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.Match(onSuccess, onFailure);
     }
 }

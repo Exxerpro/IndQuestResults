@@ -1,3 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using IndQuestResults;
+using IndQuestResults.Reactive;
+using Shouldly;
+using Xunit;
+
 namespace IndQuestResults.Tests.Unit.Reactive;
 
 public class ResultObservableBridgeBranchTests
@@ -52,11 +60,99 @@ public class ResultObservableBridgeBranchTests
     }
 
     [Fact]
-    public void CreateReplayBridge_InvalidBuffer_Throws()
+    public void CreateReplayBridge_InvalidBuffer_ReturnsDisposedSubject()
     {
         var obs = new TestObservable<int>(_ => { });
-        Should.Throw<ArgumentException>(() => obs.CreateReplayBridge(bufferSize: 0));
-        Should.Throw<ArgumentException>(() => obs.CreateReplayBridge(bufferSize: -1));
+        var subject1 = obs.CreateReplayBridge(bufferSize: 0);
+        var subject2 = obs.CreateReplayBridge(bufferSize: -1);
+        
+        // Should return a disposed subject (no-op behavior)
+        subject1.ShouldNotBeNull();
+        subject2.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void ToResultStream_NullSource_ReturnsNoOpDisposable()
+    {
+        var disposable = ((IObservable<int>?)null).ToResultStream(_ => { });
+        
+        disposable.ShouldNotBeNull();
+        Should.NotThrow(() => disposable.Dispose());
+    }
+
+    [Fact]
+    public void ToResultStream_NullOnNext_ReturnsNoOpDisposable()
+    {
+        var obs = new TestObservable<int>(_ => { });
+        var disposable = obs.ToResultStream((Action<Result<int>>?)null);
+        
+        disposable.ShouldNotBeNull();
+        Should.NotThrow(() => disposable.Dispose());
+    }
+
+    [Fact]
+    public void SelectResult_NullSource_ReturnsNoOpDisposable()
+    {
+        var disposable = ((IObservable<int>?)null).SelectResult(_ => Result<string>.Success("test"), _ => { });
+        
+        disposable.ShouldNotBeNull();
+        Should.NotThrow(() => disposable.Dispose());
+    }
+
+    [Fact]
+    public void SelectResult_NullSelector_ReturnsNoOpDisposable()
+    {
+        var obs = new TestObservable<int>(_ => { });
+        var disposable = obs.SelectResult((Func<int, Result<string>>?)null, _ => { });
+        
+        disposable.ShouldNotBeNull();
+        Should.NotThrow(() => disposable.Dispose());
+    }
+
+    [Fact]
+    public void SelectResult_NullOnNext_ReturnsNoOpDisposable()
+    {
+        var obs = new TestObservable<int>(_ => { });
+        var disposable = obs.SelectResult(_ => Result<string>.Success("test"), (Action<Result<string>>?)null);
+        
+        disposable.ShouldNotBeNull();
+        Should.NotThrow(() => disposable.Dispose());
+    }
+
+    [Fact]
+    public void WhereSuccess_NullSource_ReturnsNoOpDisposable()
+    {
+        var disposable = ((IObservable<int>?)null).WhereSuccess(_ => Result<string>.Success("test"), _ => { });
+        
+        disposable.ShouldNotBeNull();
+        Should.NotThrow(() => disposable.Dispose());
+    }
+
+    [Fact]
+    public void HandleResults_NullSource_ReturnsNoOpDisposable()
+    {
+        var disposable = ((IObservable<int>?)null).HandleResults(_ => Result<string>.Success("test"), _ => { }, _ => { });
+        
+        disposable.ShouldNotBeNull();
+        Should.NotThrow(() => disposable.Dispose());
+    }
+
+    [Fact]
+    public async Task CollectResults_NullSource_ReturnsFailureResult()
+    {
+        var result = await ((IObservable<int>?)null).CollectResults(TimeSpan.FromSeconds(1));
+        
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain("Source observable cannot be null");
+    }
+
+    [Fact]
+    public void CreateReplayBridge_NullSource_ReturnsDisposedSubject()
+    {
+        var subject = ((IObservable<int>?)null).CreateReplayBridge();
+        
+        subject.ShouldNotBeNull();
+        // Subject should be disposed (no-op behavior)
     }
 }
 

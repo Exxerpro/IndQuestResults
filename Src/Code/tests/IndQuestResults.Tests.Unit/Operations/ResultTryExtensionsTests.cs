@@ -71,5 +71,75 @@ public class ResultTryExtensionsTests
         bound.IsFailure.ShouldBeTrue();
         bound.Error.ShouldContain("E:err");
     }
+
+    [Fact]
+    public void Try_ExceptionPreserved_InExceptionProperty()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Test exception");
+
+        // Act
+        var result = ResultTryExtensions.Try<int>(() => throw exception, ex => $"Error: {ex.Message}");
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Exception.ShouldNotBeNull();
+        result.Exception.ShouldBe(exception);
+        result.IsFaulted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task TryAsync_ExceptionPreserved_InExceptionProperty()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Test exception");
+
+        // Act
+        var result = await ResultTryExtensions.TryAsync<int>(async () =>
+        {
+            await Task.Delay(1);
+            throw exception;
+        }, ex => $"Error: {ex.Message}");
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Exception.ShouldNotBeNull();
+        result.Exception.ShouldBe(exception);
+        result.IsFaulted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void MapTry_ExceptionPreserved_InExceptionProperty()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Test exception");
+        var input = Result<int>.Success(5);
+
+        // Act
+        var result = input.MapTry<int, int>(_ => throw exception, ex => $"Error: {ex.Message}");
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Exception.ShouldNotBeNull();
+        result.Exception.ShouldBe(exception);
+        result.IsFaulted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void BindTry_ExceptionPreserved_InExceptionProperty()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Test exception");
+        var input = Result<int>.Success(5);
+
+        // Act
+        var result = input.BindTry<int, int>(_ => throw exception, ex => $"Error: {ex.Message}");
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Exception.ShouldNotBeNull();
+        result.Exception.ShouldBe(exception);
+        result.IsFaulted.ShouldBeTrue();
+    }
 }
 

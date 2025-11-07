@@ -54,8 +54,15 @@ public static class ResultMetrics
         string operationName,
         IMetricsCollector? collector = null)
     {
-        ArgumentNullException.ThrowIfNull(operation);
-        ArgumentNullException.ThrowIfNull(operationName);
+        if (operation is null)
+        {
+            return Result<T>.WithFailure("Operation function cannot be null");
+        }
+        
+        if (operationName is null)
+        {
+            return Result<T>.WithFailure("Operation name cannot be null");
+        }
 
         var effectiveCollector = collector ?? _globalCollector;
         if (effectiveCollector == null)
@@ -84,7 +91,7 @@ public static class ResultMetrics
                 errorType: ex.GetType().Name);
             
             // Return failure result
-            result = Result<T>.WithFailure($"Operation failed: {ex.Message}");
+            result = Result<T>.WithFailure($"Operation failed: {ex.Message}", default, ex);
         }
         
         var finalElapsed = System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp);
@@ -109,8 +116,15 @@ public static class ResultMetrics
         IMetricsCollector? collector = null,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(operation);
-        ArgumentNullException.ThrowIfNull(operationName);
+        if (operation is null)
+        {
+            return Result<T>.WithFailure("Operation function cannot be null");
+        }
+        
+        if (operationName is null)
+        {
+            return Result<T>.WithFailure("Operation name cannot be null");
+        }
 
         var effectiveCollector = collector ?? _globalCollector;
         if (effectiveCollector == null)
@@ -150,7 +164,7 @@ public static class ResultMetrics
                 isException: true,
                 errorType: ex.GetType().Name);
             
-            result = Result<T>.WithFailure($"Async operation failed: {ex.Message}");
+            result = Result<T>.WithFailure($"Async operation failed: {ex.Message}", default, ex);
         }
         
         var finalElapsed = System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp);

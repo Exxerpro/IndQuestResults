@@ -78,7 +78,10 @@ public static class ResultSubscriptionsCore
     /// <returns>Safe subscription wrapper</returns>
     public static Action<T> CreateSafeHandler<T>(Action<T> onNext, Action<Exception>? onError = null)
     {
-        ArgumentNullException.ThrowIfNull(onNext);
+        if (onNext is null)
+        {
+            return _ => { }; // No-op action
+        }
 
         return value =>
         {
@@ -104,7 +107,10 @@ public static class ResultSubscriptionsCore
         Func<T, Task> onNextAsync,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(onNextAsync);
+        if (onNextAsync is null)
+        {
+            return _ => Task.CompletedTask; // No-op async function
+        }
 
         return async value =>
         {
@@ -297,7 +303,11 @@ internal class ResultSubject<T> : IResultSubject<T>
         Action? onCompleted = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
-        ArgumentNullException.ThrowIfNull(onSuccess);
+        
+        if (onSuccess is null)
+        {
+            return NoOpDisposable.Instance;
+        }
 
         var observer = new ResultObserver<T>(onSuccess, onFailure, onCompleted);
         var id = Interlocked.Increment(ref _nextId);
@@ -312,7 +322,11 @@ internal class ResultSubject<T> : IResultSubject<T>
         Action? onCompleted = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, typeof(ResultSubject<>).Name);
-        ArgumentNullException.ThrowIfNull(onResult);
+        
+        if (onResult is null)
+        {
+            return NoOpDisposable.Instance;
+        }
 
         var observer = new ResultObserver<T>(onResult, onCompleted);
         var id = Interlocked.Increment(ref _nextId);
@@ -430,6 +444,19 @@ internal class Subscription : IDisposable
             _disposed = true;
         }
     }
+}
+
+/// <summary>
+/// No-op disposable implementation for error-aware ROP compliance.
+/// Used when null parameters are passed to methods that return IDisposable.
+/// </summary>
+internal sealed class NoOpDisposable : IDisposable
+{
+    public static readonly NoOpDisposable Instance = new();
+    
+    private NoOpDisposable() { }
+    
+    public void Dispose() { }
 }
 
 /// <summary>

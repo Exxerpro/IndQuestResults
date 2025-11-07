@@ -136,11 +136,14 @@ public class ResultSubscriptionsCoreTests
     #region CreateSafeHandler Tests
 
     [Fact]
-    public void CreateSafeHandler_NullOnNext_ThrowsArgumentNullException()
+    public void CreateSafeHandler_NullOnNext_ReturnsNoOpHandler()
     {
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            ResultSubscriptionsCore.CreateSafeHandler<int>(null!));
+        // Act
+        var handler = ResultSubscriptionsCore.CreateSafeHandler<int>(null!);
+        
+        // Assert - Should not throw when called
+        Should.NotThrow(() => handler(42));
+        Should.NotThrow(() => handler(100));
     }
 
     [Fact]
@@ -196,11 +199,14 @@ public class ResultSubscriptionsCoreTests
     #region CreateAsyncHandler Tests
 
     [Fact]
-    public void CreateAsyncHandler_NullOnNextAsync_ThrowsArgumentNullException()
+    public async Task CreateAsyncHandler_NullOnNextAsync_ReturnsNoOpHandler()
     {
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            ResultSubscriptionsCore.CreateAsyncHandler<int>(null!));
+        // Act
+        var handler = ResultSubscriptionsCore.CreateAsyncHandler<int>(null!);
+        
+        // Assert - Should not throw when called
+        await Should.NotThrowAsync(async () => await handler(42));
+        await Should.NotThrowAsync(async () => await handler(100));
     }
 
     [Fact]
@@ -659,23 +665,31 @@ public class ResultSubscriptionsCoreTests
     }
 
     [Fact]
-    public void ResultSubject_SubscribeWithNullOnSuccess_ThrowsArgumentNullException()
+    public void ResultSubject_SubscribeWithNullOnSuccess_ReturnsNoOpDisposable()
     {
         // Arrange
         var subject = ResultSubscriptionsCore.CreateResultSubject<int>();
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() => subject.Subscribe(onSuccess: null!));
+        // Act
+        var disposable = subject.Subscribe(onSuccess: null!);
+
+        // Assert
+        disposable.ShouldNotBeNull();
+        disposable.Dispose(); // Should not throw
     }
 
     [Fact]
-    public void ResultSubject_SubscribeWithNullOnResult_ThrowsArgumentNullException()
+    public void ResultSubject_SubscribeWithNullOnResult_ReturnsNoOpDisposable()
     {
         // Arrange
         var subject = ResultSubscriptionsCore.CreateResultSubject<int>();
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() => subject.Subscribe(onResult: null!));
+        // Act
+        var disposable = subject.Subscribe(onResult: null!);
+
+        // Assert
+        disposable.ShouldNotBeNull();
+        disposable.Dispose(); // Should not throw
     }
 
     [Fact]

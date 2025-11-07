@@ -222,17 +222,27 @@ public class ObservablesBridgeAndSubjectTests
     }
 
     [Fact]
-    public void CreateReplayBridge_BufferSize_Zero_Throws()
+    public void CreateReplayBridge_BufferSize_Zero_ReturnsDisposedSubject()
     {
         var src = new TestObservable<int>();
-        Should.Throw<ArgumentException>(() => src.CreateReplayBridge(bufferSize: 0));
+        var subject = src.CreateReplayBridge(bufferSize: 0);
+        subject.ShouldNotBeNull();
+        // The subject should be disposed (no-op behavior)
+        // Attempting to subscribe to a disposed subject should throw
+        Action<Result<int>> onResult = _ => { };
+        Should.Throw<ObjectDisposedException>(() => subject.Subscribe(onResult));
     }
 
     [Fact]
-    public void CreateReplayBridge_BufferSize_Negative_Throws()
+    public void CreateReplayBridge_BufferSize_Negative_ReturnsDisposedSubject()
     {
         var src = new TestObservable<int>();
-        Should.Throw<ArgumentException>(() => src.CreateReplayBridge(bufferSize: -1));
+        var subject = src.CreateReplayBridge(bufferSize: -1);
+        subject.ShouldNotBeNull();
+        // The subject should be disposed (no-op behavior)
+        // Attempting to subscribe to a disposed subject should throw
+        Action<Result<int>> onResult = _ => { };
+        Should.Throw<ObjectDisposedException>(() => subject.Subscribe(onResult));
     }
 }
 

@@ -335,39 +335,48 @@ public class RouteResultsObserverTests
     #region Null Argument Tests
 
     [Fact]
-    public void RouteResults_NullSource_ThrowsArgumentNullException()
+    public void RouteResults_NullSource_ReturnsNoOpDisposable()
     {
         // Arrange
         var successSubject = ResultSubscriptionsCore.CreateResultSubject<int>();
         var failureSubject = ResultSubscriptionsCore.CreateResultSubject<string>();
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            ((IObservable<Result<int>>)null!).RouteResults(successSubject, failureSubject));
+        // Act
+        var disposable = ((IObservable<Result<int>>)null!).RouteResults(successSubject, failureSubject);
+        
+        // Assert
+        disposable.ShouldNotBeNull();
+        Should.NotThrow(() => disposable.Dispose());
     }
 
     [Fact]
-    public void RouteResults_NullSuccessSubject_ThrowsArgumentNullException()
+    public void RouteResults_NullSuccessSubject_ReturnsNoOpDisposable()
     {
         // Arrange
         var sourceObservable = new TestObservable<Result<int>>();
         var failureSubject = ResultSubscriptionsCore.CreateResultSubject<string>();
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            sourceObservable.RouteResults(null!, failureSubject));
+        // Act
+        var disposable = sourceObservable.RouteResults(null!, failureSubject);
+        
+        // Assert
+        disposable.ShouldNotBeNull();
+        Should.NotThrow(() => disposable.Dispose());
     }
 
     [Fact]
-    public void RouteResults_NullFailureSubject_ThrowsArgumentNullException()
+    public void RouteResults_NullFailureSubject_ReturnsNoOpDisposable()
     {
         // Arrange
         var sourceObservable = new TestObservable<Result<int>>();
         var successSubject = ResultSubscriptionsCore.CreateResultSubject<int>();
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            sourceObservable.RouteResults(successSubject, null!));
+        // Act
+        var disposable = sourceObservable.RouteResults(successSubject, null!);
+        
+        // Assert
+        disposable.ShouldNotBeNull();
+        Should.NotThrow(() => disposable.Dispose());
     }
 
     #endregion

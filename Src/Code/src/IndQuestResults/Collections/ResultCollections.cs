@@ -43,7 +43,10 @@ public static class ResultCollections
     /// </example>
     public static Result<IEnumerable<T>> Sequence<T>(IEnumerable<Result<T>> results)
     {
-        ArgumentNullException.ThrowIfNull(results);
+        if (results is null)
+        {
+            return Result<IEnumerable<T>>.WithFailure("Results collection cannot be null");
+        }
 
         var values = new List<T>();
         var errors = new List<string>();
@@ -79,7 +82,10 @@ public static class ResultCollections
     /// <returns>Result containing all values if successful, or first error encountered</returns>
     public static Result<IEnumerable<T>> SequenceFailFast<T>(IEnumerable<Result<T>> results)
     {
-        ArgumentNullException.ThrowIfNull(results);
+        if (results is null)
+        {
+            return Result<IEnumerable<T>>.WithFailure("Results collection cannot be null");
+        }
 
         var values = new List<T>();
 
@@ -122,8 +128,10 @@ public static class ResultCollections
         IEnumerable<TInput> inputs,
         Func<TInput, Result<TOutput>> func)
     {
-        ArgumentNullException.ThrowIfNull(inputs);
-        ArgumentNullException.ThrowIfNull(func);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (inputs is null) { return Result<IEnumerable<TOutput>>.WithFailure("Inputs collection cannot be null"); }
+        if (func is null) { return Result<IEnumerable<TOutput>>.WithFailure("Function cannot be null"); }
+#pragma warning restore IDE0046
 
         return Sequence(inputs.Select(func));
     }
@@ -140,8 +148,10 @@ public static class ResultCollections
         IEnumerable<TInput> inputs,
         Func<TInput, Result<TOutput>> func)
     {
-        ArgumentNullException.ThrowIfNull(inputs);
-        ArgumentNullException.ThrowIfNull(func);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (inputs is null) { return Result<IEnumerable<TOutput>>.WithFailure("Inputs collection cannot be null"); }
+        if (func is null) { return Result<IEnumerable<TOutput>>.WithFailure("Function cannot be null"); }
+#pragma warning restore IDE0046
 
         return SequenceFailFast(inputs.Select(func));
     }

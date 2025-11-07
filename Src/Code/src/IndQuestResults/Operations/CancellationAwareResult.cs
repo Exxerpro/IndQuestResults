@@ -41,7 +41,7 @@ public static class CancellationAwareResult
         }
         catch (Exception ex)
         {
-            return Result<T>.WithFailure($"Operation failed: {ex.Message}");
+            return Result<T>.WithFailure($"Operation failed: {ex.Message}", default, ex);
         }
     }
 
@@ -78,7 +78,7 @@ public static class CancellationAwareResult
         }
         catch (Exception ex)
         {
-            return Result<T>.WithFailure($"Operation failed: {ex.Message}");
+            return Result<T>.WithFailure($"Operation failed: {ex.Message}", default, ex);
         }
     }
 
@@ -115,7 +115,7 @@ public static class CancellationAwareResult
         }
         catch (Exception ex)
         {
-            return Result.WithFailure($"Operation failed: {ex.Message}");
+            return Result.WithFailure($"Operation failed: {ex.Message}", ex);
         }
     }
 
@@ -164,7 +164,7 @@ public static class CancellationAwareResult
         }
         catch (Exception ex)
         {
-            return Result<T>.WithFailure($"Operation failed: {ex.Message}");
+            return Result<T>.WithFailure($"Operation failed: {ex.Message}", default, ex);
         }
     }
 }

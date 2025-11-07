@@ -294,31 +294,41 @@ public class ResultTimingTests
     }
 
     [Fact]
-    public void Timed_NullOperation_ThrowsArgumentNullException()
+    public void Timed_NullOperation_ReturnsFailureTimedResult()
     {
-        Should.Throw<ArgumentNullException>(() => 
-            ResultTiming.Timed<string>(null!));
+        var timedResult = ResultTiming.Timed<string>(null!);
+        
+        timedResult.Result.IsFailure.ShouldBeTrue();
+        timedResult.Elapsed.ShouldBe(TimeSpan.Zero);
+        timedResult.Result.Errors.ShouldContain("Operation function cannot be null");
     }
 
     [Fact]
-    public void TimedWithCallback_NullOperation_ThrowsArgumentNullException()
+    public void TimedWithCallback_NullOperation_ReturnsFailureResult()
     {
-        Should.Throw<ArgumentNullException>(() => 
-            ResultTiming.TimedWithCallback<string>(null!, (r, e) => { }));
+        var result = ResultTiming.TimedWithCallback<string>(null!, (r, e) => { });
+        
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain("Operation function cannot be null");
     }
 
     [Fact]
-    public void TimedWithCallback_NullCallback_ThrowsArgumentNullException()
+    public void TimedWithCallback_NullCallback_ReturnsFailureResult()
     {
-        Should.Throw<ArgumentNullException>(() => 
-            ResultTiming.TimedWithCallback(() => Result<string>.Success("test"), null!));
+        var result = ResultTiming.TimedWithCallback(() => Result<string>.Success("test"), null!);
+        
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain("Callback function cannot be null");
     }
 
     [Fact]
-    public async Task TimedAsync_NullOperation_ThrowsArgumentNullException()
+    public async Task TimedAsync_NullOperation_ReturnsFailureTimedResult()
     {
-        await Should.ThrowAsync<ArgumentNullException>(async () => 
-            await ResultTiming.TimedAsync<string>(null!));
+        var timedResult = await ResultTiming.TimedAsync<string>(null!);
+        
+        timedResult.Result.IsFailure.ShouldBeTrue();
+        timedResult.Elapsed.ShouldBe(TimeSpan.Zero);
+        timedResult.Result.Errors.ShouldContain("Operation function cannot be null");
     }
 
     [Fact]

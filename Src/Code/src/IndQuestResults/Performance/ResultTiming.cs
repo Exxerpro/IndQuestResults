@@ -46,7 +46,12 @@ public static class ResultTiming
     /// </example>
     public static TimedResult<T> Timed<T>(Func<Result<T>> operation)
     {
-        ArgumentNullException.ThrowIfNull(operation);
+        if (operation is null)
+        {
+            return new TimedResult<T>(
+                Result<T>.WithFailure("Operation function cannot be null"),
+                TimeSpan.Zero);
+        }
 
         var startTimestamp = Stopwatch.GetTimestamp();
         try
@@ -58,7 +63,7 @@ public static class ResultTiming
         catch (Exception ex)
         {
             var elapsed = Stopwatch.GetElapsedTime(startTimestamp);
-            var failureResult = Result<T>.WithFailure($"Operation failed: {ex.Message}");
+            var failureResult = Result<T>.WithFailure($"Operation failed: {ex.Message}", default, ex);
             return new TimedResult<T>(failureResult, elapsed);
         }
     }
@@ -80,7 +85,12 @@ public static class ResultTiming
     /// </example>
     public static TimedResult Timed(Func<Result> operation)
     {
-        ArgumentNullException.ThrowIfNull(operation);
+        if (operation is null)
+        {
+            return new TimedResult(
+                Result.WithFailure("Operation function cannot be null"),
+                TimeSpan.Zero);
+        }
 
         var startTimestamp = Stopwatch.GetTimestamp();
         try
@@ -92,7 +102,7 @@ public static class ResultTiming
         catch (Exception ex)
         {
             var elapsed = Stopwatch.GetElapsedTime(startTimestamp);
-            var failureResult = Result.WithFailure($"Operation failed: {ex.Message}");
+            var failureResult = Result.WithFailure($"Operation failed: {ex.Message}", ex);
             return new TimedResult(failureResult, elapsed);
         }
     }
@@ -119,7 +129,12 @@ public static class ResultTiming
         Func<Task<Result<T>>> operation,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(operation);
+        if (operation is null)
+        {
+            return new TimedResult<T>(
+                Result<T>.WithFailure("Operation function cannot be null"),
+                TimeSpan.Zero);
+        }
 
         var startTimestamp = Stopwatch.GetTimestamp();
         try
@@ -137,7 +152,7 @@ public static class ResultTiming
         catch (Exception ex)
         {
             var elapsed = Stopwatch.GetElapsedTime(startTimestamp);
-            var failureResult = Result<T>.WithFailure($"Async operation failed: {ex.Message}");
+            var failureResult = Result<T>.WithFailure($"Async operation failed: {ex.Message}", default, ex);
             return new TimedResult<T>(failureResult, elapsed);
         }
     }
@@ -153,7 +168,12 @@ public static class ResultTiming
         Func<Task<Result>> operation,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(operation);
+        if (operation is null)
+        {
+            return new TimedResult(
+                Result.WithFailure("Operation function cannot be null"),
+                TimeSpan.Zero);
+        }
 
         var startTimestamp = Stopwatch.GetTimestamp();
         try
@@ -171,7 +191,7 @@ public static class ResultTiming
         catch (Exception ex)
         {
             var elapsed = Stopwatch.GetElapsedTime(startTimestamp);
-            var failureResult = Result.WithFailure($"Async operation failed: {ex.Message}");
+            var failureResult = Result.WithFailure($"Async operation failed: {ex.Message}", ex);
             return new TimedResult(failureResult, elapsed);
         }
     }
@@ -196,8 +216,15 @@ public static class ResultTiming
         Func<Result<T>> operation,
         Action<Result<T>, TimeSpan> onTimed)
     {
-        ArgumentNullException.ThrowIfNull(operation);
-        ArgumentNullException.ThrowIfNull(onTimed);
+        if (operation is null)
+        {
+            return Result<T>.WithFailure("Operation function cannot be null");
+        }
+        
+        if (onTimed is null)
+        {
+            return Result<T>.WithFailure("Callback function cannot be null");
+        }
 
         var timedResult = Timed(operation);
         
@@ -223,8 +250,15 @@ public static class ResultTiming
         Func<Result> operation,
         Action<Result, TimeSpan> onTimed)
     {
-        ArgumentNullException.ThrowIfNull(operation);
-        ArgumentNullException.ThrowIfNull(onTimed);
+        if (operation is null)
+        {
+            return Result.WithFailure("Operation function cannot be null");
+        }
+        
+        if (onTimed is null)
+        {
+            return Result.WithFailure("Callback function cannot be null");
+        }
 
         var timedResult = Timed(operation);
         
@@ -253,8 +287,15 @@ public static class ResultTiming
         Action<Result<T>, TimeSpan> onTimed,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(operation);
-        ArgumentNullException.ThrowIfNull(onTimed);
+        if (operation is null)
+        {
+            return Result<T>.WithFailure("Operation function cannot be null");
+        }
+        
+        if (onTimed is null)
+        {
+            return Result<T>.WithFailure("Callback function cannot be null");
+        }
 
         var timedResult = await TimedAsync(operation, cancellationToken).ConfigureAwait(false);
         

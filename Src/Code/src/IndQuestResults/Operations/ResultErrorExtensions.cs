@@ -17,8 +17,11 @@ public static class ResultErrorExtensions
     /// <returns>The transformed failed Result or the original Result when successful.</returns>
     public static Result MapError(this Result result, Func<IEnumerable<string>, IEnumerable<string>> map)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(map);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result.WithFailure("Result cannot be null"); }
+        if (map is null) { return Result.WithFailure("Map function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.IsFailure
             ? Result.WithFailure(map(result.Errors ?? [ResultConstants.DefaultErrorMessage]))
             : result;
@@ -33,8 +36,11 @@ public static class ResultErrorExtensions
     /// <returns>The transformed failed Result or the original Result when successful.</returns>
     public static Result<T> MapError<T>(this Result<T> result, Func<IEnumerable<string>, IEnumerable<string>> map)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(map);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<T>.WithFailure("Result cannot be null"); }
+        if (map is null) { return Result<T>.WithFailure("Map function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.IsFailure
             ? Result<T>.WithFailure(map(result.Errors ?? [ResultConstants.DefaultErrorMessage]), result.Value)
             : result;
@@ -48,8 +54,16 @@ public static class ResultErrorExtensions
     /// <returns>The original Result instance.</returns>
     public static Result TapError(this Result result, Action<IEnumerable<string>> action)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(action);
+        if (result is null)
+        {
+            return Result.WithFailure("Result cannot be null");
+        }
+        
+        if (action is null)
+        {
+            return Result.WithFailure("Action cannot be null");
+        }
+        
         if (result.IsFailure)
         {
             action(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
@@ -66,8 +80,16 @@ public static class ResultErrorExtensions
     /// <returns>The original Result instance.</returns>
     public static Result<T> TapError<T>(this Result<T> result, Action<IEnumerable<string>> action)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(action);
+        if (result is null)
+        {
+            return Result<T>.WithFailure("Result cannot be null");
+        }
+        
+        if (action is null)
+        {
+            return Result<T>.WithFailure("Action cannot be null");
+        }
+        
         if (result.IsFailure)
         {
             action(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
@@ -83,8 +105,11 @@ public static class ResultErrorExtensions
     /// <returns>The recovered Result or the original when successful.</returns>
     public static Result Recover(this Result result, Func<IEnumerable<string>, Result> recover)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(recover);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result.WithFailure("Result cannot be null"); }
+        if (recover is null) { return Result.WithFailure("Recover function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.IsFailure
             ? recover(result.Errors ?? [ResultConstants.DefaultErrorMessage])
             : result;
@@ -99,8 +124,11 @@ public static class ResultErrorExtensions
     /// <returns>The recovered Result or the original when successful.</returns>
     public static Result<T> Recover<T>(this Result<T> result, Func<IEnumerable<string>, Result<T>> recover)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(recover);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<T>.WithFailure("Result cannot be null"); }
+        if (recover is null) { return Result<T>.WithFailure("Recover function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.IsFailure
             ? recover(result.Errors ?? [ResultConstants.DefaultErrorMessage])
             : result;

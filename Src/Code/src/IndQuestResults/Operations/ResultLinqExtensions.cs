@@ -17,8 +17,11 @@ public static class ResultLinqExtensions
     /// <returns>A Result containing the mapped value or the original errors.</returns>
     public static Result<TOut> Select<T, TOut>(this Result<T> result, Func<T, TOut> selector)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(selector);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<TOut>.WithFailure("Result cannot be null"); }
+        if (selector is null) { return Result<TOut>.WithFailure("Selector function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.Map(selector);
     }
 
@@ -32,8 +35,11 @@ public static class ResultLinqExtensions
     /// <returns>The bound Result or a failure with propagated errors.</returns>
     public static Result<TOut> SelectMany<T, TOut>(this Result<T> result, Func<T, Result<TOut>> binder)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(binder);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<TOut>.WithFailure("Result cannot be null"); }
+        if (binder is null) { return Result<TOut>.WithFailure("Binder function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.Bind(binder);
     }
 
@@ -49,9 +55,12 @@ public static class ResultLinqExtensions
     /// <returns>The bound Result or a failure with aggregated errors.</returns>
     public static Result<TOut> SelectMany<T1, T2, TOut>(this Result<T1> result1, Result<T2> result2, Func<T1, T2, Result<TOut>> binder)
     {
-        ArgumentNullException.ThrowIfNull(result1);
-        ArgumentNullException.ThrowIfNull(result2);
-        ArgumentNullException.ThrowIfNull(binder);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result1 is null) { return Result<TOut>.WithFailure("First result cannot be null"); }
+        if (result2 is null) { return Result<TOut>.WithFailure("Second result cannot be null"); }
+        if (binder is null) { return Result<TOut>.WithFailure("Binder function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result1.Bind(x1 => result2.Bind(x2 => binder(x1, x2)));
     }
 
@@ -84,8 +93,11 @@ public static class ResultLinqExtensions
     /// <returns>The original Result if predicate passes; otherwise a failure.</returns>
     public static Result<T> Where<T>(this Result<T> result, Func<T, bool> predicate)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(predicate);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<T>.WithFailure("Result cannot be null"); }
+        if (predicate is null) { return Result<T>.WithFailure("Predicate function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.Ensure(predicate, "Where predicate returned false");
     }
 }

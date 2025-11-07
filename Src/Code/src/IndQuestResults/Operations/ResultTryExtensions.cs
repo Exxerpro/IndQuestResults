@@ -17,15 +17,23 @@ public static class ResultTryExtensions
     /// <returns>A successful Result or a failure with the mapped error.</returns>
     public static Result<T> Try<T>(Func<T> func, Func<Exception, string> mapError)
     {
-        ArgumentNullException.ThrowIfNull(func);
-        ArgumentNullException.ThrowIfNull(mapError);
+        if (func is null)
+        {
+            return Result<T>.WithFailure("Function cannot be null");
+        }
+        
+        if (mapError is null)
+        {
+            return Result<T>.WithFailure("Map error function cannot be null");
+        }
+        
         try
         {
             return Result<T>.Success(func());
         }
         catch (Exception ex)
         {
-            return Result<T>.WithFailure(mapError(ex));
+            return Result<T>.WithFailure(mapError(ex), default, ex);
         }
     }
 
@@ -38,8 +46,16 @@ public static class ResultTryExtensions
     /// <returns>A task with successful Result or failure with the mapped error.</returns>
     public static async Task<Result<T>> TryAsync<T>(Func<Task<T>> func, Func<Exception, string> mapError)
     {
-        ArgumentNullException.ThrowIfNull(func);
-        ArgumentNullException.ThrowIfNull(mapError);
+        if (func is null)
+        {
+            return Result<T>.WithFailure("Function cannot be null");
+        }
+        
+        if (mapError is null)
+        {
+            return Result<T>.WithFailure("Map error function cannot be null");
+        }
+        
         try
         {
             var value = await func().ConfigureAwait(false);
@@ -47,7 +63,7 @@ public static class ResultTryExtensions
         }
         catch (Exception ex)
         {
-            return Result<T>.WithFailure(mapError(ex));
+            return Result<T>.WithFailure(mapError(ex), default, ex);
         }
     }
 
@@ -62,9 +78,12 @@ public static class ResultTryExtensions
     /// <returns>A mapped Result or a failure with the mapped error.</returns>
     public static Result<TOut> MapTry<T, TOut>(this Result<T> result, Func<T, TOut> map, Func<Exception, string> mapError)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(map);
-        ArgumentNullException.ThrowIfNull(mapError);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<TOut>.WithFailure("Result cannot be null"); }
+        if (map is null) { return Result<TOut>.WithFailure("Map function cannot be null"); }
+        if (mapError is null) { return Result<TOut>.WithFailure("Map error function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.Bind(value =>
         {
             try
@@ -73,7 +92,7 @@ public static class ResultTryExtensions
             }
             catch (Exception ex)
             {
-                return Result<TOut>.WithFailure(mapError(ex));
+                return Result<TOut>.WithFailure(mapError(ex), default, ex);
             }
         });
     }
@@ -89,9 +108,12 @@ public static class ResultTryExtensions
     /// <returns>The bound Result or a failure with the mapped error.</returns>
     public static Result<TOut> BindTry<T, TOut>(this Result<T> result, Func<T, Result<TOut>> bind, Func<Exception, string> mapError)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(bind);
-        ArgumentNullException.ThrowIfNull(mapError);
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<TOut>.WithFailure("Result cannot be null"); }
+        if (bind is null) { return Result<TOut>.WithFailure("Bind function cannot be null"); }
+        if (mapError is null) { return Result<TOut>.WithFailure("Map error function cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.Bind(value =>
         {
             try
@@ -100,7 +122,7 @@ public static class ResultTryExtensions
             }
             catch (Exception ex)
             {
-                return Result<TOut>.WithFailure(mapError(ex));
+                return Result<TOut>.WithFailure(mapError(ex), default, ex);
             }
         });
     }

@@ -55,9 +55,11 @@ public class PerformanceMetricsSmokeTests
         res3.IsFailure.ShouldBeTrue();
 
         // Allow dispatch (poll briefly to reduce flakiness on slower machines)
-        for (var i = 0; i < 100; i++)
+        for (var i = 0; i < 200; i++)
         {
-            if (processor.Entries.Any(e => e.OperationName == "spec.success" && e.IsSuccess))
+            if (processor.Entries.Any(e => e.OperationName == "spec.success" && e.IsSuccess) &&
+                processor.Entries.Any(e => e.OperationName == "spec.exception" && !e.IsSuccess && e.IsException && e.ErrorType!.Contains("InvalidOperation")) &&
+                processor.Entries.Any(e => e.OperationName == "spec.failure" && !e.IsSuccess && !e.IsException && e.ErrorType == "ValidationFailure"))
             {
                 break;
             }

@@ -46,7 +46,7 @@ var profile = await GetUserAsync(id)
 - Value helpers: `.ValueOr(default)`, `.OrElse(fallback)`
 - Error helpers: `.MapError(map)`, `.TapError(log)`, `.Recover(errors => ...)`
 - Async: `.ThenAsync`, `.ThenMap`, `.ThenTap`, `.ThenValidate`, `.ThenRecover`, `.CombineAsync`
-- Cancellation: `ResultExtensions.Cancelled<T>()`, `.IsCancelled()`
+- Cancellation: `ResultExtensions.Cancelled<T>()`, `.IsCancelled()`, `CancellationAwareResult.WrapCancellationAware`, `CancellationAwareResult.WrapWithTimeout`
 - Serialization: `Result<T>` is JSON-serializable via `System.Text.Json` attributes (`[JsonConstructor]`); custom converters are not required
 - Warnings: `Result<T>.WithWarnings(warnings, value, confidence, missingDataRatio)`
 
@@ -71,10 +71,20 @@ Namespace: `IndQuestResults`
   - Returns failure with all provided errors.
   - Null/empty input becomes `[ResultConstants.DefaultErrorMessage]`.
 
+- `Result.WithFailure(Exception exception)`
+  - Returns failure with exception details. Sets `IsFaulted = true` (unless exception is `OperationCanceledException`).
+  - Preserves full exception object including stack trace for debugging.
+
+- `Result.WithFailure(IEnumerable<string> errors, Exception? exception)`
+  - Returns failure with both error messages and exception.
+  - `IsFaulted` is set based on exception type (true for exceptions, false for `OperationCanceledException`).
+
 ### State
 
 - `IsSuccess` / `IsFailure`: success vs failure.
 - `Errors` / `Error`: all messages and the first non-empty message.
+- `IsFaulted`: true when the failure was caused by an exception (not validation errors or cancellation).
+- `Exception`: the exception object that caused the failure, if any. Null for validation failures or when no exception was provided.
 
 ### Functional API
 
@@ -110,6 +120,15 @@ Namespace: `IndQuestResults`
   - Overloads: `(IEnumerable<string>? errors, T? value = default)`, `(T? value = default, IEnumerable<string>? errors = default)`, `(string[] errors, T? value = default)`, `(string error, T? value = default)`.
   - Null/empty errors become `[ResultConstants.DefaultErrorMessage]`.
 
+- `Result<T>.WithFailure(Exception exception, T? value = default)`
+  - Returns failure with exception details. Sets `IsFaulted = true` (unless exception is `OperationCanceledException`).
+  - Preserves full exception object including stack trace for debugging.
+
+- `Result<T>.WithFailure(string error, T? value = default, Exception? exception = null)`
+- `Result<T>.WithFailure(IEnumerable<string> errors, T? value = default, Exception? exception = null)`
+  - Returns failure with both error messages and exception.
+  - `IsFaulted` is set based on exception type (true for exceptions, false for `OperationCanceledException`).
+
 - Warnings (success with diagnostics)
   - `WithWarnings(IEnumerable<string> warnings, T value)` => success with `Warnings` and `HasWarnings`.
   - `WithWarnings(IEnumerable<string> warnings, T value, double confidence, double missingDataRatio)` => clamps metadata to [0,1].
@@ -129,6 +148,8 @@ Namespace: `IndQuestResults`
 - `HasErrors`: warnings or failure messages present.
 - `HasWarnings`: success with diagnostic messages.
 - `Warnings`, `Confidence`, `MissingDataRatio`: diagnostics and quality metadata.
+- `IsFaulted`: true when the failure was caused by an exception (not validation errors or cancellation).
+- `Exception`: the exception object that caused the failure, if any. Null for validation failures or when no exception was provided.
 
 ### Functional API
 
@@ -222,29 +243,285 @@ if (result.IsFailure)
 
 ---
 
-# Validation Utilities
+# Exception Support
 
-Namespace: `IndQuestResults.Operations` and error types in `IndQuestResults.Validation`
+## Overview
 
-- `EnsureNotNull<T>(T? value, string parameterName)` overloads for class and `Nullable<T>` structs
-- `ValidateNotNull(params (object? value, string parameterName)[] validations)`
-- `CreateIfValid<T>(Func<T> factory, params (object? value, string parameterName)[] validations)`
-- `FailForNullArgument<T>(string parameterName, string? message = null)` and non-generic `FailForNullArgument`
-- `FailForNullArguments<T>(params string[] names)` and non-generic `FailForNullArguments`
-- Error types: `NullArgumentError`, `MultipleNullArgumentsError`
+IndQuestResults supports exception preservation for better debugging and error diagnostics. Exceptions are captured and stored in `Result` objects without breaking the functional programming flow.
 
-Examples:
+## Key Properties
+
+- **`IsFaulted`**: Indicates whether the failure was caused by an exception (as opposed to validation errors or cancellation).
+- **`Exception`**: The exception object that caused the failure, preserving full stack trace and inner exceptions.
+
+## Exception Handling Rules
+
+1. **Regular Exceptions**: Set `IsFaulted = true` and preserve the exception object.
+2. **OperationCanceledException**: Treated as cancellation, not a fault. `IsFaulted = false`, but exception is still preserved.
+3. **Validation Failures**: No exception, `IsFaulted = false`, `Exception = null`.
+
+## Examples
+
+### Exception Preservation
 
 ```csharp
 using IndQuestResults;
 using IndQuestResults.Operations;
 
-var validated = ResultExtensions.ValidateNotNull((user, nameof(user)), (user?.Email, nameof(user.Email)));
+// Exception caught and preserved
+var result = ResultTryExtensions.Try<int>(
+    () => throw new InvalidOperationException("Test exception"),
+    ex => $"Error: {ex.Message}");
+
+if (result.IsFailure)
+{
+    result.IsFaulted.ShouldBeTrue(); // Exception was the cause
+    result.Exception.ShouldNotBeNull(); // Full exception preserved
+    result.Exception.StackTrace.ShouldNotBeNull(); // Stack trace available
+    result.Exception.InnerException?.ShouldNotBeNull(); // Inner exceptions preserved
+}
+```
+
+### Async Exception Handling
+
+```csharp
+using IndQuestResults.Async;
+
+// Exceptions in async methods are automatically preserved
+var result = await ResultAsync.MapAsync(
+    Task.FromResult(Result<int>.Success(5)),
+    async x =>
+    {
+        await Task.Delay(1);
+        throw new InvalidOperationException("Async error");
+    });
+
+result.IsFailure.ShouldBeTrue();
+result.IsFaulted.ShouldBeTrue();
+result.Exception.ShouldNotBeNull();
+```
+
+### Cancellation vs Exceptions
+
+```csharp
+using IndQuestResults.Operations;
+
+// Cancellation is not a fault
+var cancelled = await CancellationAwareResult.WrapCancellationAware<int>(
+    async ct =>
+    {
+        await Task.Delay(100, ct);
+        return 42;
+    },
+    cancellationToken: cancellationTokenSource.Token);
+
+cancelled.IsFailure.ShouldBeTrue();
+cancelled.IsFaulted.ShouldBeFalse(); // Cancellation is not a fault
+cancelled.IsCancelled().ShouldBeTrue();
+```
+
+### Exception in Result Chains
+
+```csharp
+// Exceptions propagate through Result chains
+var result = await GetUserAsync(id)
+    .ThenAsync(u => LoadProfileAsync(u.Id)) // If this throws, exception is preserved
+    .ThenMap(p => p.ToDto());
+
+if (result.IsFailure && result.IsFaulted)
+{
+    // Log the exception for debugging
+    _logger.LogError(result.Exception, "Failed to load user profile");
+}
+```
+
+## Best Practices
+
+1. **Check `IsFaulted`** to distinguish between validation errors and exceptions.
+2. **Access `Exception`** for detailed debugging information (stack traces, inner exceptions).
+3. **Handle `OperationCanceledException`** separately - it's not a fault but a cancellation.
+4. **Preserve exceptions** in async catch blocks by passing exception to `WithFailure`.
+
+---
+
+# Railway-Oriented Programming (ROP) Best Practices
+
+## Overview
+
+IndQuestResults follows Railway-Oriented Programming principles, where operations return `Result` types instead of throwing exceptions for control flow.
+
+## Core Principles
+
+1. **No Exceptions for Control Flow**: Methods return `Result` failures instead of throwing exceptions.
+2. **Null Parameter Handling**: Null parameters return `Result` failures, not `ArgumentNullException`.
+3. **Functional Composition**: Operations chain together without try-catch blocks.
+4. **Error Propagation**: Errors automatically propagate through chains.
+
+## Null Parameter Validation
+
+All extension methods handle null parameters gracefully by returning `Result` failures:
+
+```csharp
+// ❌ Old way (throws exception)
+public static Result<TOut> Map<T, TOut>(this Result<T> result, Func<T, TOut> selector)
+{
+    ArgumentNullException.ThrowIfNull(result);
+    ArgumentNullException.ThrowIfNull(selector);
+    // ...
+}
+
+// ✅ ROP-compliant way (returns Result failure)
+public static Result<TOut> Map<T, TOut>(this Result<T> result, Func<T, TOut> selector)
+{
+    if (result is null) { return Result<TOut>.WithFailure("Result cannot be null"); }
+    if (selector is null) { return Result<TOut>.WithFailure("Selector function cannot be null"); }
+    // ...
+}
+```
+
+## ROP Chain Examples
+
+### Successful Chain
+
+```csharp
+var result = Result<string>.Success("hello")
+    .Map(s => s.Length)           // Success(5)
+    .Ensure(n => n > 0, "Zero")  // Success(5)
+    .Map(n => n * 2)              // Success(10)
+    .Bind(n => Result<int>.Success(n + 1)); // Success(11)
+```
+
+### Failure Propagation
+
+```csharp
+var result = Result<string>.Success("hello")
+    .Map(s => s.Length)           // Success(5)
+    .Ensure(n => n > 10, "Too short") // Failure("Too short")
+    .Map(n => n * 2)              // Failure("Too short") - Map not executed
+    .Bind(n => Result<int>.Success(n + 1)); // Failure("Too short") - Bind not executed
+```
+
+### Null Parameter Handling
+
+```csharp
+Result<int>? nullResult = null;
+var result = nullResult!
+    .Map(x => x * 2)              // Failure("Result cannot be null")
+    .Bind(x => Result<int>.Success(x + 1)); // Failure("Result cannot be null")
+
+// No exception thrown - failure propagates through chain
+```
+
+## Reactive Patterns (No-Op Disposables)
+
+For methods returning `IDisposable`, null parameters return no-op disposables:
+
+```csharp
+using IndQuestResults.Reactive;
+
+var subject = ResultSubscriptionsCore.CreateResultSubject<int>();
+
+// Null handler returns no-op disposable (doesn't throw)
+var subscription = subject.Subscribe(onSuccess: null!);
+subscription.Dispose(); // Safe to call, does nothing
+```
+
+## Best Practices
+
+1. **Always return `Result` failures** for null parameters, never throw exceptions.
+2. **Use no-op implementations** for reactive patterns (disposables, handlers).
+3. **Chain operations** without try-catch blocks - errors propagate automatically.
+4. **Check `IsFailure`** before accessing values, not with try-catch.
+
+---
+
+# Validation Utilities
+
+Namespace: `IndQuestResults.Operations` and error types in `IndQuestResults.Validation`
+
+## Discoverable Validation Extensions
+
+New validation extensions are available as extension methods on `Result` types for better discoverability:
+
+### Extension Methods on Result Types
+
+- `result.EnsureNotNull<T>(string parameterName)` - Validates that the Result's value is not null
+- `value.EnsureNotNull<T>(string parameterName)` - Validates a nullable value and returns a Result
+
+### Static Methods
+
+- `ResultValidationExtensions.ValidateNotNull(params (object? value, string parameterName)[] validations)`
+- `ResultValidationExtensions.CreateIfValid<T>(Func<T> factory, params (object? value, string parameterName)[] validations)`
+
+### Legacy Methods (Maintained for Backward Compatibility)
+
+- `ResultExtensions.ValidateNotNull(params (object? value, string parameterName)[] validations)`
+- `ResultExtensions.CreateIfValid<T>(Func<T> factory, params (object? value, string parameterName)[] validations)`
+- `ResultExtensions.FailForNullArgument<T>(string parameterName, string? message = null)`
+- `ResultExtensions.FailForNullArguments<T>(params string[] names)`
+- Error types: `NullArgumentError`, `MultipleNullArgumentsError`
+
+## Examples
+
+### Discoverable Validation (Recommended)
+
+```csharp
+using IndQuestResults;
+using IndQuestResults.Operations;
+
+// Extension method on Result - discoverable via IntelliSense
+var userResult = GetUserAsync(id)
+    .EnsureNotNull(nameof(user))
+    .Map(u => u.Email)
+    .EnsureNotNull(nameof(email));
+
+// Static method for multiple validations
+var validated = ResultValidationExtensions.ValidateNotNull(
+    (user, nameof(user)),
+    (user?.Email, nameof(user.Email)),
+    (user?.Name, nameof(user.Name))
+);
+
+// Create with validation
+var created = ResultValidationExtensions.CreateIfValid(
+    factory: () => new User(id!),
+    (id, nameof(id)),
+    (email, nameof(email))
+);
+```
+
+### Legacy Validation (Still Supported)
+
+```csharp
+using IndQuestResults;
+using IndQuestResults.Operations;
+
+// Legacy static methods still work
+var validated = ResultExtensions.ValidateNotNull(
+    (user, nameof(user)),
+    (user?.Email, nameof(user.Email))
+);
 
 var created = ResultExtensions.CreateIfValid(
     factory: () => new User(id!),
     (id, nameof(id))
 );
+```
+
+### ROP-Compliant Null Checks
+
+All validation methods return `Result` failures instead of throwing exceptions:
+
+```csharp
+// ❌ Old way (throws exception)
+ArgumentNullException.ThrowIfNull(user);
+
+// ✅ ROP-compliant way (returns Result failure)
+var validation = userResult.EnsureNotNull(nameof(user));
+if (validation.IsFailure)
+{
+    // Handle validation failure
+}
 ```
 
 ---
@@ -258,6 +535,120 @@ var created = ResultExtensions.CreateIfValid(
   - Success: `"Success: <Value>"` (Value may be null for nullable `T`)
   - Failure: formatted errors as above
 - Internals optimize small collections and strings via spans and pre-sizing; large collections use `StringBuilder`.
+
+---
+
+# Cancellation Token Handling
+
+## Overview
+
+IndQuestResults provides comprehensive support for cancellation tokens, treating `OperationCanceledException` as a cancellation (not a fault) and preserving cancellation state in Result objects.
+
+## Key Concepts
+
+1. **Cancellation is Not a Fault**: `OperationCanceledException` sets `IsFaulted = false` but `IsFailure = true`.
+2. **Early Cancellation Checks**: Methods check cancellation tokens before executing operations.
+3. **Cancellation Propagation**: Cancellation state propagates through Result chains.
+
+## Cancellation-Aware Wrappers
+
+### WrapCancellationAware
+
+Wraps async operations to handle cancellation functionally:
+
+```csharp
+using IndQuestResults.Operations;
+
+var result = await CancellationAwareResult.WrapCancellationAware<int>(
+    async ct =>
+    {
+        await Task.Delay(100, ct);
+        return 42;
+    },
+    cancellationToken: cancellationToken);
+
+if (result.IsCancelled())
+{
+    // Handle cancellation
+}
+```
+
+### WrapWithTimeout
+
+Adds timeout support with cancellation:
+
+```csharp
+using IndQuestResults.Operations;
+
+var result = await CancellationAwareResult.WrapWithTimeout<int>(
+    async ct =>
+    {
+        await Task.Delay(100, ct);
+        return 42;
+    },
+    timeout: TimeSpan.FromSeconds(5),
+    cancellationToken: cancellationToken);
+
+if (result.IsFailure)
+{
+    if (result.IsCancelled())
+    {
+        // Handle cancellation
+    }
+    else if (result.Error.Contains("timed out"))
+    {
+        // Handle timeout
+    }
+}
+```
+
+## Cancellation in Async Chains
+
+```csharp
+using IndQuestResults.Async;
+
+var result = await ResultAsync.BindAsync(
+    GetUserAsync(id, cancellationToken),
+    async (user, ct) => await LoadProfileAsync(user.Id, ct),
+    cancellationToken);
+
+if (result.IsCancelled())
+{
+    // User cancelled the operation
+}
+```
+
+## Best Practices
+
+1. **Always pass cancellation tokens** to async operations.
+2. **Check `IsCancelled()`** to distinguish cancellation from other failures.
+3. **Use `WrapCancellationAware`** for operations that need cancellation support.
+4. **Use `WrapWithTimeout`** for operations with time limits.
+5. **Early cancellation checks** prevent unnecessary work.
+
+## Example: Service with Cancellation
+
+```csharp
+public class UserService
+{
+    public async Task<Result<User>> GetUserAsync(int id, CancellationToken cancellationToken = default)
+    {
+        // Early cancellation check
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return ResultExtensions.Cancelled<User>();
+        }
+
+        return await CancellationAwareResult.WrapCancellationAware<User>(
+            async ct =>
+            {
+                await Task.Delay(100, ct); // Simulate async work
+                return await _repository.GetUserAsync(id, ct);
+            },
+            cancellationToken);
+    }
+}
+```
 
 ---
 

@@ -488,8 +488,12 @@ public static class ResultExtensions
     /// <returns>A failed result of the target type.</returns>
     public static Result<TOut> ToFailureOf<TIn, TOut>(this Result<TIn> result)
     {
+#pragma warning disable IDE0046 // Convert to conditional expression - early return pattern is intentional
+        if (result is null) { return Result<TOut>.WithFailure("Result cannot be null"); }
+#pragma warning restore IDE0046
+        
         return result.IsSuccess
-            ? throw new InvalidOperationException("Cannot convert successful result to failure")
+            ? Result<TOut>.WithFailure("Cannot convert successful result to failure")
             : Result<TOut>.WithFailure(result.Errors);
     }
 
