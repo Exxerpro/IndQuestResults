@@ -152,7 +152,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         });
 
         // Check if method signature supports exception parameter
-        // WithFailure has multiple overloads - check if any parameter is named "exception"
+        // WithFailure has multiple overloads - check ALL overloads, not just the resolved one
         var hasExceptionParameter = methodSymbol.Parameters.Any(p => p.Name == "exception");
 
         // Also check if the method has 3+ parameters (error, value, exception pattern)
@@ -161,6 +161,25 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         var hasExceptionOverload = hasExceptionParameter ||
                                    (parameterCount == 1 && methodSymbol.Parameters[0].Type.Name == "Exception") ||
                                    (parameterCount >= 3 && methodSymbol.Parameters.Any(p => p.Type.Name == "Exception"));
+
+        // If the resolved overload doesn't support exception, check all overloads
+        if (!hasExceptionOverload)
+        {
+            // Get all overloads of WithFailure from the containing type
+            var allOverloads = containingType.GetMembers("WithFailure")
+                .OfType<IMethodSymbol>()
+                .ToList();
+
+            // Check if any overload has exception parameter
+            hasExceptionOverload = allOverloads.Any(overload =>
+            {
+                var hasExceptionParam = overload.Parameters.Any(p => p.Name == "exception");
+                var paramCount = overload.Parameters.Length;
+                return hasExceptionParam ||
+                       (paramCount == 1 && overload.Parameters[0].Type.Name == "Exception") ||
+                       (paramCount >= 3 && overload.Parameters.Any(p => p.Type.Name == "Exception"));
+            });
+        }
 
         // If the method supports exception parameter but it's not provided, report diagnostic
         if (hasExceptionOverload && !hasExceptionArgument)
@@ -236,9 +255,27 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         });
 
         // Check if exception variable is used in the catch block
+        // Check both direct identifier usage and member access (e.g., ex.Message)
         var exceptionUsed = catchClause.Block?.DescendantNodes()
-            .OfType<IdentifierNameSyntax>()
-            .Any(id => id.Identifier.Text == exceptionVariable) ?? false;
+            .Any(node =>
+            {
+                // Direct identifier usage: ex
+                if (node is IdentifierNameSyntax identifier &&
+                    identifier.Identifier.Text == exceptionVariable)
+                {
+                    return true;
+                }
+                
+                // Member access: ex.Message, ex.ToString(), etc.
+                if (node is MemberAccessExpressionSyntax memberAccess &&
+                    memberAccess.Expression is IdentifierNameSyntax memberIdentifier &&
+                    memberIdentifier.Identifier.Text == exceptionVariable)
+                {
+                    return true;
+                }
+                
+                return false;
+            }) ?? false;
 
         if (exceptionUsed && !hasWithFailure)
         {
@@ -308,14 +345,4 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
 
         return false;
     }
-
-#pragma warning disable IDE0051
-
-    private static bool IsIndQuestResultsLibrary(SyntaxNodeAnalysisContext context)
-    {
-        var assemblyName = context.Compilation.AssemblyName ?? string.Empty;
-        return assemblyName.StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase);
-    }
-
-#pragma warning restore IDE0051
 }

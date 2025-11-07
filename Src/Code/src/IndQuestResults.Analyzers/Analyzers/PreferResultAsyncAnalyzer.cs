@@ -86,20 +86,50 @@ public sealed class PreferResultAsyncAnalyzer : DiagnosticAnalyzer
         }
         if (symbol is null)
         {
-            // Try to get symbol from the receiver type
+            // Fallback: Check if receiver is Task<Result<T>> and namespace is in scope
             if (memberAccess.Expression is not null)
             {
                 var receiverType = context.SemanticModel.GetTypeInfo(memberAccess.Expression).Type;
                 if (receiverType?.Name == "Task" && receiverType is INamedTypeSymbol namedType && namedType.IsGenericType)
                 {
-                    // This might be Task<Result<T>>.ThenAsync - check if ThenAsync exists
-                    var thenAsyncMethods = namedType.GetMembers("ThenAsync");
-                    if (thenAsyncMethods.Length > 0)
+                    // Check if it's Task<Result<T>> by checking generic argument
+                    var taskTypeArg = namedType.TypeArguments.FirstOrDefault();
+                    if (taskTypeArg?.Name == "Result" &&
+                        taskTypeArg.ContainingNamespace?.ToDisplayString()?.Contains("IndQuestResults") == true)
                     {
-                        // Likely our ThenAsync extension - report diagnostic
-                        var diagnostic = Diagnostic.Create(Rule, memberAccess.Name.GetLocation());
-                        context.ReportDiagnostic(diagnostic);
-                        return;
+                        // Check if IndQuestResults.Operations namespace is in scope
+                        // Check using statements in the syntax tree
+                        var root = memberAccess.SyntaxTree?.GetRoot();
+                        if (root is CompilationUnitSyntax compilationUnit)
+                        {
+                            var hasOperationsUsing = compilationUnit.Usings.Any(u =>
+                                u.Name?.ToString() == "IndQuestResults.Operations" ||
+                                u.Name?.ToString().StartsWith("IndQuestResults.Operations", StringComparison.OrdinalIgnoreCase) == true);
+                            
+                            if (hasOperationsUsing)
+                            {
+                                // Receiver is Task<Result<T>> and namespace is in scope - report diagnostic
+                                var diag = Diagnostic.Create(Rule, memberAccess.Name.GetLocation());
+                                context.ReportDiagnostic(diag);
+                                return;
+                            }
+                        }
+                        
+                        // Also check if IndQuestResults namespace is in scope (might use fully qualified)
+                        if (root is CompilationUnitSyntax cu)
+                        {
+                            var hasIndQuestResultsUsing = cu.Usings.Any(u =>
+                                u.Name?.ToString() == "IndQuestResults" ||
+                                u.Name?.ToString().StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase) == true);
+                            
+                            if (hasIndQuestResultsUsing)
+                            {
+                                // Receiver is Task<Result<T>> and IndQuestResults namespace is in scope - report diagnostic
+                                var diag = Diagnostic.Create(Rule, memberAccess.Name.GetLocation());
+                                context.ReportDiagnostic(diag);
+                                return;
+                            }
+                        }
                     }
                 }
             }

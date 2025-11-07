@@ -22,22 +22,37 @@
 - Static methods: `ValidateNotNull(...)`, `CreateIfValid(...)`
 - Maintains full backward compatibility with existing validation APIs
 
+#### Proactive Code Quality - Custom Roslyn Analyzers
+- **New Analyzers**: Added `ROPComplianceAnalyzer` (IQR201, IQR202) to detect ROP violations
+  - IQR201: Detects `ArgumentNullException.ThrowIfNull` in extension methods that return `Result<T>`
+  - IQR202: Detects `throw` statements in methods that return `Result<T>` (excluding rethrows)
+- **New Analyzers**: Added `ExceptionHandlingComplianceAnalyzer` (IQR301, IQR302) for exception preservation
+  - IQR301: Detects missing exception parameter in `WithFailure` calls within catch blocks
+  - IQR302: Detects catch blocks where exceptions are used but not passed to `WithFailure`
+- **Enhanced**: Improved `PreferResultAsyncAnalyzer` (IQR0001) to better detect `ThenAsync` usage
+- **Code Fixes**: Added automatic code fix for IQR0001 to rewrite `ThenAsync` to `ResultAsync.BindAsync`
+- **CI/CD Integration**: Analyzers run automatically during build and report violations
+- All analyzers are included in `IndQuestResults.Analyzers` NuGet package
+
 #### Code Quality
 - Fixed all IDE0046 warnings with proper brace usage and pragma suppressions
 - All null parameter checks now use early return pattern with braces
 - Improved exception handling consistency across all async operations
-- Enhanced test coverage with 892 passing unit tests
+- Enhanced test coverage with 900+ passing unit tests
+- All analyzer tests passing
 
 ### Technical Details
 - All methods now follow ROP principles - no exceptions for control flow
 - Null parameters return appropriate failure states or no-op implementations
 - Exception stack traces are preserved for better error diagnostics
 - Backward compatibility maintained for all public APIs
+- Analyzers provide real-time feedback in IDE and during CI/CD builds
 
 ### Testing
 - Updated 14 tests to match new ROP-compliant behavior
-- All 892 unit tests passing
+- All 900+ unit tests passing
 - Enhanced test coverage for exception preservation and null parameter handling
+- Comprehensive analyzer test suite with 100% pass rate
 
 ## [Unreleased] - Code Review and Quality Enhancement Plan
 

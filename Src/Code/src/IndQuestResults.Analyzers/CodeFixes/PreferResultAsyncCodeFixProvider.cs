@@ -86,7 +86,13 @@ public sealed class PreferResultAsyncCodeFixProvider : CodeFixProvider
         // Add using statement if not present
         if (newRoot is CompilationUnitSyntax compilationUnit)
         {
-            var hasAsyncUsing = compilationUnit.Usings.Any(u => u.Name?.ToString() == "IndQuestResults.Async");
+            var hasAsyncUsing = compilationUnit.Usings.Any(u => 
+            {
+                var name = u.Name?.ToString();
+                return name == "IndQuestResults.Async" || 
+                       name?.StartsWith("IndQuestResults.Async", StringComparison.OrdinalIgnoreCase) == true;
+            });
+            
             if (!hasAsyncUsing)
             {
                 var asyncUsing = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("IndQuestResults.Async"))

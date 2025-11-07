@@ -34,8 +34,8 @@ internal static class CodeFixTestHelper
         var project = workspace.AddProject(projectInfo)
             .AddMetadataReference(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
             .AddMetadataReference(MetadataReference.CreateFromFile(typeof(Console).Assembly.Location))
-            .AddMetadataReference(MetadataReference.CreateFromFile(typeof(IndQuestResults.Result).Assembly.Location))
-            .AddMetadataReference(MetadataReference.CreateFromFile(typeof(System.Linq.Enumerable).Assembly.Location))
+            .AddMetadataReference(MetadataReference.CreateFromFile(typeof(Result).Assembly.Location))
+            .AddMetadataReference(MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location))
             .AddMetadataReference(MetadataReference.CreateFromFile(typeof(List<>).Assembly.Location));
 
         var document = workspace.AddDocument(project.Id, "Test.cs", SourceText.From(source));
@@ -82,6 +82,3 @@ internal static class CodeFixTestHelper
         return newText.ToString();
     }
 }
-
-
-

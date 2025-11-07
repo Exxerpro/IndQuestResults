@@ -712,11 +712,61 @@ See tests under `Src/Code/tests/IndQuestResults.Tests.Unit/*` for executable spe
 # Linting & Analyzers
 
 - Package: `IndQuestResults.Analyzers` (optional). Add to your solution to get guidance and code fixes.
-- Rule IQR0001: Prefer `ResultAsync` for async chains
-  - Triggers when calling `ThenAsync` from `IndQuestResults.Operations.ResultExtensions` on `Task<Result<T>>`.
-  - Rationale: `ResultAsync` centralizes async exception/cancellation semantics consistently across chains.
-  - Code fix: rewrites `task.ThenAsync(next)` to `ResultAsync.BindAsync(task, next)` (adds `using IndQuestResults.Async` or uses fully-qualified call).
-  - Configure severity via `.editorconfig`:
-    - `dotnet_diagnostic.IQR0001.severity = suggestion` (default)
-    - `dotnet_diagnostic.IQR0001.severity = warning` (stricter)
-    - `dotnet_diagnostic.IQR0001.severity = none` (disable)
+
+## Available Analyzers
+
+### IQR0001: Prefer ResultAsync for Async Chains
+- **Purpose**: Encourages consistent async chaining via `ResultAsync.BindAsync` instead of `ResultExtensions.ThenAsync`
+- **Severity**: Info (default)
+- **Triggers**: When calling `ThenAsync` from `IndQuestResults.Operations.ResultExtensions` on `Task<Result<T>>`
+- **Rationale**: `ResultAsync` centralizes async exception/cancellation semantics consistently across chains
+- **Code Fix**: Automatically rewrites `task.ThenAsync(next)` to `ResultAsync.BindAsync(task, next)` and adds `using IndQuestResults.Async`
+- **Configuration**:
+  - `dotnet_diagnostic.IQR0001.severity = suggestion` (default)
+  - `dotnet_diagnostic.IQR0001.severity = warning` (stricter)
+  - `dotnet_diagnostic.IQR0001.severity = none` (disable)
+
+### IQR201: ROP Violation - ArgumentNullException.ThrowIfNull
+- **Purpose**: Detects `ArgumentNullException.ThrowIfNull` usage in extension methods that return `Result<T>`
+- **Severity**: Warning (default)
+- **Message**: Extension methods should return Result failures instead of throwing ArgumentNullException
+- **Suggested Fix**: Replace with `if (parameter is null) { return Result<T>.WithFailure("parameter cannot be null"); }`
+
+### IQR202: ROP Violation - Throw Statement
+- **Purpose**: Detects `throw` statements in methods that return `Result<T>` (excluding rethrows in catch blocks)
+- **Severity**: Warning (default)
+- **Message**: Result-returning methods should return Result failures instead of throwing exceptions
+- **Suggested Fix**: Replace `throw` with `return Result<T>.WithFailure("error message")`
+
+### IQR301: Missing Exception Parameter
+- **Purpose**: Detects missing exception parameter in `WithFailure` calls within catch blocks
+- **Severity**: Warning (default)
+- **Message**: WithFailure call in catch block should include exception parameter to preserve stack trace
+- **Suggested Fix**: Use `Result<T>.WithFailure("...", default, ex)` to preserve exception
+
+### IQR302: Exception Not Preserved
+- **Purpose**: Detects catch blocks where exceptions are used but not passed to `WithFailure`
+- **Severity**: Warning (default)
+- **Message**: Catch block should preserve exception in Result failure
+- **Suggested Fix**: Pass exception to `WithFailure` to preserve stack trace and exception details
+
+## Configuration
+
+All analyzers can be configured in `.editorconfig`:
+
+```ini
+# ROP Compliance
+dotnet_diagnostic.IQR201.severity = warning
+dotnet_diagnostic.IQR202.severity = warning
+
+# Exception Handling
+dotnet_diagnostic.IQR301.severity = warning
+dotnet_diagnostic.IQR302.severity = warning
+
+# Async Patterns
+dotnet_diagnostic.IQR0001.severity = suggestion
+```
+
+## CI/CD Integration
+
+Analyzers run automatically during build when `IndQuestResults.Analyzers` package is referenced. ROP violations are detected and reported in CI/CD pipelines.

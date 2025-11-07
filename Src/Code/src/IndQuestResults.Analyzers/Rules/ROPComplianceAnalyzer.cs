@@ -236,14 +236,4 @@ public sealed class ROPComplianceAnalyzer : DiagnosticAnalyzer
 
         return false;
     }
-
-#pragma warning disable IDE0051
-
-    private static bool IsIndQuestResultsLibrary(SyntaxNodeAnalysisContext context)
-    {
-        var assemblyName = context.Compilation.AssemblyName ?? string.Empty;
-        return assemblyName.StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase);
-    }
-
-#pragma warning restore IDE0051
 }
