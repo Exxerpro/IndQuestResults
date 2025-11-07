@@ -99,8 +99,15 @@ public sealed class PreferResultAsyncAnalyzer : DiagnosticAnalyzer
             return;
         }
 
+        // Check both the fully qualified name and the simple name
         var fullContaining = containingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-        if (!fullContaining.Contains("IndQuestResults.Operations.ResultExtensions"))
+        var simpleName = containingType.Name;
+        var namespaceName = containingType.ContainingNamespace?.ToDisplayString() ?? string.Empty;
+        
+        // Check if it's ResultExtensions in IndQuestResults.Operations namespace
+        if (simpleName != "ResultExtensions" || 
+            (!namespaceName.Contains("IndQuestResults.Operations") && 
+             !fullContaining.Contains("IndQuestResults.Operations.ResultExtensions")))
         {
             return;
         }

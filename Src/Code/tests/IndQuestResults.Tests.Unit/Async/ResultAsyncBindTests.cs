@@ -124,34 +124,44 @@ public class ResultAsyncBindTests
     }
 
     /// <summary>
-    /// Tests that BindAsync throws ArgumentNullException for null resultTask.
+    /// Tests that BindAsync returns failure for null resultTask.
     /// </summary>
     [Fact]
-    public async Task BindAsync_WithNullResultTask_ShouldThrowArgumentNullException()
+    public async Task BindAsync_WithNullResultTask_ShouldReturnFailure()
     {
         // Arrange
         Task<Result<int>>? nullTask = null;
 
-        // Act & Assert
-        await Should.ThrowAsync<ArgumentNullException>(async () => await nullTask!.BindAsync(async value =>
+        // Act
+        var result = await nullTask!.BindAsync(async value =>
             {
                 await Task.Delay(10);
                 return Result<string>.Success($"Value: {value}");
-            }));
+            });
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldNotBeNull();
+        result.Error.ShouldContain("Result task cannot be null");
     }
 
     /// <summary>
-    /// Tests that BindAsync throws ArgumentNullException for null function.
+    /// Tests that BindAsync returns failure for null function.
     /// </summary>
     [Fact]
-    public async Task BindAsync_WithNullFunction_ShouldThrowArgumentNullException()
+    public async Task BindAsync_WithNullFunction_ShouldReturnFailure()
     {
         // Arrange
         var initialResult = Result<int>.Success(42);
         var resultTask = Task.FromResult(initialResult);
 
-        // Act & Assert
-        await Should.ThrowAsync<ArgumentNullException>(async () => await resultTask.BindAsync<int, string>(null!));
+        // Act
+        var result = await resultTask.BindAsync<int, string>(null!);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldNotBeNull();
+        result.Error.ShouldContain("Function cannot be null");
     }
 
     /// <summary>

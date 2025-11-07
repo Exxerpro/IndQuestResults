@@ -7,24 +7,28 @@ namespace IndQuestResults.Tests.Unit.Async;
 public class ResultAsyncEdgeAndTheoryTests
 {
     /// <summary>
-    /// Ensures TraverseAsync throws when inputs collection is null.
+    /// Ensures TraverseAsync returns failure when inputs collection is null.
     /// </summary>
     [Fact]
-    public async Task TraverseAsync_NullInputs_Throws()
+    public async Task TraverseAsync_NullInputs_ReturnsFailure()
     {
-        await Should.ThrowAsync<ArgumentNullException>(async () =>
-            await ResultAsync.TraverseAsync<string, int>((IEnumerable<string>)null!, _ => Task.FromResult(Result<int>.Success(0))));
+        var result = await ResultAsync.TraverseAsync<string, int>((IEnumerable<string>)null!, _ => Task.FromResult(Result<int>.Success(0)));
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldNotBeNull();
+        result.Error.ShouldContain("Inputs cannot be null");
     }
 
     /// <summary>
-    /// Ensures TraverseAsync throws when mapping function is null.
+    /// Ensures TraverseAsync returns failure when mapping function is null.
     /// </summary>
     [Fact]
-    public async Task TraverseAsync_NullFunc_Throws()
+    public async Task TraverseAsync_NullFunc_ReturnsFailure()
     {
         var inputs = new[] { "a" };
-        await Should.ThrowAsync<ArgumentNullException>(async () =>
-            await ResultAsync.TraverseAsync<string, int>(inputs, null!));
+        var result = await ResultAsync.TraverseAsync<string, int>(inputs, null!);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldNotBeNull();
+        result.Error.ShouldContain("Function cannot be null");
     }
 
     /// <summary>

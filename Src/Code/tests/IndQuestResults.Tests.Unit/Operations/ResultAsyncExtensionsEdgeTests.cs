@@ -7,11 +7,12 @@ namespace IndQuestResults.Tests.Unit.Operations;
 public class ResultAsyncExtensionsEdgeTests
 {
     [Fact]
-    public async Task ThenAsync_WhenNextThrows_PropagatesException()
+    public async Task ThenAsync_WhenNextThrows_ReturnsFailure()
     {
         var first = Task.FromResult(Result<int>.Success(1));
-        await Should.ThrowAsync<InvalidOperationException>(async () =>
-            await first.ThenAsync<int, int>(_ => throw new InvalidOperationException("boom")));
+        var result = await first.ThenAsync<int, int>(_ => throw new InvalidOperationException("boom"));
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldContain("boom");
     }
 
     [Fact]
@@ -26,11 +27,12 @@ public class ResultAsyncExtensionsEdgeTests
     }
 
     [Fact]
-    public async Task ThenTap_ActionThrows_Propagates()
+    public async Task ThenTap_ActionThrows_ReturnsFailure()
     {
         var first = Task.FromResult(Result<string>.Success("x"));
-        await Should.ThrowAsync<InvalidOperationException>(async () =>
-            await first.ThenTap(_ => throw new InvalidOperationException("tap")));
+        var result = await first.ThenTap(_ => throw new InvalidOperationException("tap"));
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldContain("tap");
     }
 
     [Fact]

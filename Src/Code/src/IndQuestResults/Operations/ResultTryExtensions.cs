@@ -65,18 +65,17 @@ public static class ResultTryExtensions
         ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(map);
         ArgumentNullException.ThrowIfNull(mapError);
-        if (!result.IsRecoverable)
+        return result.Bind(value =>
         {
-            return Result<TOut>.WithFailure(result.Errors);
-        }
-        try
-        {
-            return Result<TOut>.Success(map(result.Value!));
-        }
-        catch (Exception ex)
-        {
-            return Result<TOut>.WithFailure(mapError(ex));
-        }
+            try
+            {
+                return Result<TOut>.Success(map(value));
+            }
+            catch (Exception ex)
+            {
+                return Result<TOut>.WithFailure(mapError(ex));
+            }
+        });
     }
 
     /// <summary>
@@ -93,18 +92,17 @@ public static class ResultTryExtensions
         ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(bind);
         ArgumentNullException.ThrowIfNull(mapError);
-        if (!result.IsRecoverable)
+        return result.Bind(value =>
         {
-            return Result<TOut>.WithFailure(result.Errors);
-        }
-        try
-        {
-            return bind(result.Value!);
-        }
-        catch (Exception ex)
-        {
-            return Result<TOut>.WithFailure(mapError(ex));
-        }
+            try
+            {
+                return bind(value);
+            }
+            catch (Exception ex)
+            {
+                return Result<TOut>.WithFailure(mapError(ex));
+            }
+        });
     }
 }
 

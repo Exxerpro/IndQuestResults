@@ -35,8 +35,9 @@ public sealed class Result<T>
     /// <param name="isSuccess">Indicates whether the operation succeeded.</param>
     /// <param name="errors">A collection of error messages.</param>
     /// <param name="value">The value returned by the operation.</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
     [JsonConstructor]
-    public Result(bool isSuccess, IEnumerable<string>? errors, T? value = default)
+    public Result(bool isSuccess, IEnumerable<string>? errors, T? value = default, Exception? exception = null)
     {
         IsRecoverable = isSuccess;
         var errorArray = errors?.ToArray() ?? [];
@@ -45,6 +46,8 @@ public sealed class Result<T>
         Value = value;
         Warnings = [];
         Confidence = 1.0;
+        Exception = exception;
+        IsFaulted = exception is not null and not OperationCanceledException;
 
         // Validate state consistency after deserialization
         ValidateInternalState();
@@ -56,7 +59,8 @@ public sealed class Result<T>
     /// <param name="isSuccess">Indicates whether the operation succeeded.</param>
     /// <param name="errors">A list of error messages.</param>
     /// <param name="value">The value returned by the operation.</param>
-    public Result(bool isSuccess, List<string>? errors, T? value = default)
+    /// <param name="exception">The exception that caused the failure, if any.</param>
+    public Result(bool isSuccess, List<string>? errors, T? value = default, Exception? exception = null)
     {
         IsRecoverable = isSuccess;
         var errorArray = errors?.ToArray() ?? [];
@@ -65,6 +69,8 @@ public sealed class Result<T>
         Value = value;
         Warnings = [];
         Confidence = 1.0;
+        Exception = exception;
+        IsFaulted = exception is not null and not OperationCanceledException;
     }
 
     /// <summary>
@@ -151,6 +157,16 @@ public sealed class Result<T>
     public bool IsFailure => !IsRecoverable;
 
     /// <summary>
+    /// Gets a value indicating whether the result is a success (alias for IsRecoverable).
+    /// </summary>
+    public bool Succeeded => IsRecoverable;
+
+    /// <summary>
+    /// Gets a value indicating whether the result is a failure (alias for IsFailure).
+    /// </summary>
+    public bool Failed => IsFailure;
+
+    /// <summary>
     /// Gets the collection of error messages associated with the result.
     /// </summary>
     public IEnumerable<string> Errors { get; init; }
@@ -159,6 +175,17 @@ public sealed class Result<T>
     /// Gets the first non-empty error message, or null if none exist.
     /// </summary>
     public string Error => Errors?.FirstOrDefault(e => !string.IsNullOrWhiteSpace(e)) ?? string.Empty;
+
+    /// <summary>
+    /// Gets a value indicating whether the result was created from an exception (excluding cancellation).
+    /// </summary>
+    public bool IsFaulted { get; private set; }
+
+    /// <summary>
+    /// Gets the exception that caused the failure, if any.
+    /// Contains the full stack trace for non-cancelled exceptions.
+    /// </summary>
+    public Exception? Exception { get; private set; }
 
     /// <summary>
     /// Creates a successful result with the specified value.
@@ -197,8 +224,9 @@ public sealed class Result<T>
     /// </summary>
     /// <param name="errors">The collection of error messages.</param>
     /// <param name="value">The value to associate with the result (optional).</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
     /// <returns>A failed <see cref="Result{T}"/> instance.</returns>
-    public static Result<T> WithFailure(IEnumerable<string>? errors, T? value = default)
+    public static Result<T> WithFailure(IEnumerable<string>? errors, T? value = default, Exception? exception = null)
     {
         // Use the provided errors or fall back to the default error message
         var errorArray = errors?.ToArray();
@@ -206,7 +234,7 @@ public sealed class Result<T>
         {
             errorArray = [ResultConstants.DefaultErrorMessage];
         }
-        return new Result<T>(false, errorArray, value);
+        return new Result<T>(false, errorArray, value, exception);
     }
 
     /// <summary>
@@ -214,8 +242,9 @@ public sealed class Result<T>
     /// </summary>
     /// <param name="value">The value to associate with the result (optional).</param>
     /// <param name="errors">The collection of error messages.</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
     /// <returns>A failed <see cref="Result{T}"/> instance.</returns>
-    public static Result<T> WithFailure(T? value = default, IEnumerable<string>? errors = default)
+    public static Result<T> WithFailure(T? value = default, IEnumerable<string>? errors = default, Exception? exception = null)
     {
         // Use the provided errors or fall back to the default error message
         var errorArray = errors?.ToArray();
@@ -223,7 +252,7 @@ public sealed class Result<T>
         {
             errorArray = [ResultConstants.DefaultErrorMessage];
         }
-        return new Result<T>(false, errorArray, value);
+        return new Result<T>(false, errorArray, value, exception);
     }
 
     /// <summary>
@@ -280,15 +309,16 @@ public sealed class Result<T>
     /// </summary>
     /// <param name="errors">The array of error messages.</param>
     /// <param name="value">The value to associate with the result (optional).</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
     /// <returns>A failed <see cref="Result{T}"/> instance.</returns>
-    public static Result<T> WithFailure(string[] errors, T? value = default)
+    public static Result<T> WithFailure(string[] errors, T? value = default, Exception? exception = null)
     {
         // Check for empty array and provide default error message (consistent with IEnumerable overload)
         if (errors is null || errors.Length == 0)
         {
             errors = [ResultConstants.DefaultErrorMessage];
         }
-        return new Result<T>(false, errors, value);
+        return new Result<T>(false, errors, value, exception);
     }
 
     /// <summary>
@@ -296,11 +326,76 @@ public sealed class Result<T>
     /// </summary>
     /// <param name="error">The error message.</param>
     /// <param name="value">The value to associate with the result (optional).</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
     /// <returns>A failed <see cref="Result{T}"/> instance.</returns>
-    public static Result<T> WithFailure(string error, T? value = default)
+    public static Result<T> WithFailure(string error, T? value = default, Exception? exception = null)
     {
-        return new Result<T>(false, [error], value);
+        return new Result<T>(false, [error], value, exception);
     }
+
+    /// <summary>
+    /// Creates a failed result from an exception.
+    /// </summary>
+    /// <param name="exception">The exception that caused the failure.</param>
+    /// <param name="value">The value to associate with the result (optional).</param>
+    /// <returns>A failed <see cref="Result{T}"/> instance.</returns>
+    public static Result<T> WithFailure(Exception exception, T? value = default)
+    {
+        if (exception is null)
+        {
+            return new Result<T>(false, [ResultConstants.DefaultErrorMessage], value, null);
+        }
+
+        var errorMessage = exception is OperationCanceledException
+            ? ResultErrors.OperationCancelled
+            : $"{exception.GetType().Name}: {exception.Message}";
+
+        return new Result<T>(false, [errorMessage], value, exception);
+    }
+
+    /// <summary>
+    /// Creates a failed result with the specified errors and optional value (alias for WithFailure).
+    /// </summary>
+    /// <param name="errors">The collection of error messages.</param>
+    /// <param name="value">The value to associate with the result (optional).</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
+    /// <returns>A failed <see cref="Result{T}"/> instance.</returns>
+    public static Result<T> Failure(IEnumerable<string>? errors, T? value = default, Exception? exception = null) => WithFailure(errors, value, exception);
+
+    /// <summary>
+    /// Creates a failed result with the specified errors and optional value (alias for WithFailure).
+    /// </summary>
+    /// <param name="value">The value to associate with the result (optional).</param>
+    /// <param name="errors">The collection of error messages.</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
+    /// <returns>A failed <see cref="Result{T}"/> instance.</returns>
+    public static Result<T> Failure(T? value = default, IEnumerable<string>? errors = default, Exception? exception = null) => WithFailure(value, errors, exception);
+
+    /// <summary>
+    /// Creates a failed result with the specified errors and optional value (alias for WithFailure).
+    /// </summary>
+    /// <param name="errors">The array of error messages.</param>
+    /// <param name="value">The value to associate with the result (optional).</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
+    /// <returns>A failed <see cref="Result{T}"/> instance.</returns>
+    public static Result<T> Failure(string[] errors, T? value = default, Exception? exception = null) => WithFailure(errors, value, exception);
+
+    /// <summary>
+    /// Creates a failed result with a single error message and optional value (alias for WithFailure).
+    /// </summary>
+    /// <param name="error">The error message.</param>
+    /// <param name="value">The value to associate with the result (optional).</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
+    /// <returns>A failed <see cref="Result{T}"/> instance.</returns>
+    public static Result<T> Failure(string error, T? value = default, Exception? exception = null) => WithFailure(error, value, exception);
+
+    /// <summary>
+    /// Creates a failed result from an exception (alias for WithFailure).
+    /// </summary>
+    /// <param name="exception">The exception that caused the failure.</param>
+    /// <param name="value">The value to associate with the result (optional).</param>
+    /// <returns>A failed <see cref="Result{T}"/> instance.</returns>
+    public static Result<T> Failure(Exception exception, T? value = default) => WithFailure(exception, value);
 
     /// <summary>
     /// Implicitly converts a value of type T to a successful <see cref="Result{T}"/>.

@@ -119,7 +119,7 @@ public class ResultGenericTests
     }
 
     /// <summary>
-    /// Ensures <see cref="Result{T}.WithFailure(string, T)"/> creates a failed result with a single error.
+    /// Ensures WithFailure creates a failed result with a single error.
     /// </summary>
     [Fact]
     public void WithFailure_SingleError_ShouldCreateFailedResult()
@@ -146,7 +146,7 @@ public class ResultGenericTests
     }
 
     /// <summary>
-    /// Ensures <see cref="Result{T}.WithFailure(System.Collections.Generic.IEnumerable{string}, T)"/> aggregates all errors.
+    /// Ensures WithFailure aggregates all errors.
     /// </summary>
     [Fact]
     public void WithFailure_MultipleErrors_ShouldCreateFailedResultWithAllErrors()

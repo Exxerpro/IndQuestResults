@@ -63,13 +63,16 @@ public sealed class Result
     /// </summary>
     /// <param name="succeeded">Indicates whether the operation succeeded.</param>
     /// <param name="errors">A collection of error messages.</param>
-    private Result(bool succeeded, IEnumerable<string> errors)
+    /// <param name="exception">The exception that caused the failure, if any.</param>
+    private Result(bool succeeded, IEnumerable<string> errors, Exception? exception = null)
     {
         var errorArray = errors?.ToArray() ?? [];
         var hasAnyErrors = errorArray.Length > 0;
 
         IsSuccess = succeeded && !hasAnyErrors;
         Errors = errorArray;
+        Exception = exception;
+        IsFaulted = exception is not null and not OperationCanceledException;
     }
 
     /// <summary>
@@ -79,6 +82,8 @@ public sealed class Result
     {
         IsSuccess = false;
         Errors = [];
+        Exception = null;
+        IsFaulted = false;
     }
 
     /// <summary>
@@ -225,6 +230,16 @@ public sealed class Result
     public bool IsFailure => !IsSuccess;
 
     /// <summary>
+    /// Gets a value indicating whether the result is a success (alias for IsSuccess).
+    /// </summary>
+    public bool Succeeded => IsSuccess;
+
+    /// <summary>
+    /// Gets a value indicating whether the result is a failure (alias for IsFailure).
+    /// </summary>
+    public bool Failed => IsFailure;
+
+    /// <summary>
     /// Gets a value indicating whether the result is a success.
     /// </summary>
     public bool IsSuccess { get; private set; }
@@ -240,6 +255,17 @@ public sealed class Result
     public string? Error => Errors.FirstOrDefault(e => !string.IsNullOrWhiteSpace(e));
 
     /// <summary>
+    /// Gets a value indicating whether the result was created from an exception (excluding cancellation).
+    /// </summary>
+    public bool IsFaulted { get; private set; }
+
+    /// <summary>
+    /// Gets the exception that caused the failure, if any.
+    /// Contains the full stack trace for non-cancelled exceptions.
+    /// </summary>
+    public Exception? Exception { get; private set; }
+
+    /// <summary>
     /// Creates a successful result.
     /// </summary>
     /// <returns>A successful <see cref="Result"/> instance.</returns>
@@ -252,8 +278,9 @@ public sealed class Result
     /// Creates a failed result with the specified errors.
     /// </summary>
     /// <param name="errors">The collection of error messages.</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
     /// <returns>A failed <see cref="Result"/> instance.</returns>
-    public static Result WithFailure(IEnumerable<string> errors)
+    public static Result WithFailure(IEnumerable<string> errors, Exception? exception = null)
     {
         // Check for null or empty collections and provide default error message
         var errorArray = errors?.ToArray();
@@ -261,33 +288,85 @@ public sealed class Result
         {
             errorArray = [ResultConstants.DefaultErrorMessage];
         }
-        return new Result(false, errorArray);
+        return new Result(false, errorArray, exception);
     }
 
     /// <summary>
     /// Creates a failed result with the specified errors (overload for string array).
     /// </summary>
     /// <param name="errors">The array of error messages.</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
     /// <returns>A failed <see cref="Result"/> instance.</returns>
-    public static Result WithFailure(string[] errors)
+    public static Result WithFailure(string[] errors, Exception? exception = null)
     {
         // Check for empty array and provide default error message
         if (errors is null || errors.Length == 0)
         {
             errors = [ResultConstants.DefaultErrorMessage];
         }
-        return new Result(false, errors);
+        return new Result(false, errors, exception);
     }
 
     /// <summary>
     /// Creates a failed result with a single error message.
     /// </summary>
     /// <param name="error">The error message.</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
     /// <returns>A failed <see cref="Result"/> instance.</returns>
-    public static Result WithFailure(string error)
+    public static Result WithFailure(string error, Exception? exception = null)
     {
-        return new Result(false, [error]);
+        return new Result(false, [error], exception);
     }
+
+    /// <summary>
+    /// Creates a failed result from an exception.
+    /// </summary>
+    /// <param name="exception">The exception that caused the failure.</param>
+    /// <returns>A failed <see cref="Result"/> instance.</returns>
+    public static Result WithFailure(Exception exception)
+    {
+        if (exception is null)
+        {
+            return new Result(false, [ResultConstants.DefaultErrorMessage], null);
+        }
+
+        var errorMessage = exception is OperationCanceledException
+            ? ResultErrors.OperationCancelled
+            : $"{exception.GetType().Name}: {exception.Message}";
+
+        return new Result(false, [errorMessage], exception);
+    }
+
+    /// <summary>
+    /// Creates a failed result with the specified errors (alias for WithFailure).
+    /// </summary>
+    /// <param name="errors">The collection of error messages.</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
+    /// <returns>A failed <see cref="Result"/> instance.</returns>
+    public static Result Failure(IEnumerable<string> errors, Exception? exception = null) => WithFailure(errors, exception);
+
+    /// <summary>
+    /// Creates a failed result with the specified errors (alias for WithFailure).
+    /// </summary>
+    /// <param name="errors">The array of error messages.</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
+    /// <returns>A failed <see cref="Result"/> instance.</returns>
+    public static Result Failure(string[] errors, Exception? exception = null) => WithFailure(errors, exception);
+
+    /// <summary>
+    /// Creates a failed result with a single error message (alias for WithFailure).
+    /// </summary>
+    /// <param name="error">The error message.</param>
+    /// <param name="exception">The exception that caused the failure, if any.</param>
+    /// <returns>A failed <see cref="Result"/> instance.</returns>
+    public static Result Failure(string error, Exception? exception = null) => WithFailure(error, exception);
+
+    /// <summary>
+    /// Creates a failed result from an exception (alias for WithFailure).
+    /// </summary>
+    /// <param name="exception">The exception that caused the failure.</param>
+    /// <returns>A failed <see cref="Result"/> instance.</returns>
+    public static Result Failure(Exception exception) => WithFailure(exception);
 
     /// <summary>
     /// Executes the specified action if the result is successful.

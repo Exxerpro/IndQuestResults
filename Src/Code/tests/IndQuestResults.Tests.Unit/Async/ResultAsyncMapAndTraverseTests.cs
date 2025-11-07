@@ -141,16 +141,18 @@ public class ResultAsyncMapAndTraverseTests
     }
 
     /// <summary>
-    /// Ensures TraverseParallelAsync validates degree of parallelism argument.
+    /// Ensures TraverseParallelAsync returns failure for invalid degree of parallelism.
     /// </summary>
     [Fact]
-    public async Task TraverseParallelAsync_InvalidDegree_ShouldThrow()
+    public async Task TraverseParallelAsync_InvalidDegree_ShouldReturnFailure()
     {
         var inputs = new[] { 1 };
         using var cts = new CancellationTokenSource();
         cts.Cancel();
-        await Should.ThrowAsync<ArgumentException>(async () =>
-            await ResultAsync.TraverseParallelAsync(inputs, x => Task.FromResult(Result<int>.Success(x)), 0, cts.Token));
+        var result = await ResultAsync.TraverseParallelAsync(inputs, x => Task.FromResult(Result<int>.Success(x)), 0, cts.Token);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldNotBeNull();
+        result.Error.ShouldContain("Max degree of parallelism must be positive");
     }
 }
 

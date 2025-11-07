@@ -57,12 +57,12 @@ public class ResultAsyncValueTaskEdgeTests
     }
 
     [Fact]
-    public async Task TraverseParallelAsync_InvalidDegree_Throws()
+    public async Task TraverseParallelAsync_InvalidDegree_ReturnsFailure()
     {
-        await Should.ThrowAsync<ArgumentException>(async () =>
-        {
-            await ResultAsync.TraverseParallelAsync(new[] { 1 }, i => Task.FromResult(Result<string>.Success(i.ToString())), 0);
-        });
+        var result = await ResultAsync.TraverseParallelAsync(new[] { 1 }, i => Task.FromResult(Result<string>.Success(i.ToString())), 0);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldNotBeNull();
+        result.Error.ShouldContain("Max degree of parallelism must be positive");
     }
 
     [Fact]

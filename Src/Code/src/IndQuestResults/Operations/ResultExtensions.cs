@@ -1,4 +1,5 @@
 using IndQuestResults.Validation;
+using IndQuestResults.Async;
 using System.Linq;
 using System.Threading;
 
@@ -222,10 +223,7 @@ public static class ResultExtensions
             this Task<Result<TIn>> resultTask,
             Func<TIn, Task<Result<TOut>>> next)
     {
-        var result = await resultTask.ConfigureAwait(false);
-        return result.IsSuccess && result.Value is not null
-            ? await next(result.Value).ConfigureAwait(false)
-            : Result<TOut>.WithFailure(result.Errors);
+        return await resultTask.BindAsync(next).ConfigureAwait(false);
     }
 
     // (Conventional async wrappers like BindAsync/MapAsync/TapAsync are available under IndQuestResults.Async.ResultAsync.)
@@ -243,9 +241,7 @@ public static class ResultExtensions
         Func<TIn, TOut> mapper)
     {
         var result = await resultTask.ConfigureAwait(false);
-        return result.IsSuccess && result.Value is not null
-            ? Result<TOut>.Success(mapper(result.Value))
-            : Result<TOut>.WithFailure(result.Errors);
+        return result.Map(mapper);
     }
 
     /// <summary>
@@ -259,12 +255,7 @@ public static class ResultExtensions
         this Task<Result<T>> resultTask,
         Func<T, Task> action)
     {
-        var result = await resultTask.ConfigureAwait(false);
-        if (result.IsSuccess && result.Value is not null)
-        {
-            await action(result.Value).ConfigureAwait(false);
-        }
-        return result;
+        return await resultTask.TapAsync(action).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -279,11 +270,7 @@ public static class ResultExtensions
         Action<T> action)
     {
         var result = await resultTask.ConfigureAwait(false);
-        if (result.IsSuccess && result.Value is not null)
-        {
-            action(result.Value);
-        }
-        return result;
+        return result.Tap(action);
     }
 
     /// <summary>
@@ -298,15 +285,13 @@ public static class ResultExtensions
         Func<T, Result> validator)
     {
         var result = await resultTask.ConfigureAwait(false);
-        if (result.IsFailure)
+        return result.Bind(value => 
         {
-            return result;
-        }
-
-        var validation = validator(result.Value!);
-        return validation.IsSuccess
-            ? result
-            : Result<T>.WithFailure(validation.Errors, result.Value);
+            var validation = validator(value);
+            return validation.IsSuccess
+                ? Result<T>.Success(value)
+                : Result<T>.WithFailure(validation.Errors, value);
+        });
     }
 
     /// <summary>
@@ -321,13 +306,13 @@ public static class ResultExtensions
         Func<T, Task<Result>> validator)
     {
         var result = await resultTask.ConfigureAwait(false);
-        if (result.IsFailure)
-        { return result; }
-
-        var validation = await validator(result.Value!).ConfigureAwait(false);
-        return validation.IsSuccess
-            ? result
-            : Result<T>.WithFailure(validation.Errors, result.Value);
+        return await Task.FromResult(result).BindAsync(async value =>
+        {
+            var validation = await validator(value).ConfigureAwait(false);
+            return validation.IsSuccess
+                ? Result<T>.Success(value)
+                : Result<T>.WithFailure(validation.Errors, value);
+        }).ConfigureAwait(false);
     }
 
     // (Async recovery helpers are available under IndQuestResults.Async.ResultAsync.)
@@ -346,11 +331,7 @@ public static class ResultExtensions
         string errorMessage)
     {
         var result = await resultTask.ConfigureAwait(false);
-        return result.IsFailure
-            ? result
-            : predicate(result.Value!)
-            ? result
-            : Result<T>.WithFailure(errorMessage, result.Value);
+        return result.Ensure(predicate, errorMessage);
     }
 
     /// <summary>
@@ -434,11 +415,11 @@ public static class ResultExtensions
         Func<T, Task<Result<T>>> onFalse)
     {
         var result = await resultTask.ConfigureAwait(false);
-        return result.IsFailure
-            ? result
-            : condition(result.Value!)
-            ? await onTrue(result.Value!).ConfigureAwait(false)
-            : await onFalse(result.Value!).ConfigureAwait(false);
+        return await Task.FromResult(result).BindAsync(value => 
+            condition(value) 
+                ? onTrue(value) 
+                : onFalse(value)
+        ).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -455,7 +436,7 @@ public static class ResultExtensions
         var result = await resultTask.ConfigureAwait(false);
         return result.IsSuccess
             ? result
-            : await recover(result.Errors).ConfigureAwait(false);
+            : await recover(result.Errors ?? [ResultConstants.DefaultErrorMessage]).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -470,11 +451,7 @@ public static class ResultExtensions
         Action<IEnumerable<string>> logError)
     {
         var result = await resultTask.ConfigureAwait(false);
-        if (result.IsFailure)
-        {
-            logError(result.Errors);
-        }
-        return result;
+        return result.TapError(logError);
     }
 
     /// <summary>

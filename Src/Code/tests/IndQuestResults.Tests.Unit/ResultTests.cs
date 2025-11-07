@@ -35,7 +35,7 @@ public class ResultTests
     }
 
     /// <summary>
-    /// Ensures <see cref="Result.WithFailure(string)"/> creates a failed result with a single error.
+    /// Ensures <see cref="Result.WithFailure(string, Exception?)"/> creates a failed result with a single error.
     /// </summary>
     [Fact]
     public void WithFailure_SingleError_ShouldCreateFailedResult()
@@ -54,7 +54,7 @@ public class ResultTests
     }
 
     /// <summary>
-    /// Ensures <see cref="Result.WithFailure(System.Collections.Generic.IEnumerable{string})"/> collects all errors.
+    /// Ensures <see cref="Result.WithFailure(System.Collections.Generic.IEnumerable{string}, Exception?)"/> collects all errors.
     /// </summary>
     [Fact]
     public void WithFailure_MultipleErrors_ShouldCreateFailedResultWithAllErrors()

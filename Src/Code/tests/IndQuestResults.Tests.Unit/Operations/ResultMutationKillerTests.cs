@@ -55,9 +55,10 @@ public class ResultMutationKillerTests
         var errors = hasErrors ? ["Test Error"] : Array.Empty<string>();
         
         // Act - Use reflection to test private constructor directly
+        // Constructor signature: Result(bool succeeded, IEnumerable<string> errors, Exception? exception = null)
         var result = (Result)Activator.CreateInstance(typeof(Result), 
             BindingFlags.NonPublic | BindingFlags.Instance, null, 
-            [succeeded, errors], null)!;
+            [succeeded, errors, null], null)!;
         
         // Assert - Kill && to || mutations and negation mutations
         result.IsSuccess.ShouldBe(expectedIsSuccess);

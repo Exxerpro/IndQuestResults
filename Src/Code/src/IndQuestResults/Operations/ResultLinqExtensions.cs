@@ -70,14 +70,9 @@ public static class ResultLinqExtensions
         Func<TSource, Result<TCollection>> collectionSelector,
         Func<TSource, TCollection, TResult> resultSelector)
     {
-        if (source.IsFailure)
-        {
-            return Result<TResult>.WithFailure(source.Errors);
-        }
-        var collectionResult = collectionSelector(source.Value!);
-        return collectionResult.IsFailure
-            ? Result<TResult>.WithFailure(collectionResult.Errors)
-            : Result<TResult>.Success(resultSelector(source.Value!, collectionResult.Value!));
+        return source.Bind(s => 
+            collectionSelector(s).Map(c => resultSelector(s, c))
+        );
     }
 
     /// <summary>

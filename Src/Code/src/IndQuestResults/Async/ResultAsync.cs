@@ -36,32 +36,47 @@ public static class ResultAsync
         IAsyncEnumerable<Result<T>> results,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(results);
-        var values = new List<T>();
-        var errors = new List<string>();
-
-        await foreach (var r in results.WithCancellation(cancellationToken).ConfigureAwait(false))
+        if (results is null)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return ResultExtensions.Cancelled<IEnumerable<T>>();
-            }
-
-            if (r is null)
-            {
-                continue;
-            }
-            if (r.IsSuccess)
-            {
-                values.Add(r.Value!);
-            }
-            else if (r.Errors is not null)
-            {
-                errors.AddRange(r.Errors);
-            }
+            return Result<IEnumerable<T>>.Failure("Results cannot be null");
         }
+        
+        try
+        {
+            var values = new List<T>();
+            var errors = new List<string>();
 
-        return errors.Count > 0 ? Result<IEnumerable<T>>.WithFailure(errors) : Result<IEnumerable<T>>.Success(values);
+            await foreach (var r in results.WithCancellation(cancellationToken).ConfigureAwait(false))
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return ResultExtensions.Cancelled<IEnumerable<T>>();
+                }
+
+                if (r is null)
+                {
+                    continue;
+                }
+                if (r.IsSuccess)
+                {
+                    values.Add(r.Value!);
+                }
+                else if (r.Errors is not null)
+                {
+                    errors.AddRange(r.Errors);
+                }
+            }
+
+            return errors.Count > 0 ? Result<IEnumerable<T>>.Failure(errors) : Result<IEnumerable<T>>.Success(values);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultExtensions.Cancelled<IEnumerable<T>>();
+        }
+        catch (Exception ex)
+        {
+            return Result<IEnumerable<T>>.Failure($"Async sequence operation failed: {ex.Message}", default, ex);
+        }
     }
 
     /// <summary>
@@ -72,44 +87,62 @@ public static class ResultAsync
         Func<TIn, Task<Result<TOut>>> func,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(inputs);
-        ArgumentNullException.ThrowIfNull(func);
-
-        var values = new List<TOut>();
-        var errors = new List<string>();
-
-        await foreach (var item in inputs.WithCancellation(cancellationToken).ConfigureAwait(false))
+        if (inputs is null)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return ResultExtensions.Cancelled<IEnumerable<TOut>>();
-            }
-
-            Result<TOut> r;
-            try
-            {
-                r = await func(item).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                return ResultExtensions.Cancelled<IEnumerable<TOut>>();
-            }
-            catch (Exception ex)
-            {
-                return Result<IEnumerable<TOut>>.WithFailure($"Async traverse failed: {ex.Message}");
-            }
-
-            if (r.IsSuccess)
-            {
-                values.Add(r.Value!);
-            }
-            else if (r.Errors is not null)
-            {
-                errors.AddRange(r.Errors);
-            }
+            return Result<IEnumerable<TOut>>.Failure("Inputs cannot be null");
+        }
+        
+        if (func is null)
+        {
+            return Result<IEnumerable<TOut>>.Failure("Function cannot be null");
         }
 
-        return errors.Count > 0 ? Result<IEnumerable<TOut>>.WithFailure(errors) : Result<IEnumerable<TOut>>.Success(values);
+        try
+        {
+            var values = new List<TOut>();
+            var errors = new List<string>();
+
+            await foreach (var item in inputs.WithCancellation(cancellationToken).ConfigureAwait(false))
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return ResultExtensions.Cancelled<IEnumerable<TOut>>();
+                }
+
+                Result<TOut> r;
+                try
+                {
+                    r = await func(item).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    return ResultExtensions.Cancelled<IEnumerable<TOut>>();
+                }
+                catch (Exception ex)
+                {
+                    return Result<IEnumerable<TOut>>.Failure($"Async traverse failed: {ex.Message}", default, ex);
+                }
+
+                if (r.IsSuccess)
+                {
+                    values.Add(r.Value!);
+                }
+                else if (r.Errors is not null)
+                {
+                    errors.AddRange(r.Errors);
+                }
+            }
+
+            return errors.Count > 0 ? Result<IEnumerable<TOut>>.Failure(errors) : Result<IEnumerable<TOut>>.Success(values);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultExtensions.Cancelled<IEnumerable<TOut>>();
+        }
+        catch (Exception ex)
+        {
+            return Result<IEnumerable<TOut>>.Failure($"Async traverse operation failed: {ex.Message}", default, ex);
+        }
     }
 
     /// <summary>
@@ -119,11 +152,41 @@ public static class ResultAsync
         this ValueTask<Result<TIn>> resultVTask,
         Func<TIn, ValueTask<Result<TOut>>> next)
     {
-        ArgumentNullException.ThrowIfNull(next);
-        var result = await resultVTask.ConfigureAwait(false);
-        return result.IsSuccess && result.Value is not null
-            ? await next(result.Value).ConfigureAwait(false)
-            : Result<TOut>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+        if (next is null)
+        {
+            return Result<TOut>.Failure("Next function cannot be null");
+        }
+        
+        try
+        {
+            var result = await resultVTask.ConfigureAwait(false);
+            
+            if (!result.IsSuccess || result.Value is null)
+            {
+                return Result<TOut>.Failure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+            }
+
+            try
+            {
+                return await next(result.Value).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return ResultExtensions.Cancelled<TOut>();
+            }
+            catch (Exception ex)
+            {
+                return Result<TOut>.Failure($"ThenAsync operation failed: {ex.Message}", default, ex);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultExtensions.Cancelled<TOut>();
+        }
+        catch (Exception ex)
+        {
+            return Result<TOut>.Failure($"ThenAsync operation failed: {ex.Message}", default, ex);
+        }
     }
 
     /// <summary>
@@ -133,11 +196,25 @@ public static class ResultAsync
         this ValueTask<Result<TIn>> resultVTask,
         Func<TIn, TOut> mapper)
     {
-        ArgumentNullException.ThrowIfNull(mapper);
-        var result = await resultVTask.ConfigureAwait(false);
-        return result.IsSuccess && result.Value is not null
-            ? Result<TOut>.Success(mapper(result.Value))
-            : Result<TOut>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+        if (mapper is null)
+        {
+            return Result<TOut>.Failure("Mapper function cannot be null");
+        }
+        
+        try
+        {
+            var result = await resultVTask.ConfigureAwait(false);
+            
+            return result.Map(mapper);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultExtensions.Cancelled<TOut>();
+        }
+        catch (Exception ex)
+        {
+            return Result<TOut>.Failure($"ThenMap operation failed: {ex.Message}", default, ex);
+        }
     }
 
     /// <summary>
@@ -147,13 +224,43 @@ public static class ResultAsync
         this ValueTask<Result<T>> resultVTask,
         Func<T, ValueTask> action)
     {
-        ArgumentNullException.ThrowIfNull(action);
-        var result = await resultVTask.ConfigureAwait(false);
-        if (result.IsSuccess && result.Value is not null)
+        if (action is null)
         {
-            await action(result.Value).ConfigureAwait(false);
+            return Result<T>.Failure("Action function cannot be null");
         }
-        return result;
+        
+        try
+        {
+            var result = await resultVTask.ConfigureAwait(false);
+            
+            if (result.IsSuccess && result.Value is not null)
+            {
+                try
+                {
+                    await action(result.Value).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    return ResultExtensions.Cancelled<T>();
+                }
+                catch (Exception ex)
+                {
+                    // For side effects, we typically want to preserve the original result
+                    // but we could also choose to fail the entire operation
+                    return Result<T>.Failure($"ThenTap side effect failed: {ex.Message}", default, ex);
+                }
+            }
+            
+            return result;
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultExtensions.Cancelled<T>();
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure($"ThenTap operation failed: {ex.Message}", default, ex);
+        }
     }
 
     /// <summary>
@@ -177,8 +284,15 @@ public static class ResultAsync
         Func<TInput, Task<Result<TOutput>>> func,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(resultTask);
-        ArgumentNullException.ThrowIfNull(func);
+        if (resultTask is null)
+        {
+            return Result<TOutput>.Failure("Result task cannot be null");
+        }
+        
+        if (func is null)
+        {
+            return Result<TOutput>.Failure("Function cannot be null");
+        }
 
         try
         {
@@ -186,11 +300,9 @@ public static class ResultAsync
 
             return cancellationToken.IsCancellationRequested
                 ? ResultExtensions.Cancelled<TOutput>()
-                : result.IsSuccess
+                : result.IsSuccess && result.Value is not null
                 ? await func(result.Value!).ConfigureAwait(false)
-                :
-                // Stryker disable once NullCoalescing: Errors normalized; mutant is equivalent
-                Result<TOutput>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+                : Result<TOutput>.Failure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
         }
         catch (OperationCanceledException)
         {
@@ -198,7 +310,7 @@ public static class ResultAsync
         }
         catch (Exception ex)
         {
-            return Result<TOutput>.WithFailure($"Async bind operation failed: {ex.Message}");
+            return Result<TOutput>.Failure($"Async bind operation failed: {ex.Message}", default, ex);
         }
     }
 
@@ -223,8 +335,15 @@ public static class ResultAsync
         Func<TInput, Task<TOutput>> func,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(resultTask);
-        ArgumentNullException.ThrowIfNull(func);
+        if (resultTask is null)
+        {
+            return Result<TOutput>.Failure("Result task cannot be null");
+        }
+        
+        if (func is null)
+        {
+            return Result<TOutput>.Failure("Function cannot be null");
+        }
 
         try
         {
@@ -235,14 +354,20 @@ public static class ResultAsync
                 return ResultExtensions.Cancelled<TOutput>();
             }
 
-            if (result.IsSuccess)
+            if (!result.IsSuccess)
+            {
+                return Result<TOutput>.Failure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+            }
+
+            try
             {
                 var transformedValue = await func(result.Value!).ConfigureAwait(false);
                 return Result<TOutput>.Success(transformedValue);
             }
-
-            // Stryker disable once NullCoalescing: Errors normalized; mutant is equivalent
-            return Result<TOutput>.WithFailure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
+            catch (Exception ex)
+            {
+                return Result<TOutput>.Failure($"Async map operation failed: {ex.Message}", default, ex);
+            }
         }
         catch (OperationCanceledException)
         {
@@ -250,7 +375,7 @@ public static class ResultAsync
         }
         catch (Exception ex)
         {
-            return Result<TOutput>.WithFailure($"Async map operation failed: {ex.Message}");
+            return Result<TOutput>.Failure($"Async map operation failed: {ex.Message}", default, ex);
         }
     }
 
@@ -275,8 +400,15 @@ public static class ResultAsync
         Func<T, Task> action,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(resultTask);
-        ArgumentNullException.ThrowIfNull(action);
+        if (resultTask is null)
+        {
+            return Result<T>.Failure("Result task cannot be null");
+        }
+        
+        if (action is null)
+        {
+            return Result<T>.Failure("Action function cannot be null");
+        }
 
         try
         {
@@ -287,9 +419,9 @@ public static class ResultAsync
                 return ResultExtensions.Cancelled<T>();
             }
 
-            if (result.IsSuccess)
+            if (result.IsSuccess && result.Value is not null)
             {
-                await action(result.Value!).ConfigureAwait(false);
+                await action(result.Value).ConfigureAwait(false);
             }
 
             return result;
@@ -302,7 +434,7 @@ public static class ResultAsync
         {
             // For side effects, we typically want to preserve the original result
             // but we could also choose to fail the entire operation
-            return Result<T>.WithFailure($"Async side effect failed: {ex.Message}");
+            return Result<T>.Failure($"Async side effect failed: {ex.Message}", default, ex);
         }
     }
 
@@ -325,8 +457,15 @@ public static class ResultAsync
         Func<Task<Result<T>>> recoveryFunc,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(resultTask);
-        ArgumentNullException.ThrowIfNull(recoveryFunc);
+        if (resultTask is null)
+        {
+            return Result<T>.Failure("Result task cannot be null");
+        }
+        
+        if (recoveryFunc is null)
+        {
+            return Result<T>.Failure("Recovery function cannot be null");
+        }
 
         try
         {
@@ -344,7 +483,7 @@ public static class ResultAsync
         }
         catch (Exception ex)
         {
-            return Result<T>.WithFailure($"Async recovery failed: {ex.Message}");
+            return Result<T>.Failure($"Async recovery failed: {ex.Message}", default, ex);
         }
     }
 
@@ -370,8 +509,15 @@ public static class ResultAsync
         Func<TInput, Task<Result<TOutput>>> func,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(inputs);
-        ArgumentNullException.ThrowIfNull(func);
+        if (inputs is null)
+        {
+            return Result<IEnumerable<TOutput>>.WithFailure("Inputs cannot be null");
+        }
+        
+        if (func is null)
+        {
+            return Result<IEnumerable<TOutput>>.WithFailure("Function cannot be null");
+        }
 
         try
         {
@@ -388,7 +534,7 @@ public static class ResultAsync
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TOutput>>.WithFailure($"Async traverse failed: {ex.Message}");
+            return Result<IEnumerable<TOutput>>.WithFailure($"Async traverse failed: {ex.Message}", default, ex);
         }
     }
 
@@ -408,11 +554,19 @@ public static class ResultAsync
         int maxDegreeOfParallelism = 4,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(inputs);
-        ArgumentNullException.ThrowIfNull(func);
+        if (inputs is null)
+        {
+            return Result<IEnumerable<TOutput>>.WithFailure("Inputs cannot be null");
+        }
+        
+        if (func is null)
+        {
+            return Result<IEnumerable<TOutput>>.WithFailure("Function cannot be null");
+        }
+        
         if (maxDegreeOfParallelism <= 0)
         {
-            throw new ArgumentException("Max degree of parallelism must be positive", nameof(maxDegreeOfParallelism));
+            return Result<IEnumerable<TOutput>>.Failure("Max degree of parallelism must be positive");
         }
 
         try
@@ -443,7 +597,7 @@ public static class ResultAsync
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TOutput>>.WithFailure($"Async parallel traverse failed: {ex.Message}");
+            return Result<IEnumerable<TOutput>>.Failure($"Async parallel traverse failed: {ex.Message}", default, ex);
         }
     }
 
@@ -458,7 +612,10 @@ public static class ResultAsync
         IEnumerable<Task<Result<T>>> resultTasks,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(resultTasks);
+        if (resultTasks is null)
+        {
+            return Result<IEnumerable<T>>.WithFailure("Result tasks cannot be null");
+        }
 
         try
         {
@@ -474,7 +631,7 @@ public static class ResultAsync
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.WithFailure($"Async sequence failed: {ex.Message}");
+            return Result<IEnumerable<T>>.Failure($"Async sequence failed: {ex.Message}", default, ex);
         }
     }
 

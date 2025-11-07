@@ -40,7 +40,7 @@ public class BasicResultTests
     }
 
     /// <summary>
-    /// Ensures that <see cref="Result.WithFailure(string)"/> creates a failed result containing a single error.
+    /// Ensures that <see cref="Result.WithFailure(string, Exception?)"/> creates a failed result containing a single error.
     /// </summary>
     [Fact]
     public void WithFailure_ShouldCreateFailedResult_WithSingleError()
@@ -60,7 +60,7 @@ public class BasicResultTests
     }
 
     /// <summary>
-    /// Ensures that <see cref="Result.WithFailure(System.Collections.Generic.IEnumerable{string})"/> aggregates multiple errors.
+    /// Ensures that <see cref="Result.WithFailure(System.Collections.Generic.IEnumerable{string}, Exception?)"/> aggregates multiple errors.
     /// </summary>
     [Fact]
     public void WithFailure_ShouldCreateFailedResult_WithMultipleErrors()
@@ -102,7 +102,7 @@ public class BasicResultTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Result{T}.WithFailure(string, T)"/> creates a failed result and preserves the value.
+    /// Verifies that WithFailure creates a failed result and preserves the value.
     /// </summary>
     [Fact]
     public void GenericWithFailure_ShouldCreateFailedResult_WithErrorsAndValue()
