@@ -75,8 +75,8 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         // Skip analysis for IndQuestResults library itself
         // Exception: Allow test assemblies (TestAssembly) to be analyzed for testing purposes
         var asmName = context.Compilation.AssemblyName ?? string.Empty;
-        if (asmName.StartsWith("IndQuestResults", System.StringComparison.OrdinalIgnoreCase) &&
-            !asmName.Equals("TestAssembly", System.StringComparison.OrdinalIgnoreCase))
+        if (asmName.StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase) &&
+            !asmName.Equals("TestAssembly", StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
@@ -129,7 +129,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
 
         // Check if WithFailure call includes exception parameter
         var arguments = invocation.ArgumentList.Arguments;
-        
+
         // Check if any argument references the exception variable
         var hasExceptionArgument = arguments.Any(arg =>
         {
@@ -138,7 +138,7 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
             {
                 return true;
             }
-            
+
             // Check for named argument with exception
             if (arg.NameColon != null &&
                 arg.NameColon.Name.Identifier.Text == "exception" &&
@@ -147,20 +147,22 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
             {
                 return true;
             }
-            
+
             return false;
         });
 
         // Check if method signature supports exception parameter
         // WithFailure has multiple overloads - check if any parameter is named "exception"
         var hasExceptionParameter = methodSymbol.Parameters.Any(p => p.Name == "exception");
-        
+
         // Also check if the method has 3+ parameters (error, value, exception pattern)
         // or if it's a single-parameter overload that takes Exception
         var parameterCount = methodSymbol.Parameters.Length;
-        var hasExceptionOverload = hasExceptionParameter || 
-                                   (parameterCount == 1 && methodSymbol.Parameters[0].Type.Name == "Exception");
+        var hasExceptionOverload = hasExceptionParameter ||
+                                   (parameterCount == 1 && methodSymbol.Parameters[0].Type.Name == "Exception") ||
+                                   (parameterCount >= 3 && methodSymbol.Parameters.Any(p => p.Type.Name == "Exception"));
 
+        // If the method supports exception parameter but it's not provided, report diagnostic
         if (hasExceptionOverload && !hasExceptionArgument)
         {
             var diagnostic = Diagnostic.Create(
@@ -175,8 +177,8 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         // Skip analysis for IndQuestResults library itself
         // Exception: Allow test assemblies (TestAssembly) to be analyzed for testing purposes
         var asmName = context.Compilation.AssemblyName ?? string.Empty;
-        if (asmName.StartsWith("IndQuestResults", System.StringComparison.OrdinalIgnoreCase) &&
-            !asmName.Equals("TestAssembly", System.StringComparison.OrdinalIgnoreCase))
+        if (asmName.StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase) &&
+            !asmName.Equals("TestAssembly", StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
@@ -233,14 +235,43 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
             return memberAccess.Name.Identifier.Text == "WithFailure";
         });
 
-        if (!hasWithFailure)
-        {
-            // Check if exception variable is used in the catch block
-            var exceptionUsed = catchClause.Block?.DescendantNodes()
-                .OfType<IdentifierNameSyntax>()
-                .Any(id => id.Identifier.Text == exceptionVariable) ?? false;
+        // Check if exception variable is used in the catch block
+        var exceptionUsed = catchClause.Block?.DescendantNodes()
+            .OfType<IdentifierNameSyntax>()
+            .Any(id => id.Identifier.Text == exceptionVariable) ?? false;
 
-            if (exceptionUsed)
+        if (exceptionUsed && !hasWithFailure)
+        {
+            // Exception is used but not passed to WithFailure - report diagnostic
+            var diagnostic = Diagnostic.Create(
+                ExceptionNotPreservedRule,
+                catchClause.GetLocation());
+            context.ReportDiagnostic(diagnostic);
+        }
+        else if (exceptionUsed && hasWithFailure)
+        {
+            // Check if exception is passed to WithFailure
+            var withFailureInvocations = catchClause.Block?.DescendantNodes()
+                .OfType<InvocationExpressionSyntax>()
+                .Where(inv => inv.Expression is MemberAccessExpressionSyntax memberAccess &&
+                             memberAccess.Name.Identifier.Text == "WithFailure")
+                .ToList() ?? [];
+
+            var exceptionPassedToWithFailure = withFailureInvocations.Any(inv =>
+            {
+                var args = inv.ArgumentList.Arguments;
+                return args.Any(arg =>
+                {
+                    if (arg.Expression is IdentifierNameSyntax identifier &&
+                        identifier.Identifier.Text == exceptionVariable)
+                    {
+                        return true;
+                    }
+                    return false;
+                });
+            });
+
+            if (!exceptionPassedToWithFailure)
             {
                 var diagnostic = Diagnostic.Create(
                     ExceptionNotPreservedRule,
@@ -278,10 +309,13 @@ public sealed class ExceptionHandlingComplianceAnalyzer : DiagnosticAnalyzer
         return false;
     }
 
+#pragma warning disable IDE0051
+
     private static bool IsIndQuestResultsLibrary(SyntaxNodeAnalysisContext context)
     {
         var assemblyName = context.Compilation.AssemblyName ?? string.Empty;
-        return assemblyName.StartsWith("IndQuestResults", System.StringComparison.OrdinalIgnoreCase);
+        return assemblyName.StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase);
     }
-}
 
+#pragma warning restore IDE0051
+}

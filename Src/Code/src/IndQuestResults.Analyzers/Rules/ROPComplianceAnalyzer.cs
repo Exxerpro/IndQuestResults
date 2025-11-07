@@ -74,8 +74,8 @@ public sealed class ROPComplianceAnalyzer : DiagnosticAnalyzer
         // Skip analysis for IndQuestResults library itself (to avoid noise during development)
         // Exception: Allow test assemblies (TestAssembly) to be analyzed for testing purposes
         var asmName = context.Compilation.AssemblyName ?? string.Empty;
-        if (asmName.StartsWith("IndQuestResults", System.StringComparison.OrdinalIgnoreCase) &&
-            !asmName.Equals("TestAssembly", System.StringComparison.OrdinalIgnoreCase))
+        if (asmName.StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase) &&
+            !asmName.Equals("TestAssembly", StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
@@ -164,8 +164,8 @@ public sealed class ROPComplianceAnalyzer : DiagnosticAnalyzer
         // Skip analysis for IndQuestResults library itself
         // Exception: Allow test assemblies (TestAssembly) to be analyzed for testing purposes
         var asmName = context.Compilation.AssemblyName ?? string.Empty;
-        if (asmName.StartsWith("IndQuestResults", System.StringComparison.OrdinalIgnoreCase) &&
-            !asmName.Equals("TestAssembly", System.StringComparison.OrdinalIgnoreCase))
+        if (asmName.StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase) &&
+            !asmName.Equals("TestAssembly", StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
@@ -237,10 +237,13 @@ public sealed class ROPComplianceAnalyzer : DiagnosticAnalyzer
         return false;
     }
 
+#pragma warning disable IDE0051
+
     private static bool IsIndQuestResultsLibrary(SyntaxNodeAnalysisContext context)
     {
         var assemblyName = context.Compilation.AssemblyName ?? string.Empty;
-        return assemblyName.StartsWith("IndQuestResults", System.StringComparison.OrdinalIgnoreCase);
+        return assemblyName.StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase);
     }
-}
 
+#pragma warning restore IDE0051
+}

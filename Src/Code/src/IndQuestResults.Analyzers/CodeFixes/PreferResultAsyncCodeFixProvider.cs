@@ -49,13 +49,28 @@ public sealed class PreferResultAsyncCodeFixProvider : CodeFixProvider
 
     private static Task<Document> UseResultAsyncBindAsync(Document document, SyntaxNode root, InvocationExpressionSyntax invocation, MemberAccessExpressionSyntax memberAccess, CancellationToken cancellationToken)
     {
-        // Build: global::IndQuestResults.Async.ResultAsync.BindAsync(<expr>, <arg>)
+        // Build: ResultAsync.BindAsync(<expr>, <arg>)
+        // First, ensure we have the using statement for IndQuestResults.Async
         var expr = memberAccess.Expression;
         var firstArg = invocation.ArgumentList.Arguments.FirstOrDefault();
 
-        var resultAsyncQualified = SyntaxFactory.ParseExpression("global::IndQuestResults.Async.ResultAsync.BindAsync");
-        var newInvocation = SyntaxFactory.InvocationExpression(
+        // Create the ResultAsync.BindAsync call
+        var resultAsyncQualified = SyntaxFactory.MemberAccessExpression(
+            SyntaxKind.SimpleMemberAccessExpression,
+            SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                SyntaxFactory.IdentifierName("IndQuestResults"),
+                SyntaxFactory.IdentifierName("Async")),
+            SyntaxFactory.IdentifierName("ResultAsync"))
+            .WithAdditionalAnnotations(SyntaxAnnotation.ElasticAnnotation);
+
+        var bindAsyncCall = SyntaxFactory.MemberAccessExpression(
+            SyntaxKind.SimpleMemberAccessExpression,
             resultAsyncQualified,
+            SyntaxFactory.IdentifierName("BindAsync"));
+
+        var newInvocation = SyntaxFactory.InvocationExpression(
+            bindAsyncCall,
             SyntaxFactory.ArgumentList(
                 SyntaxFactory.SeparatedList(new[]
                 {
@@ -67,6 +82,20 @@ public sealed class PreferResultAsyncCodeFixProvider : CodeFixProvider
         newInvocation = newInvocation.WithTriviaFrom(invocation);
 
         var newRoot = root.ReplaceNode(invocation, newInvocation);
+        
+        // Add using statement if not present
+        if (newRoot is CompilationUnitSyntax compilationUnit)
+        {
+            var hasAsyncUsing = compilationUnit.Usings.Any(u => u.Name?.ToString() == "IndQuestResults.Async");
+            if (!hasAsyncUsing)
+            {
+                var asyncUsing = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("IndQuestResults.Async"))
+                    .WithTrailingTrivia(SyntaxFactory.EndOfLine("\n"));
+                var newUsings = compilationUnit.Usings.Add(asyncUsing);
+                newRoot = compilationUnit.WithUsings(newUsings);
+            }
+        }
+
         return Task.FromResult(document.WithSyntaxRoot(newRoot));
     }
 }

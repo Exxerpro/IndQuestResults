@@ -55,8 +55,8 @@ public sealed class PreferResultAsyncAnalyzer : DiagnosticAnalyzer
         // to avoid noisy hints while developing. Consumers will still get the diagnostic.
         // Exception: Allow test assemblies (TestAssembly) to be analyzed for testing purposes
         var asmName = context.Compilation.AssemblyName ?? string.Empty;
-        if (asmName.StartsWith("IndQuestResults", System.StringComparison.OrdinalIgnoreCase) &&
-            !asmName.Equals("TestAssembly", System.StringComparison.OrdinalIgnoreCase))
+        if (asmName.StartsWith("IndQuestResults", StringComparison.OrdinalIgnoreCase) &&
+            !asmName.Equals("TestAssembly", StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
@@ -86,6 +86,23 @@ public sealed class PreferResultAsyncAnalyzer : DiagnosticAnalyzer
         }
         if (symbol is null)
         {
+            // Try to get symbol from the receiver type
+            if (memberAccess.Expression is not null)
+            {
+                var receiverType = context.SemanticModel.GetTypeInfo(memberAccess.Expression).Type;
+                if (receiverType?.Name == "Task" && receiverType is INamedTypeSymbol namedType && namedType.IsGenericType)
+                {
+                    // This might be Task<Result<T>>.ThenAsync - check if ThenAsync exists
+                    var thenAsyncMethods = namedType.GetMembers("ThenAsync");
+                    if (thenAsyncMethods.Length > 0)
+                    {
+                        // Likely our ThenAsync extension - report diagnostic
+                        var diagnostic = Diagnostic.Create(Rule, memberAccess.Name.GetLocation());
+                        context.ReportDiagnostic(diagnostic);
+                        return;
+                    }
+                }
+            }
             return;
         }
 
@@ -107,9 +124,13 @@ public sealed class PreferResultAsyncAnalyzer : DiagnosticAnalyzer
         var namespaceName = containingType.ContainingNamespace?.ToDisplayString() ?? string.Empty;
         
         // Check if it's ResultExtensions in IndQuestResults.Operations namespace
-        if (simpleName != "ResultExtensions" || 
-            (!namespaceName.Contains("IndQuestResults.Operations") && 
-             !fullContaining.Contains("IndQuestResults.Operations.ResultExtensions")))
+        // Also check if it's in IndQuestResults namespace (for test scenarios)
+        var isResultExtensions = simpleName == "ResultExtensions";
+        var isInOperationsNamespace = namespaceName.Contains("IndQuestResults.Operations") || 
+                                      fullContaining.Contains("IndQuestResults.Operations.ResultExtensions") ||
+                                      namespaceName.Contains("IndQuestResults");
+        
+        if (!isResultExtensions || !isInOperationsNamespace)
         {
             return;
         }
