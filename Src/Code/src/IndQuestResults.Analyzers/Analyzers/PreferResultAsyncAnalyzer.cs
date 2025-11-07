@@ -53,8 +53,10 @@ public sealed class PreferResultAsyncAnalyzer : DiagnosticAnalyzer
     {
         // Do not report inside this repo's own assemblies (library, analyzers, samples, tests)
         // to avoid noisy hints while developing. Consumers will still get the diagnostic.
+        // Exception: Allow test assemblies (TestAssembly) to be analyzed for testing purposes
         var asmName = context.Compilation.AssemblyName ?? string.Empty;
-        if (asmName.StartsWith("IndQuestResults", System.StringComparison.OrdinalIgnoreCase))
+        if (asmName.StartsWith("IndQuestResults", System.StringComparison.OrdinalIgnoreCase) &&
+            !asmName.Equals("TestAssembly", System.StringComparison.OrdinalIgnoreCase))
         {
             return;
         }

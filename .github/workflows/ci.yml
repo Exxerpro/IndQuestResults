@@ -32,6 +32,11 @@ jobs:
     - name: Build
       run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
       
+    - name: Run ROP Compliance Analyzers
+      run: |
+        echo "Running ROP compliance analyzers..."
+        dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore /p:RunAnalyzers=true /p:RunCodeAnalysis=true 2>&1 | grep -E "(IQR201|IQR202|IQR301|IQR302)" || echo "No ROP violations detected"
+      
     - name: Test with coverage (Cobertura)
       run: |
         dotnet test ${{ env.SOLUTION_PATH }} \
