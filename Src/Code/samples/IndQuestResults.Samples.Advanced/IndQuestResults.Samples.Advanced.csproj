@@ -7,7 +7,7 @@
     <AssemblyName>IndQuestResults.Samples.Advanced</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-    <AssemblyVersion>1.0.1.2</AssemblyVersion>
+    <AssemblyVersion>1.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <!-- Toggle between local project references and NuGet package consumption -->

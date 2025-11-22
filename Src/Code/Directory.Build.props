@@ -4,7 +4,8 @@
   <Import Project="$(MSBuildThisFileDirectory)Common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <!-- Removed net8.0 due to Lock type requirement (introduced in .NET 9.0) -->
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -88,10 +89,10 @@
 
   <PropertyGroup>
     <!-- Version Information -->
-    <VersionPrefix>1.1.0</VersionPrefix>
+    <VersionPrefix>1.2.0</VersionPrefix>
     <VersionSuffix Condition="'$(Configuration)' == 'Debug'">dev</VersionSuffix>
-    <FileVersion>1.1.0</FileVersion>
-    <AssemblyVersion>1.1.0</AssemblyVersion>
+    <FileVersion>1.2.0</FileVersion>
+    <AssemblyVersion>1.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup>

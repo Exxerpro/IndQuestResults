@@ -10,6 +10,22 @@ namespace IndQuestResults.Analyzers.Rules;
 
 /// <summary>
 /// Analyzer for common Result&lt;T&gt; pattern violations and best practice enforcement.
+///
+/// TODO v2.0: Add support for modern C# collection patterns:
+/// - Collection expressions: [1, 2, 3] syntax
+/// - Collection initializers with target-typed new: new() { 1, 2, 3 }
+/// - List patterns in switch expressions: list is [var first, .., var last]
+/// - Spread operator: [..array1, ..array2]
+///
+/// TODO v2.0: Enhanced reference type null safety:
+/// - Detect Result&lt;T&gt; where T is a reference type
+/// - Require both IsSuccess AND null checks for reference types
+/// - Report warnings (not errors) when only IsSuccess is checked
+///
+/// TODO v2.0: Pattern matching enhancements:
+/// - Extended property patterns: { IsSuccess: true, Value.Length: > 0 }
+/// - Relational patterns with IsSuccess
+/// - List patterns for collection results
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class ResultPatternAnalyzer : DiagnosticAnalyzer
@@ -274,7 +290,7 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
                     }
                 }
             }
-            
+
             // Check if we're inside an if statement that checks IsSuccess
             if (parent is IfStatementSyntax ifStatement)
             {
@@ -283,7 +299,7 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
                     return true;
                 }
             }
-            
+
             // Check if we're inside a switch expression with IsSuccess pattern
             if (parent is SwitchExpressionSyntax switchExpr)
             {
@@ -292,8 +308,15 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
                     return true;
                 }
             }
-            
+
             parent = parent.Parent;
+        }
+
+        // Check for early return patterns and Shouldly assertions
+        if (HasEarlyReturnAfterFailureCheck(node, semanticModel) ||
+            HasShouldlySuccessAssertion(node, semanticModel))
+        {
+            return true;
         }
 
         return false;
@@ -353,7 +376,189 @@ public class ResultPatternAnalyzer : DiagnosticAnalyzer
                 }
             }
         }
-        
+
+        return false;
+    }
+
+    private static bool HasEarlyReturnAfterFailureCheck(SyntaxNode node, SemanticModel semanticModel)
+    {
+        // Find the containing method
+        var containingMethod = node.FirstAncestorOrSelf<MethodDeclarationSyntax>();
+        if (containingMethod?.Body == null)
+            return false;
+
+        // Get the member access expression for result.Value
+        if (node is not MemberAccessExpressionSyntax memberAccess)
+            return false;
+
+        // Get the result variable identifier
+        var resultIdentifier = GetResultIdentifier(memberAccess.Expression);
+        if (resultIdentifier == null)
+            return false;
+
+        // Check all statements in the method for IsFailure early return
+        return HasIsFailureEarlyReturn(containingMethod.Body, resultIdentifier, node, semanticModel);
+    }
+
+    private static string? GetResultIdentifier(ExpressionSyntax expression)
+    {
+        return expression switch
+        {
+            IdentifierNameSyntax identifier => identifier.Identifier.Text,
+            _ => null
+        };
+    }
+
+    private static bool HasIsFailureEarlyReturn(BlockSyntax block, string resultIdentifier, SyntaxNode valueAccessNode, SemanticModel semanticModel)
+    {
+        foreach (var statement in block.Statements)
+        {
+            // If we've reached or passed the value access, stop looking
+            if (statement.Span.End >= valueAccessNode.SpanStart)
+                break;
+
+            // Check for if (result.IsFailure) return;
+            if (statement is IfStatementSyntax ifStatement)
+            {
+                if (IsFailureCheckForIdentifier(ifStatement.Condition, resultIdentifier, semanticModel) &&
+                    ContainsReturn(ifStatement.Statement))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsFailureCheckForIdentifier(ExpressionSyntax condition, string identifier, SemanticModel semanticModel)
+    {
+        // Handle simple case: result.IsFailure
+        if (condition is MemberAccessExpressionSyntax memberAccess &&
+            memberAccess.Name.Identifier.Text == "IsFailure")
+        {
+            if (memberAccess.Expression is IdentifierNameSyntax ident &&
+                ident.Identifier.Text == identifier)
+            {
+                var type = semanticModel.GetTypeInfo(memberAccess.Expression).Type;
+                return IsResultType(type);
+            }
+        }
+
+        // Handle parenthesized expressions: (result.IsFailure)
+        if (condition is ParenthesizedExpressionSyntax parenthesized)
+        {
+            return IsFailureCheckForIdentifier(parenthesized.Expression, identifier, semanticModel);
+        }
+
+        return false;
+    }
+
+    private static bool IsFailureCheckCondition(ExpressionSyntax condition, SemanticModel semanticModel)
+    {
+        // Handle simple case: result.IsFailure
+        if (condition is MemberAccessExpressionSyntax memberAccess &&
+            memberAccess.Name.Identifier.Text == "IsFailure")
+        {
+            var type = semanticModel.GetTypeInfo(memberAccess.Expression).Type;
+            return IsResultType(type);
+        }
+
+        // Handle parenthesized expressions: (result.IsFailure)
+        if (condition is ParenthesizedExpressionSyntax parenthesized)
+        {
+            return IsFailureCheckCondition(parenthesized.Expression, semanticModel);
+        }
+
+        // Handle binary expressions with IsFailure checks
+        if (condition is BinaryExpressionSyntax binary)
+        {
+            return IsFailureCheckCondition(binary.Left, semanticModel) ||
+                   IsFailureCheckCondition(binary.Right, semanticModel);
+        }
+
+        return false;
+    }
+
+    private static bool ContainsReturn(StatementSyntax statement)
+    {
+        if (statement is ReturnStatementSyntax)
+            return true;
+
+        if (statement is BlockSyntax block)
+        {
+            return block.Statements.Any(s => s is ReturnStatementSyntax);
+        }
+
+        return false;
+    }
+
+    private static bool HasShouldlySuccessAssertion(SyntaxNode node, SemanticModel semanticModel)
+    {
+        // Find the containing method
+        var containingMethod = node.FirstAncestorOrSelf<MethodDeclarationSyntax>();
+        if (containingMethod?.Body == null)
+            return false;
+
+        // Get the member access expression for result.Value
+        if (node is not MemberAccessExpressionSyntax memberAccess)
+            return false;
+
+        // Get the result variable identifier
+        var resultIdentifier = GetResultIdentifier(memberAccess.Expression);
+        if (resultIdentifier == null)
+            return false;
+
+        // Check all statements in the method for Shouldly success assertion
+        return HasShouldlyIsSuccessAssertion(containingMethod.Body, resultIdentifier, node, semanticModel);
+    }
+
+    private static bool HasShouldlyIsSuccessAssertion(BlockSyntax block, string resultIdentifier, SyntaxNode valueAccessNode, SemanticModel semanticModel)
+    {
+        foreach (var statement in block.Statements)
+        {
+            // If we've reached or passed the value access, stop looking
+            if (statement.Span.End >= valueAccessNode.SpanStart)
+                break;
+
+            // Check for result.IsSuccess.ShouldBeTrue()
+            if (statement is ExpressionStatementSyntax expressionStatement)
+            {
+                if (IsShouldlyIsSuccessAssertionForIdentifier(expressionStatement.Expression, resultIdentifier, semanticModel))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsShouldlyIsSuccessAssertionForIdentifier(ExpressionSyntax expression, string identifier, SemanticModel semanticModel)
+    {
+        // Pattern: result.IsSuccess.ShouldBeTrue()
+        if (expression is InvocationExpressionSyntax invocation)
+        {
+            if (invocation.Expression is MemberAccessExpressionSyntax shouldlyCall)
+            {
+                // Check if calling ShouldBeTrue
+                if (shouldlyCall.Name.Identifier.Text == "ShouldBeTrue")
+                {
+                    // Check if the expression is result.IsSuccess
+                    if (shouldlyCall.Expression is MemberAccessExpressionSyntax isSuccessAccess)
+                    {
+                        if (isSuccessAccess.Name.Identifier.Text == "IsSuccess" &&
+                            isSuccessAccess.Expression is IdentifierNameSyntax ident &&
+                            ident.Identifier.Text == identifier)
+                        {
+                            var type = semanticModel.GetTypeInfo(isSuccessAccess.Expression).Type;
+                            return IsResultType(type);
+                        }
+                    }
+                }
+            }
+        }
+
         return false;
     }
 }

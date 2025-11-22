@@ -26,7 +26,7 @@ public static class AnalyzerTestHelper
     /// <param name="logger">Optional logger for debugging.</param>
     /// <returns>A task representing the asynchronous test execution.</returns>
     public static async Task VerifyAnalyzerAsync<TAnalyzer>(
-        string source, 
+        string source,
         ILogger? logger,
         params ExpectedDiagnostic[] expectedDiagnostics)
         where TAnalyzer : DiagnosticAnalyzer, new()
@@ -41,27 +41,27 @@ public static class AnalyzerTestHelper
 
         var diagnostics = await compilation.WithAnalyzers([analyzer])
             .GetAnalyzerDiagnosticsAsync();
-        
+
         var allDiagnostics = diagnostics.ToArray();
 #pragma warning disable CA1848 // Use LoggerMessage delegates - temporary debugging code
         logger?.LogInformation("Total diagnostics found: {Count}", allDiagnostics.Length);
         foreach (var diag in allDiagnostics)
         {
             var lineSpan = diag.Location.GetLineSpan();
-            logger?.LogInformation("  Diagnostic: {Id} at line {Line}, column {Column} - {Message}", 
+            logger?.LogInformation("  Diagnostic: {Id} at line {Line}, column {Column} - {Message}",
                 diag.Id, lineSpan.StartLinePosition.Line + 1, lineSpan.StartLinePosition.Character + 1, diag.GetMessage());
         }
-        
+
         var analyzerDiagnostics = allDiagnostics
             .Where(d => d.Id.StartsWith("IQR", StringComparison.Ordinal))
             .OrderBy(d => d.Location.SourceSpan.Start)
             .ToArray();
 
-        logger?.LogInformation("IQR diagnostics found: {Count} (expected: {Expected})", 
+        logger?.LogInformation("IQR diagnostics found: {Count} (expected: {Expected})",
             analyzerDiagnostics.Length, expectedDiagnostics.Length);
 #pragma warning restore CA1848
 
-        analyzerDiagnostics.Length.ShouldBe(expectedDiagnostics.Length, 
+        analyzerDiagnostics.Length.ShouldBe(expectedDiagnostics.Length,
             $"Expected {expectedDiagnostics.Length} diagnostics but got {analyzerDiagnostics.Length}");
 
         for (int i = 0; i < expectedDiagnostics.Length; i++)
@@ -71,18 +71,18 @@ public static class AnalyzerTestHelper
 
 #pragma warning disable CA1848 // Use LoggerMessage delegates - temporary debugging code
             logger?.LogInformation("Comparing diagnostic {Index}: Expected {ExpectedId} at {ExpectedLine}:{ExpectedColumn}, Actual {ActualId} at {ActualLine}:{ActualColumn}",
-                i, expected.Id, expected.Line, expected.Column, actual.Id, 
+                i, expected.Id, expected.Line, expected.Column, actual.Id,
                 actual.Location.GetLineSpan().StartLinePosition.Line + 1,
                 actual.Location.GetLineSpan().StartLinePosition.Character + 1);
 #pragma warning restore CA1848
 
             actual.Id.ShouldBe(expected.Id, $"Diagnostic {i} has wrong ID");
             actual.Severity.ShouldBe(expected.Severity, $"Diagnostic {i} has wrong severity");
-            
+
             var lineSpan = actual.Location.GetLineSpan();
             var actualLine = lineSpan.StartLinePosition.Line + 1; // Convert to 1-based
             var actualColumn = lineSpan.StartLinePosition.Character + 1; // Convert to 1-based
-            
+
             actualLine.ShouldBe(expected.Line, $"Diagnostic {i} is on wrong line");
             actualColumn.ShouldBe(expected.Column, $"Diagnostic {i} is on wrong column");
         }
@@ -96,7 +96,7 @@ public static class AnalyzerTestHelper
     /// <param name="expectedDiagnostics">Expected diagnostic results.</param>
     /// <returns>A task representing the asynchronous test execution.</returns>
     public static async Task VerifyAnalyzerAsync<TAnalyzer>(
-        string source, 
+        string source,
         params ExpectedDiagnostic[] expectedDiagnostics)
         where TAnalyzer : DiagnosticAnalyzer, new()
     {
@@ -117,7 +117,7 @@ public static class AnalyzerTestHelper
 
         var diagnostics = await compilation.WithAnalyzers([analyzer])
             .GetAnalyzerDiagnosticsAsync();
-        
+
         var analyzerDiagnostics = diagnostics
             .Where(d => d.Id.StartsWith("IQR", StringComparison.Ordinal))
             .ToArray();
@@ -146,9 +146,9 @@ public static class AnalyzerTestHelper
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Result).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(System.Linq.Enumerable).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(System.Collections.Generic.List<>).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(System.Threading.Tasks.Task).Assembly.Location)
+            MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(List<>).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Task).Assembly.Location)
         };
 
         return CSharpCompilation.Create(

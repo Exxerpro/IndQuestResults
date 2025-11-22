@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <!-- Removed net8.0 due to Lock type requirement (introduced in .NET 9.0) -->
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
     <RootNamespace>IndQuestResults</RootNamespace>
     <AssemblyName>IndQuestResults</AssemblyName>
     <PackageId>IndQuestResults</PackageId>
@@ -12,11 +13,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-    
+
     <!-- Package metadata only -->
-    <PackageDescription>Enterprise-grade Result&lt;T&gt; library for functional error handling in .NET applications.</PackageDescription>
-    <PackageVersion>1.1.0</PackageVersion>
-    <AssemblyVersion>1.1.0</AssemblyVersion>
+    <PackageDescription>Enterprise-grade Result&lt;T&gt; library for functional error handling in .NET applications. Requires .NET 9.0+ for Lock type support.</PackageDescription>
+    <PackageVersion>1.2.0</PackageVersion>
+    <AssemblyVersion>1.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup>

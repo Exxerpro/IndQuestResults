@@ -10,7 +10,7 @@
     <StartupObject>IndQuestResults.Tests.Performance.Program</StartupObject>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-    <AssemblyVersion>1.0.1.2</AssemblyVersion>
+    <AssemblyVersion>1.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -43,7 +43,6 @@ public class TestClass
     {
         try
         {
-            throw new Exception(""Test exception"");
             return Result<int>.Success(42);
         }
         catch (Exception ex)

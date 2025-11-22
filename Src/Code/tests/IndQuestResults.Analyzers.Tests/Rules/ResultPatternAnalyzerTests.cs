@@ -8,6 +8,17 @@ namespace IndQuestResults.Analyzers.Tests.Rules;
 
 /// <summary>
 /// Tests for ResultPatternAnalyzer to ensure proper Result&lt;T&gt; pattern enforcement.
+///
+/// TODO v2.0: Add test cases for modern C# collection patterns:
+/// - Collection expressions: Result&lt;int[]&gt;.Success([1, 2, 3])
+/// - Target-typed new: Result&lt;List&lt;int&gt;&gt;.Success(new() { 1, 2, 3 })
+/// - List patterns: if (result.Value is [var first, .., var last])
+/// - Spread operator: Result&lt;int[]&gt;.Success([..array1, ..array2])
+///
+/// TODO v2.0: Add test cases for enhanced pattern matching:
+/// - Extended property patterns with Value access
+/// - Relational patterns in switch expressions
+/// - Record types with positional patterns
 /// </summary>
 public class ResultPatternAnalyzerTests
 {
@@ -67,7 +78,7 @@ public class TestClass
     /// </summary>
     /// <returns>A task representing the asynchronous test execution.</returns>
     [Fact]
-    public async Task DirectValueAccess_WithSuccessCheck_NoWarning()
+    public async Task DirectValueAccess_WithSuccessCheck_ReportsNoWarning()
     {
         const string testCode = @"
 using IndQuestResults;
@@ -90,6 +101,182 @@ public class TestClass
     }
 
     /// <summary>
+    /// Ensures that Value access with a success and null check does not report diagnostics.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test execution.</returns>
+    [Fact]
+    public async Task DirectValueAccess_WithSuccessAndNullCheck_ReportsNoWarning()
+    {
+        const string testCode = @"
+using IndQuestResults;
+
+public class TestClass
+{
+    public void TestMethod()
+    {
+        var result = GetResult();
+        if (result.IsSuccess && result.Value is not null)
+        {
+            var value = result.Value; // This should NOT trigger IQR002
+        }
+    }
+
+    private Result<int> GetResult() => Result<int>.Success(42);
+}";
+
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
+    }
+
+    /// <summary>
+    /// Ensures that Value access with a null check and early return does not report diagnostics.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test execution.</returns>
+    [Fact]
+    public async Task DirectValueAccess_WithEarlyReturn_ReportsNoWarning()
+    {
+        const string testCode = @"
+using IndQuestResults;
+
+public class TestClass
+{
+    public void TestMethod()
+    {
+        var result = GetResult();
+        if (result.IsFailure )
+        {
+            return;
+        }
+
+        if (result.Value is null)
+        {
+            return;
+        }
+
+        var value = result.Value; // This should NOT trigger IQR002
+    }
+
+    private Result<int[]> GetResult() => Result<int[]>.Success(new[] { 42, 23 });
+}";
+
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
+    }
+
+    /// <summary>
+    /// Ensures that Value access with a ShouldlyAsertion success check does not report diagnostics.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test execution.</returns>
+    [Fact]
+    public async Task DirectValueAccess_WithAShouldlyAsertionSuccessCheck_NoWarning()
+    {
+        const string testCode = @"
+using IndQuestResults;
+
+public class TestClass
+{
+    public void TestMethod()
+    {
+        var result = GetResult();
+
+            result.IsSuccess.ShouldBeTrue();
+            var value = result.Value; // This should NOT trigger IQR002
+        }
+    }
+
+    private Result<int> GetResult() => Result<int>.Success(42);
+}";
+
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
+    }
+
+    /// <summary>
+    /// Ensures that Value access with a ShouldlyAsertion success check does not report diagnostics.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test execution.</returns>
+    [Fact]
+    public async Task DirectValueAccess_WithAShouldlyAsertionSuccessAndNotNullNullabeCheck_NoWarning()
+    {
+        const string testCode = @"
+using IndQuestResults;
+
+public class TestClass
+{
+    public void TestMethod()
+    {
+        var result = GetResult();
+
+            result.IsSuccess.ShouldBeTrue();
+            var value = result.Value; // This should NOT trigger IQR002
+        }
+    }
+
+    private Result<int?> GetResult() => Result<int?>.Success(42);
+}";
+
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
+    }
+
+    /// <summary>
+    /// Ensures that Value access with a ShouldlyAsertion success and not null for nullable types check does not report diagnostics.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test execution.</returns>
+    [Fact]
+    public async Task DirectValueAccess_WithAShouldlyAsertionSuccessAndNotNullCheck_NoWarning()
+    {
+        const string testCode = @"
+using IndQuestResults;
+using System.Collections.Generic;
+
+public class TestClass
+{
+    public void TestMethod()
+    {
+        var result = GetResult();
+
+            result.IsSuccess.ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
+            var value = result.Value; // This should NOT trigger IQR002
+        }
+    }
+
+    private Result<List<int>> GetResult() => Result<List<int>>.Success(new List<int> { 42, 23 });
+}";
+
+        await VerifyNoDiagnosticsAsync<ResultPatternAnalyzer>(testCode);
+    }
+
+    /// <summary>
+    /// TODO Phase 2: Ensures that Value access for reference types without null check reports a warning.
+    /// Currently, IsSuccess check via Shouldly is sufficient to suppress the diagnostic.
+    /// Future enhancement: Detect reference types and require additional null checks.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test execution.</returns>
+    [Fact]
+    public async Task DirectValueAccess_WithAShouldlyAsertionButNonNullCheck_ReportWarning()
+    {
+        const string testCode = @"
+using IndQuestResults;
+using System.Collections.Generic;
+
+public class TestClass
+{
+    public void TestMethod()
+    {
+        var result = GetResult();
+
+            result.IsSuccess.ShouldBeTrue();
+            var value = result.Value; // TODO Phase 2: Should trigger IQR002 Warning for reference types
+        }
+    }
+
+    private Result<List<int>> GetResult() => Result<List<int>>.Success(new List<int> { 42, 35, 25 });
+}";
+
+        var expected = Diagnostic(ResultPatternAnalyzer.DirectValueAccessId, DiagnosticSeverity.Warning, 11, 25);
+
+        await VerifyAnalyzerAsync<ResultPatternAnalyzer>(testCode, expected);
+    }
+
+    /// <summary>
     /// Verifies that throwing directly inside a Result-returning method is reported.
     /// </summary>
     /// <returns>A task representing the asynchronous test execution.</returns>
@@ -108,7 +295,7 @@ public class TestClass
     }
 }";
 
-        var expected = Diagnostic(ResultPatternAnalyzer.ThrowingInResultId, DiagnosticSeverity.Warning, 9, 9);
+        var expected = Diagnostic(ResultPatternAnalyzer.ThrowingInResultId, DiagnosticSeverity.Error, 9, 9);
 
         await VerifyAnalyzerAsync<ResultPatternAnalyzer>(testCode, expected);
     }

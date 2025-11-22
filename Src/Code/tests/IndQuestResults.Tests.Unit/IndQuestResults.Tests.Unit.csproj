@@ -23,7 +23,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     
-    <AssemblyVersion>1.0.1.2</AssemblyVersion>
+    <AssemblyVersion>1.2.0</AssemblyVersion>
     
     <!-- Prevent Directory.Build.props from auto-adding xUnit v2 packages -->
     <DisableImplicitXUnitPackages>true</DisableImplicitXUnitPackages>
