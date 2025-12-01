@@ -188,6 +188,24 @@ public sealed class Result<T>
     public Exception? Exception { get; private set; }
 
     /// <summary>
+    /// Gets or sets optional metadata dictionary for attaching supplementary information to results.
+    /// Common uses: quality metrics, processing context, audit info, source reliability.
+    /// Use nameof() for type-safe keys: result.SetMetadata(nameof(MyMetadata), value)
+    /// </summary>
+    /// <remarks>
+    /// <para><strong>Recommended usage pattern:</strong></para>
+    /// <code>
+    /// var result = Result&lt;Document&gt;.Success(document);
+    /// result.SetMetadata(nameof(ExtractionMetadata), new ExtractionMetadata { Confidence = 0.87 });
+    /// </code>
+    /// <para>Access via extension methods for type safety:</para>
+    /// <code>
+    /// var metadata = result.GetMetadata&lt;Document, ExtractionMetadata&gt;(nameof(ExtractionMetadata));
+    /// </code>
+    /// </remarks>
+    public Dictionary<string, object?>? Metadata { get; set; }
+
+    /// <summary>
     /// Creates a successful result with the specified value.
     /// Follows industry standard Result&lt;T&gt; pattern: null values are valid success results when T is nullable.
     /// </summary>

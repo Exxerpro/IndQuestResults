@@ -1,0 +1,157 @@
+      DirectValueAccess_WithAShouldlyAsertionButNonNullCheck_ReportWarning [0:00.776] Failed: Shouldly.ShouldAssertException: actualLine
+Shouldly.ShouldAssertException
+actualLine
+    should be
+9
+    but was
+11
+
+Additional Info:
+    Diagnostic 0 is on wrong line
+   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyAnalyzerAsync[TAnalyzer](String source, ILogger logger, ExpectedDiagnostic[] expectedDiagnostics) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 86
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyAnalyzerAsync[TAnalyzer](String source, ExpectedDiagnostic[] expectedDiagnostics) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 103
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at IndQuestResults.Analyzers.Tests.Rules.ResultPatternAnalyzerTests.DirectValueAccess_WithAShouldlyAsertionButNonNullCheck_ReportWarning() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Rules\ResultPatternAnalyzerTests.cs:line 263
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.TestInvoker`1.<>c__DisplayClass46_0.<<InvokeTestMethodAsync>b__1>d.MoveNext() in /_/src/xunit.execution/Sdk/Frameworks/Runners/TestInvoker.cs:line 253
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExecutionTimer.AggregateAsync(Func`1 asyncAction) in /_/src/xunit.execution/Sdk/Frameworks/ExecutionTimer.cs:line 48
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
+
+
+      DirectValueAccess_WithAShouldlyAsertionSuccessAndNotNullCheck_NoWarning [0:00.032] Failed: Shouldly.ShouldAssertException: analyzerDiagnostics
+Shouldly.ShouldAssertException
+analyzerDiagnostics
+    should be empty but had
+2
+    items and was
+[(11,13): error IQR002: Accessing Result.Value without checking IsSuccess first, (12,25): error IQR002: Accessing Result.Value without checking IsSuccess first]
+
+Additional Info:
+    Expected no diagnostics but got: IQR002, IQR002
+   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyNoDiagnosticsAsync[TAnalyzer](String source) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 125
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at IndQuestResults.Analyzers.Tests.Rules.ResultPatternAnalyzerTests.DirectValueAccess_WithAShouldlyAsertionSuccessAndNotNullCheck_NoWarning() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Rules\ResultPatternAnalyzerTests.cs:line 234
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.TestInvoker`1.<>c__DisplayClass46_0.<<InvokeTestMethodAsync>b__1>d.MoveNext() in /_/src/xunit.execution/Sdk/Frameworks/Runners/TestInvoker.cs:line 253
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExecutionTimer.AggregateAsync(Func`1 asyncAction) in /_/src/xunit.execution/Sdk/Frameworks/ExecutionTimer.cs:line 48
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
+
+
+      DirectValueAccess_WithAShouldlyAsertionSuccessAndNotNullNullabeCheck_NoWarning [0:00.028] Failed: Shouldly.ShouldAssertException: actual.Severity
+Shouldly.ShouldAssertException
+actual.Severity
+    should be
+DiagnosticSeverity.Warning
+    but was
+DiagnosticSeverity.Error
+
+Additional Info:
+    Diagnostic 0 has wrong severity
+   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyAnalyzerAsync[TAnalyzer](String source, ILogger logger, ExpectedDiagnostic[] expectedDiagnostics) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 80
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyAnalyzerAsync[TAnalyzer](String source, ExpectedDiagnostic[] expectedDiagnostics) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 103
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at IndQuestResults.Analyzers.Tests.Rules.ResultPatternAnalyzerTests.DirectValueAccess_WithAShouldlyAsertionSuccessAndNotNullNullabeCheck_NoWarning() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Rules\ResultPatternAnalyzerTests.cs:line 206
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.TestInvoker`1.<>c__DisplayClass46_0.<<InvokeTestMethodAsync>b__1>d.MoveNext() in /_/src/xunit.execution/Sdk/Frameworks/Runners/TestInvoker.cs:line 253
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExecutionTimer.AggregateAsync(Func`1 asyncAction) in /_/src/xunit.execution/Sdk/Frameworks/ExecutionTimer.cs:line 48
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
+
+
+      DirectValueAccess_WithAShouldlyAsertionSuccessCheck_NoWarning [0:00.038] Failed: Shouldly.ShouldAssertException: analyzerDiagnostics
+Shouldly.ShouldAssertException
+analyzerDiagnostics
+    should be empty but had
+1
+    item and was
+[(11,25): error IQR002: Accessing Result.Value without checking IsSuccess first]
+
+Additional Info:
+    Expected no diagnostics but got: IQR002
+   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyNoDiagnosticsAsync[TAnalyzer](String source) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 125
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at IndQuestResults.Analyzers.Tests.Rules.ResultPatternAnalyzerTests.DirectValueAccess_WithAShouldlyAsertionSuccessCheck_NoWarning() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Rules\ResultPatternAnalyzerTests.cs:line 177
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.TestInvoker`1.<>c__DisplayClass46_0.<<InvokeTestMethodAsync>b__1>d.MoveNext() in /_/src/xunit.execution/Sdk/Frameworks/Runners/TestInvoker.cs:line 253
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExecutionTimer.AggregateAsync(Func`1 asyncAction) in /_/src/xunit.execution/Sdk/Frameworks/ExecutionTimer.cs:line 48
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
+
+
+      DirectValueAccess_WithEarlyReturn_ReportsNoWarning [0:00.057] Failed: Shouldly.ShouldAssertException: analyzerDiagnostics
+Shouldly.ShouldAssertException
+analyzerDiagnostics
+    should be empty but had
+2
+    items and was
+[(14,13): error IQR002: Accessing Result.Value without checking IsSuccess first, (19,21): error IQR002: Accessing Result.Value without checking IsSuccess first]
+
+Additional Info:
+    Expected no diagnostics but got: IQR002, IQR002
+   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyNoDiagnosticsAsync[TAnalyzer](String source) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 125
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at IndQuestResults.Analyzers.Tests.Rules.ResultPatternAnalyzerTests.DirectValueAccess_WithEarlyReturn_ReportsNoWarning() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Rules\ResultPatternAnalyzerTests.cs:line 150
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.TestInvoker`1.<>c__DisplayClass46_0.<<InvokeTestMethodAsync>b__1>d.MoveNext() in /_/src/xunit.execution/Sdk/Frameworks/Runners/TestInvoker.cs:line 253
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExecutionTimer.AggregateAsync(Func`1 asyncAction) in /_/src/xunit.execution/Sdk/Frameworks/ExecutionTimer.cs:line 48
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
+

@@ -266,6 +266,24 @@ public sealed class Result
     public Exception? Exception { get; private set; }
 
     /// <summary>
+    /// Gets or sets optional metadata dictionary for attaching supplementary information to results.
+    /// Common uses: quality metrics, processing context, audit info, source reliability.
+    /// Use nameof() for type-safe keys: SetMetadata(nameof(MyMetadata), value)
+    /// </summary>
+    /// <remarks>
+    /// <para><strong>Recommended usage pattern:</strong></para>
+    /// <code>
+    /// var result = Result.Success();
+    /// result.SetMetadata(nameof(ProcessingContext), new ProcessingContext { Duration = 150 });
+    /// </code>
+    /// <para>Access via extension methods for type safety:</para>
+    /// <code>
+    /// var context = result.GetMetadata&lt;ProcessingContext&gt;(nameof(ProcessingContext));
+    /// </code>
+    /// </remarks>
+    public Dictionary<string, object?>? Metadata { get; set; }
+
+    /// <summary>
     /// Creates a successful result.
     /// </summary>
     /// <returns>A successful <see cref="Result"/> instance.</returns>
