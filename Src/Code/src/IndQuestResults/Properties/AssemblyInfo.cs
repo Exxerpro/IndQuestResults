@@ -3,4 +3,5 @@ using System.Runtime.CompilerServices;
 
 [assembly: AssemblyVersion("1.2.0")]
 [assembly: InternalsVisibleTo("IndQuestResults.Tests.Unit")]
+[assembly: InternalsVisibleTo("IndQuestResults.Tests.Mutation")]
 

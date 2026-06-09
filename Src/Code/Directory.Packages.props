@@ -21,17 +21,21 @@
     <PackageVersion Include="Microsoft.Testing.Extensions.Telemetry" Version="1.8.2" />
     <PackageVersion Include="Microsoft.Testing.Extensions.VSTestBridge" Version="1.8.4" />
 
+    <!-- xUnit v2 (for Stryker compatibility - mutation test project uses v2) -->
+    <PackageVersion Include="xunit" Version="2.9.0" />
+    <PackageVersion Include="xunit.analyzers" Version="1.26.0" />
+    <PackageVersion Include="xunit.core" Version="2.9.3" />
+    <PackageVersion Include="xunit.assert" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.console" Version="2.9.3" />
+    <PackageVersion Include="xunit.abstractions" Version="2.0.3" />
+    <!-- Default to v2.8.2 for Stryker compatibility; Unit project overrides to v3 -->
+
     <!-- xUnit v3 -->
     <PackageVersion Include="xunit.v3" Version="3.0.1" />
     <PackageVersion Include="xunit.v3.core" Version="3.0.1" />
-    <!-- Use stable v3 adapter package name -->
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
     <PackageVersion Include="xunit.v3.runner.msbuild" Version="3.0.1" />
     <PackageVersion Include="xunit.v3.runner.inproc.console" Version="3.0.1" />
-
-    <!-- Legacy xUnit v2 (removed - replaced with v3) -->
-    
-
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <!-- Coverage -->
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
 
@@ -50,7 +54,6 @@
     <PackageVersion Include="Moq" Version="4.20.69" />
     <PackageVersion Include="AutoFixture" Version="4.18.1" />
     <PackageVersion Include="AutoFixture.Xunit2" Version="4.18.1" />
-
   </ItemGroup>
 
   <!-- Security vulnerability fixes -->

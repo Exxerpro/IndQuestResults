@@ -4,6 +4,7 @@
     <UseMicrosoftTestingPlatformRunner>false</UseMicrosoftTestingPlatformRunner>
     <TestingPlatformDotnetTestSupport>false</TestingPlatformDotnetTestSupport>
     <TestingPlatformServer>false</TestingPlatformServer>
+    <UseAppHost>true</UseAppHost>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Remove="Microsoft.Testing.Platform" />

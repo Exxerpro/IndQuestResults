@@ -1,0 +1,31 @@
+{
+  "stryker-config": {
+    "project": "../../src/IndQuestResults/IndQuestResults.csproj",
+    "test-projects": [
+      "IndQuestResults.Tests.Mutation.csproj"
+    ],
+    "test-case-filter": "FullyQualifiedName~ResultMetadataMutationTests",
+    "mutate": [
+      "../../src/IndQuestResults/Result.cs",
+      "../../src/IndQuestResults/ResultGeneric.cs",
+      "../../src/IndQuestResults/ResultMetadataExtensions.cs"
+    ],
+    "ignore-mutations": [
+      "**/*AssemblyInfo.cs",
+      "**/*GlobalUsings.cs"
+    ],
+    "coverage-analysis": "perTestInIsolation",
+    "concurrency": 2,
+    "additional-timeout": 60000,
+    "thresholds": {
+      "high": 85,
+      "low": 70,
+      "break": 60
+    },
+    "reporters": ["html", "progress", "json"],
+    "verbosity": "info",
+    "language-version": "latest",
+    "report-file-name": "indquest-results-metadata-mutation-report"
+  }
+}
+

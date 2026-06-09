@@ -54,6 +54,9 @@
   </PropertyGroup>
 
   <!-- Remove Microsoft Testing Platform packages during Stryker runs -->
+  <PropertyGroup Condition="'$(STRYKER_MUTATION_TEST)' != ''">
+    <UseAppHost>true</UseAppHost>
+  </PropertyGroup>
   <ItemGroup Condition="'$(STRYKER_MUTATION_TEST)' != ''">
     <PackageReference Remove="Microsoft.Testing.Platform" />
     <PackageReference Remove="Microsoft.Testing.Platform.MSBuild" />

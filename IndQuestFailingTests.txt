@@ -1,18 +1,14 @@
-      ExceptionUsed_ButNotInWithFailure_ReportsWarning [0:00.108] Failed: Shouldly.ShouldAssertException: analyzerDiagnostics.Length
+   IndQuestResults.Tests.Mutation (10 tests) [3:00.823] Failed: 10 tests failed
+    Coverage (1 test) [0:17.000] Failed: 1 test failed
+     ChannelMetricsCollectorCoverageTests (1 test) [0:06.319] Failed: One or more child tests failed: 1 test failed
+      RecordOperationMetrics_WithBoundedChannelAtCapacity_DropsMetrics [0:00.746] Failed: Shouldly.ShouldAssertException: slowProcessor.ProcessedEntries.Count
 Shouldly.ShouldAssertException
-analyzerDiagnostics.Length
-    should be
-1
+slowProcessor.ProcessedEntries.Count
+    should be greater than
+0
     but was
 0
-
-Additional Info:
-    Expected 1 diagnostics but got 0
-   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyAnalyzerAsync[TAnalyzer](String source, ExpectedDiagnostic[] expectedDiagnostics) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 41
-   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
-   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
-   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
-   at IndQuestResults.Analyzers.Tests.Rules.ExceptionHandlingComplianceAnalyzerTests.ExceptionUsed_ButNotInWithFailure_ReportsWarning() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Rules\ExceptionHandlingComplianceAnalyzerTests.cs:line 155
+   at IndQuestResults.Tests.Mutation.Coverage.ChannelMetricsCollectorCoverageTests.RecordOperationMetrics_WithBoundedChannelAtCapacity_DropsMetrics() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Coverage\ChannelMetricsCollectorCoverageTests.cs:line 185
    at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
    at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
@@ -28,21 +24,16 @@ Additional Info:
    at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
 
 
-      MissingExceptionParameter_InCatchBlock_ReportsWarning [0:00.479] Failed: Shouldly.ShouldAssertException: analyzerDiagnostics.Length
+    Operations (3 tests) [1:02.150] Failed: 3 tests failed
+     CancellationAwareResultEdgeCasesTests (1 test) [0:01.802] Failed: One or more child tests failed: 1 test failed
+      WrapWithTimeout_TimeoutVsExternalCancellation_AreDistinguished [0:01.802] Failed: Shouldly.ShouldAssertException: timeoutRes.IsFailure
 Shouldly.ShouldAssertException
-analyzerDiagnostics.Length
+timeoutRes.IsFailure
     should be
-1
+True
     but was
-0
-
-Additional Info:
-    Expected 1 diagnostics but got 0
-   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyAnalyzerAsync[TAnalyzer](String source, ExpectedDiagnostic[] expectedDiagnostics) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 41
-   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
-   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
-   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
-   at IndQuestResults.Analyzers.Tests.Rules.ExceptionHandlingComplianceAnalyzerTests.MissingExceptionParameter_InCatchBlock_ReportsWarning() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Rules\ExceptionHandlingComplianceAnalyzerTests.cs:line 41
+False
+   at IndQuestResults.Tests.Mutation.Operations.CancellationAwareResultEdgeCasesTests.WrapWithTimeout_TimeoutVsExternalCancellation_AreDistinguished() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Operations\CancellationAwareResultEdgeCasesTests.cs:line 40
    at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
    at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
@@ -58,21 +49,15 @@ Additional Info:
    at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
 
 
-     ThenAsync_OnTaskResult_ProducesDiagnostic [0:00.119] Failed: Shouldly.ShouldAssertException: analyzerDiagnostics.Length
+     CancellationAwareResultEdgeCasesTests (1 test) [0:01.404] Failed: One or more child tests failed: 1 test failed
+      WrapWithTimeout_TimeoutVsExternalCancellation_AreDistinguished [0:01.393] Failed: Shouldly.ShouldAssertException: timeoutRes.IsFailure
 Shouldly.ShouldAssertException
-analyzerDiagnostics.Length
+timeoutRes.IsFailure
     should be
-1
+True
     but was
-0
-
-Additional Info:
-    Expected 1 diagnostics but got 0
-   at IndQuestResults.Analyzers.Tests.Helpers.AnalyzerTestHelper.VerifyAnalyzerAsync[TAnalyzer](String source, ExpectedDiagnostic[] expectedDiagnostics) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\Helpers\AnalyzerTestHelper.cs:line 41
-   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
-   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
-   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
-   at IndQuestResults.Analyzers.Tests.PreferResultAsyncAnalyzerTests.ThenAsync_OnTaskResult_ProducesDiagnostic() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\PreferResultAsyncAnalyzerTests.cs:line 30
+False
+   at IndQuestResults.Tests.Mutation.Operations.CancellationAwareResultEdgeCasesTests.WrapWithTimeout_TimeoutVsExternalCancellation_AreDistinguished() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Operations\CancellationAwareResultEdgeCasesTests.cs:line 40
    at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
    at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
@@ -88,18 +73,32 @@ Additional Info:
    at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
 
 
-     CodeFix_Rewrites_ThenAsync_To_ResultAsync_BindAsync [0:01.970] Failed: Shouldly.ShouldAssertException: fixedCode
+     CancellationAwareResultTimeoutTheoryTests (1 test) [0:01.496] Failed: One or more child tests failed: 1 test failed
+      WrapWithTimeout_Matrix (1 test) [0:01.496] Failed: One or more child tests failed: 1 test failed
+       WrapWithTimeout_Matrix(opDelayMs: 500, timeoutMs: 50, externalCancelMs: 10, expect: 2) [0:00.378] Failed: Shouldly.ShouldAssertException: res.Error
 Shouldly.ShouldAssertException
-fixedCode
-    should contain (case insensitive comparison)
-"IndQuestResults.Async.ResultAsync.BindAsync"
-    but was actually
-"using System.Threading.Tasks;
-using IndQuestResults;
-using IndQuestResults.Operations;
-class C {
-   ..."
-   at IndQuestResults.Analyzers.Tests.PreferResultAsyncCodeFixProviderTests.CodeFix_Rewrites_ThenAsync_To_ResultAsync_BindAsync() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Analyzers.Tests\PreferResultAsyncCodeFixProviderTests.cs:line 32
+res.Error
+    should be
+"Operation was cancelled by the user."
+    but was
+"Operation exceeded the specified timeout"
+    difference
+Difference     |       |    |    |    |    |    |    |    |    |    |    |         |    |    |    |    |    |    |    |    |        
+               |      \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/       \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/       
+Index          | ...  10   11   12   13   14   15   16   17   18   19   20   21   22   23   24   25   26   27   28   29   30   ...  
+Expected Value | ...  w    a    s    \s   c    a    n    c    e    l    l    e    d    \s   b    y    \s   t    h    e    \s   ...  
+Actual Value   | ...  e    x    c    e    e    d    e    d    \s   t    h    e    \s   s    p    e    c    i    f    i    e    ...  
+Expected Code  | ...  119  97   115  32   99   97   110  99   101  108  108  101  100  32   98   121  32   116  104  101  32   ...  
+Actual Code    | ...  101  120  99   101  101  100  101  100  32   116  104  101  32   115  112  101  99   105  102  105  101  ...  
+
+Difference     |       |    |         |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |   
+               |      \|/  \|/       \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  \|/  
+Index          | ...  19   20   21   22   23   24   25   26   27   28   29   30   31   32   33   34   35   36   37   38   39   
+Expected Value | ...  l    l    e    d    \s   b    y    \s   t    h    e    \s   u    s    e    r    .                        
+Actual Value   | ...  t    h    e    \s   s    p    e    c    i    f    i    e    d    \s   t    i    m    e    o    u    t    
+Expected Code  | ...  108  108  101  100  32   98   121  32   116  104  101  32   117  115  101  114  46                       
+Actual Code    | ...  116  104  101  32   115  112  101  99   105  102  105  101  100  32   116  105  109  101  111  117  116  
+   at IndQuestResults.Tests.Mutation.Operations.CancellationAwareResultTimeoutTheoryTests.WrapWithTimeout_Matrix(Int32 opDelayMs, Int32 timeoutMs, Int32 externalCancelMs, Int32 expect) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Operations\CancellationAwareResultTimeoutTheoryTests.cs:line 42
    at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
    at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
@@ -113,4 +112,86 @@ class C {
    at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
    at Xunit.Sdk.ExceptionAggregator.RunAsync(Func`1 code) in /_/src/xunit.core/Sdk/ExceptionAggregator.cs:line 90
+
+
+    Reactive (6 tests) [0:22.598] Failed: 6 tests failed
+     ResultBridgeObserverAdditionalTests (1 test) [0:00.441] Failed: One or more child tests failed: 1 test failed
+      OnNext_ExceptionInHandler_PreservesException [0:00.441] Failed: System.InvalidOperationException: Handler exception
+System.InvalidOperationException
+Handler exception
+   at IndQuestResults.Tests.Mutation.Reactive.ResultBridgeObserverAdditionalTests.<>c__DisplayClass2_0.<OnNext_ExceptionInHandler_PreservesException>b__0(Result`1 r) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Reactive\ResultBridgeObserverAdditionalTests.cs:line 42
+   at IndQuestResults.Reactive.ResultBridgeObserver`1.OnNext(T value) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\src\IndQuestResults\Reactive\ResultObservableBridge.cs:line 435
+   at IndQuestResults.Tests.Mutation.Reactive.ResultBridgeObserverAdditionalTests.OnNext_ExceptionInHandler_PreservesException() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Reactive\ResultBridgeObserverAdditionalTests.cs:line 46
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+
+     ResultBridgeObserverAdditionalTests (1 test) [0:00.676] Failed: One or more child tests failed: 1 test failed
+      OnNext_ExceptionInHandler_PreservesException [0:00.676] Failed: System.InvalidOperationException: Handler exception
+System.InvalidOperationException
+Handler exception
+   at IndQuestResults.Tests.Mutation.Reactive.ResultBridgeObserverAdditionalTests.<>c__DisplayClass2_0.<OnNext_ExceptionInHandler_PreservesException>b__0(Result`1 r) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Reactive\ResultBridgeObserverAdditionalTests.cs:line 42
+   at IndQuestResults.Reactive.ResultBridgeObserver`1.OnNext(T value) in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\src\IndQuestResults\Reactive\ResultObservableBridge.cs:line 435
+   at IndQuestResults.Tests.Mutation.Reactive.ResultBridgeObserverAdditionalTests.OnNext_ExceptionInHandler_PreservesException() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Reactive\ResultBridgeObserverAdditionalTests.cs:line 46
+   at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+
+
+     RouteResultsObserverBranchTests (1 test) [0:00.374] Failed: One or more child tests failed: 1 test failed
+      OnError_RoutesStreamErrorToFailureSubject [0:00.373] Failed: Shouldly.ShouldAssertException: failures
+Shouldly.ShouldAssertException
+failures
+    should have single item but had
+0
+    items and was
+[] (System.Collections.Generic.List`1[System.String])
+   at IndQuestResults.Tests.Mutation.Reactive.RouteResultsObserverBranchTests.OnError_RoutesStreamErrorToFailureSubject() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Reactive\RouteResultsObserverBranchTests.cs:line 50
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+
+     RouteResultsObserverBranchTests (1 test) [0:01.408] Failed: One or more child tests failed: 1 test failed
+      OnError_RoutesStreamErrorToFailureSubject [0:01.392] Failed: Shouldly.ShouldAssertException: failures
+Shouldly.ShouldAssertException
+failures
+    should have single item but had
+0
+    items and was
+[] (System.Collections.Generic.List`1[System.String])
+   at IndQuestResults.Tests.Mutation.Reactive.RouteResultsObserverBranchTests.OnError_RoutesStreamErrorToFailureSubject() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Reactive\RouteResultsObserverBranchTests.cs:line 50
+   at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+
+
+     RouteResultsObserverTests (1 test) [0:00.031] Failed: One or more child tests failed: 1 test failed
+      RouteResults_StreamError_RoutesToFailureSubject [0:00.005] Failed: Shouldly.ShouldAssertException: receivedFailures
+Shouldly.ShouldAssertException
+receivedFailures
+    should be
+["Stream error: Stream failed"]
+    but was (case sensitive comparison)
+[] (System.Collections.Generic.List`1[System.String])
+    difference
+[*]
+   at IndQuestResults.Tests.Mutation.Reactive.RouteResultsObserverTests.RouteResults_StreamError_RoutesToFailureSubject() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Reactive\RouteResultsObserverTests.cs:line 165
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+
+     RouteResultsObserverTests (1 test) [0:01.413] Failed: One or more child tests failed: 1 test failed
+      RouteResults_StreamError_RoutesToFailureSubject [0:01.266] Failed: Shouldly.ShouldAssertException: receivedFailures
+Shouldly.ShouldAssertException
+receivedFailures
+    should be
+["Stream error: Stream failed"]
+    but was (case sensitive comparison)
+[] (System.Collections.Generic.List`1[System.String])
+    difference
+[*]
+   at IndQuestResults.Tests.Mutation.Reactive.RouteResultsObserverTests.RouteResults_StreamError_RoutesToFailureSubject() in F:\Dynamic\IndFusion\IndQuestResults\Src\Code\tests\IndQuestResults.Tests.Mutation\Reactive\RouteResultsObserverTests.cs:line 165
+   at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
 

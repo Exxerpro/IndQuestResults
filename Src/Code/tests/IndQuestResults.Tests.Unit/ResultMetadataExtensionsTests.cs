@@ -1,4 +1,5 @@
 using Xunit;
+using Shouldly;
 
 namespace IndQuestResults.Tests.Unit;
 
@@ -144,6 +145,7 @@ public class ResultMetadataExtensionsTests
         Assert.NotNull(metadata);
         Assert.Equal(200, metadata.Duration);
         Assert.Equal("Second", metadata.Stage);
+        result.Metadata.ShouldNotBeNull();
         Assert.Single(result.Metadata); // Only one entry
     }
 
@@ -372,6 +374,7 @@ public class ResultMetadataExtensionsTests
         // Simulate fusion service retrieving metadata
         if (extractorResult.TryGetMetadata<string, ExtractionMetadata>(out var extraction))
         {
+            extraction.ShouldNotBeNull();
             Assert.Equal(0.87, extraction.Confidence);
             Assert.Equal(25, extraction.PatternMatches);
         }
@@ -382,6 +385,7 @@ public class ResultMetadataExtensionsTests
 
         if (extractorResult.TryGetMetadata<string, QualityMetrics>(out var quality))
         {
+            quality.ShouldNotBeNull();
             Assert.Equal(0.92, quality.Score);
         }
         else

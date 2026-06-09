@@ -432,13 +432,13 @@ internal class ResultBridgeObserver<T> : IObserver<T>
         }
         catch (Exception ex)
         {
-            _onNext(Result<T>.WithFailure($"Result handler error: {ex.Message}"));
+            _onNext(Result<T>.WithFailure($"Result handler error: {ex.Message}", default, ex));
         }
     }
 
     public void OnError(Exception error)
     {
-        _onNext(Result<T>.WithFailure($"Observable error: {error.Message}"));
+        _onNext(Result<T>.WithFailure($"Observable error: {error.Message}", default, error));
     }
 
     public void OnCompleted()
@@ -477,13 +477,13 @@ internal class SelectResultObserver<TSource, TResult> : IObserver<TSource>
         }
         catch (Exception ex)
         {
-            _onNext(Result<TResult>.WithFailure($"SelectResult error: {ex.Message}"));
+            _onNext(Result<TResult>.WithFailure($"SelectResult error: {ex.Message}", default, ex));
         }
     }
 
     public void OnError(Exception error)
     {
-        _onNext(Result<TResult>.WithFailure($"Observable error: {error.Message}"));
+        _onNext(Result<TResult>.WithFailure($"Observable error: {error.Message}", default, error));
     }
 
     public void OnCompleted()
@@ -522,7 +522,8 @@ internal class RouteResultsObserver<T> : IObserver<Result<T>>
 
     public void OnError(Exception error)
     {
-        _failureSubject.OnNext(Result<string>.Success($"Stream error: {error.Message}"));
+        var errorMessage = $"Stream error: {error.Message}";
+        _failureSubject.OnNext(Result<string>.Success(errorMessage));
     }
 
     public void OnCompleted()
@@ -552,7 +553,7 @@ internal class ReplayBridgeObserver<T> : IObserver<T>
 
     public void OnError(Exception error)
     {
-        _subject.OnNext(Result<T>.WithFailure($"Observable error: {error.Message}"));
+        _subject.OnNext(Result<T>.WithFailure($"Observable error: {error.Message}", default, error));
     }
 
     public void OnCompleted()

@@ -49,6 +49,44 @@ public class ReactiveCancellationAndBridgeTests
     }
 
     [Fact]
+    public void SelectResult_SelectorException_PreservesException()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Selector exception");
+        var src = new TestObservable<int>(new object[] { 1 });
+        var results = new List<Result<string>>();
+
+        // Act
+        src.SelectResult<int, string>(
+            _ => throw exception,
+            results.Add);
+
+        // Assert
+        results.Single().IsFailure.ShouldBeTrue();
+        results.Single().Exception.ShouldNotBeNull();
+        results.Single().Exception.ShouldBe(exception);
+        results.Single().IsFaulted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void ToResultStream_OnError_PreservesException()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Observable error");
+        var src = new TestObservable<int>(new object[] { exception });
+        var results = new List<Result<int>>();
+
+        // Act
+        src.ToResultStream(results.Add);
+
+        // Assert
+        results.Single().IsFailure.ShouldBeTrue();
+        results.Single().Exception.ShouldNotBeNull();
+        results.Single().Exception.ShouldBe(exception);
+        results.Single().IsFaulted.ShouldBeTrue();
+    }
+
+    [Fact]
     public void CreateReplayBridge_ReplaysBufferedResultsToNewSubscriber()
     {
         var src = new TestObservable<int>(new object[] { 1, 2, 3 });

@@ -36,6 +36,27 @@ public class ReplayBridgeObserverBranchTests
     }
 
     [Fact]
+    public void OnError_PreservesException()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Observable error");
+        var subject = ResultSubscriptionsCore.CreateResultSubject<int>();
+        var results = new List<Result<int>>();
+        subject.Subscribe((Result<int> r) => results.Add(r));
+
+        var observer = new ReplayBridgeObserver<int>(subject);
+
+        // Act
+        observer.OnError(exception);
+
+        // Assert
+        results.Single().IsFailure.ShouldBeTrue();
+        results.Single().Exception.ShouldNotBeNull();
+        results.Single().Exception.ShouldBe(exception);
+        results.Single().IsFaulted.ShouldBeTrue();
+    }
+
+    [Fact]
     public void OnCompleted_CompletesSubject()
     {
         var subject = ResultSubscriptionsCore.CreateResultSubject<int>();

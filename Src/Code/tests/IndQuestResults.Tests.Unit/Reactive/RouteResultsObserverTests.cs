@@ -166,6 +166,29 @@ public class RouteResultsObserverTests
     }
 
     [Fact]
+    public void RouteResults_StreamError_PreservesException()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Stream error");
+        var sourceObservable = new TestObservable<Result<int>>();
+        var successSubject = ResultSubscriptionsCore.CreateResultSubject<int>();
+        var failureSubject = ResultSubscriptionsCore.CreateResultSubject<string>();
+
+        var receivedResults = new List<Result<string>>();
+        failureSubject.Subscribe((Result<string> r) => receivedResults.Add(r));
+
+        // Act
+        using var subscription = sourceObservable.RouteResults(successSubject, failureSubject);
+        sourceObservable.OnError(exception);
+
+        // Assert - Should create a Failure result, not Success
+        receivedResults.Single().IsFailure.ShouldBeTrue();
+        receivedResults.Single().Exception.ShouldNotBeNull();
+        receivedResults.Single().Exception.ShouldBe(exception);
+        receivedResults.Single().IsFaulted.ShouldBeTrue();
+    }
+
+    [Fact]
     public void RouteResults_StreamCompleted_CompletesSubjects()
     {
         // Arrange

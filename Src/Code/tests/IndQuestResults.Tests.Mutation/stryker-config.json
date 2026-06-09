@@ -1,0 +1,50 @@
+{
+  "stryker-config": {
+    "project": "../../src/IndQuestResults/IndQuestResults.csproj",
+    "test-projects": [
+      "IndQuestResults.Tests.Mutation.csproj"
+    ],
+    "mutate": [
+      "../../src/IndQuestResults/Result.cs",
+      "../../src/IndQuestResults/ResultGeneric.cs",
+      "../../src/IndQuestResults/ResultMetadataExtensions.cs"
+    ],
+    "ignore-methods": [
+      "Console.Write*", 
+      "LogDebug",
+      "LogInformation", 
+      "LogWarning",
+      "LogError",
+      "LogCritical",
+      "LogTrace",
+      "*Log*Debug*",
+      "*Log*Information*", 
+      "*Log*Warning*",
+      "*Log*Error*",
+      "*Log*Critical*",
+      "*Log*Trace*",
+      "*Task.Delay*",
+      "*ArgumentNullException*",
+      "*ArgumentException*",
+      "*ToString*",
+      "*GetHashCode*",
+      "*Equals*"
+    ],
+    "ignore-mutations": [
+      "String"
+    ],
+    "mutation-level": "Standard",
+    "thresholds": {
+      "high": 85,
+      "low": 70,
+      "break": 60
+    },
+    "coverage-analysis": "perTestInIsolation",
+    "reporters": ["html", "progress", "json"],
+    "verbosity": "info",
+    "concurrency": 2,
+    "additional-timeout": 60000,
+    "report-file-name": "indquest-results-metadata-mutation-report",
+    "language-version": "latest"
+  }
+}

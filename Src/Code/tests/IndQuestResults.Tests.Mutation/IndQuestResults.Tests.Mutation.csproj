@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>IndQuestResults.Tests.Mutation</RootNamespace>
+    <AssemblyName>IndQuestResults.Tests.Mutation</AssemblyName>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    
+    <!-- Disable Central Package Management for this project -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    
+    <!-- Disable Microsoft Testing Platform for Stryker compatibility -->
+    <UseMicrosoftTestingPlatformRunner>false</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>false</TestingPlatformDotnetTestSupport>
+    <TestingPlatformServer>false</TestingPlatformServer>
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
+    <GenerateTestingPlatformEntryPoint>false</GenerateTestingPlatformEntryPoint>
+    <!-- Force use of legacy test host instead of MTP -->
+    <UseTestHost>true</UseTestHost>
+    
+    <!-- Test-specific warning suppressions -->
+    <NoWarn>$(NoWarn);CS1591;CS8625;CA1861;IDE0004;IDE0007;IDE0028;IDE0034;IDE0039;IDE0042;IDE0062;IDE0200;IDE0011;IDE0300;IDE0301;CA2201;IDE0350;CA1852;IDE0053;CA1829;xUnit1051;IL2026;CA1707</NoWarn>
+  </PropertyGroup>
+
+  <!-- xUnit v2 for Stryker compatibility -->
+  <ItemGroup Label="xUnit v2">
+    <PackageReference Include="xunit" Version="2.9.0" />
+    <PackageReference Include="xunit.assert" Version="2.9.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup Label="Visual Studio Runner">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="17.14.1" />
+  </ItemGroup>
+  
+  <!-- Exclude MTP packages that get pulled in transitively -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Testing.Platform" Version="1.0.0" ExcludeAssets="all" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Testing.Platform.MSBuild" Version="1.0.0" ExcludeAssets="all" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup Label="Testing Utilities">
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+
+  <!-- Reference the main library project -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\IndQuestResults\IndQuestResults.csproj" />
+  </ItemGroup>
+
+  <!-- Mutation Testing Configuration -->
+  <ItemGroup>
+    <None Include="stryker-config.json" />
+    <None Include="stryker-config-metadata.json" />
+  </ItemGroup>
+
+</Project>

@@ -141,5 +141,77 @@ public class ResultTryExtensionsTests
         result.Exception.ShouldBe(exception);
         result.IsFaulted.ShouldBeTrue();
     }
+
+    #region Non-Generic Result Try Extensions
+
+    [Fact]
+    public void Try_NonGeneric_Catches_Exception_MapsError()
+    {
+        var r = ResultTryExtensions.Try(() => throw new InvalidOperationException("boom"), ex => $"ERR:{ex.GetType().Name}");
+        r.IsFailure.ShouldBeTrue();
+        r.Error.ShouldNotBeNull();
+        r.Error.ShouldContain("ERR:InvalidOperationException");
+    }
+
+    [Fact]
+    public void Try_NonGeneric_Success_ReturnsSuccess()
+    {
+        var r = ResultTryExtensions.Try(() => { /* do nothing */ }, _ => "err");
+        r.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Try_NonGeneric_ExceptionPreserved_InExceptionProperty()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Test exception");
+
+        // Act
+        var result = ResultTryExtensions.Try(() => throw exception, ex => $"Error: {ex.Message}");
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Exception.ShouldNotBeNull();
+        result.Exception.ShouldBe(exception);
+        result.IsFaulted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task TryAsync_NonGeneric_Catches_Exception_MapsError()
+    {
+        var r = await ResultTryExtensions.TryAsync(async () => { await Task.Delay(1); throw new InvalidOperationException("boom"); }, ex => $"E:{ex.Message}");
+        r.IsFailure.ShouldBeTrue();
+        r.Error.ShouldNotBeNull();
+        r.Error.ShouldContain("E:boom");
+    }
+
+    [Fact]
+    public async Task TryAsync_NonGeneric_Success_ReturnsSuccess()
+    {
+        var r = await ResultTryExtensions.TryAsync(async () => { await Task.Delay(1); }, _ => "err");
+        r.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task TryAsync_NonGeneric_ExceptionPreserved_InExceptionProperty()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Test exception");
+
+        // Act
+        var result = await ResultTryExtensions.TryAsync(async () =>
+        {
+            await Task.Delay(1);
+            throw exception;
+        }, ex => $"Error: {ex.Message}");
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Exception.ShouldNotBeNull();
+        result.Exception.ShouldBe(exception);
+        result.IsFaulted.ShouldBeTrue();
+    }
+
+    #endregion
 }
 

@@ -126,5 +126,63 @@ public static class ResultTryExtensions
             }
         });
     }
+
+    /// <summary>
+    /// Executes an action and returns Success() or Failure(mapped exception).
+    /// </summary>
+    /// <param name="action">Action that may throw.</param>
+    /// <param name="mapError">Mapper from Exception to error string.</param>
+    /// <returns>A successful Result or a failure with the mapped error.</returns>
+    public static Result Try(Action action, Func<Exception, string> mapError)
+    {
+        if (action is null)
+        {
+            return Result.WithFailure("Action cannot be null");
+        }
+        
+        if (mapError is null)
+        {
+            return Result.WithFailure("Map error function cannot be null");
+        }
+        
+        try
+        {
+            action();
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.WithFailure(mapError(ex), ex);
+        }
+    }
+
+    /// <summary>
+    /// Executes an async action and returns Success() or Failure(mapped exception).
+    /// </summary>
+    /// <param name="action">Async action that may throw.</param>
+    /// <param name="mapError">Mapper from Exception to error string.</param>
+    /// <returns>A task with successful Result or failure with the mapped error.</returns>
+    public static async Task<Result> TryAsync(Func<Task> action, Func<Exception, string> mapError)
+    {
+        if (action is null)
+        {
+            return Result.WithFailure("Action cannot be null");
+        }
+        
+        if (mapError is null)
+        {
+            return Result.WithFailure("Map error function cannot be null");
+        }
+        
+        try
+        {
+            await action().ConfigureAwait(false);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.WithFailure(mapError(ex), ex);
+        }
+    }
 }
 
