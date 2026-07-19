@@ -3,7 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsTestProject>
+    <!-- BenchmarkDotNet console app, not a test assembly: dotnet test aborts on it (no test framework).
+         Run explicitly via `dotnet run` when benchmarking. -->
+    <IsTestProject>false</IsTestProject>
     <RootNamespace>IndQuestResults.Tests.Performance</RootNamespace>
     <AssemblyName>IndQuestResults.Tests.Performance</AssemblyName>
     <OutputType>Exe</OutputType>
