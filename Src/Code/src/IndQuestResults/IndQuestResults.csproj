@@ -16,8 +16,8 @@
 
     <!-- Package metadata only -->
     <PackageDescription>Enterprise-grade Result&lt;T&gt; library for functional error handling in .NET applications. Requires .NET 9.0+ for Lock type support.</PackageDescription>
-    <PackageVersion>1.3.0</PackageVersion>
-    <AssemblyVersion>1.3.0</AssemblyVersion>
+    <PackageVersion>1.5.0</PackageVersion>
+    <AssemblyVersion>1.5.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup>

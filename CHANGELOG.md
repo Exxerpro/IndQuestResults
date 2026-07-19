@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.5.0] - 2026-07-19
+
+### Added — failure-value-preserving railway combinators (ADR 0004)
+- `ThenStep<T>` (sync source + Task source with sync/async step): same-type railway step whose
+  short-circuit returns the ORIGINAL instance, so value-carrying failures (e.g. diagnostic
+  response DTOs attached mid-chain) survive to the end of the chain
+- `MatchAsync<T, TOut>` (sync + async branches): terminal that routes on `IsSuccess` (success
+  branch can never observe a null value) and exposes the carried failure value to the failure branch
+- `ElseWithValue<T>` (sync + Task source): chainable failure-value projection — attaches a value to
+  a value-less failure, preserving errors and exception
+- `TapErrorAsync<T>`: async mirror of `TapError` (fires only on failure, returns the original
+  instance, swallows nothing)
+- `RequireValue<T>(this Result<T?>, string)`: synchronous twin of the Task overload
+
+### Fixed — API parity with the shipped 1.4.1 package
+The 1.4.1 NuGet package was built from a source state ahead of the repository; these shipped
+members are restored to source so 1.5.0 is a strict superset of 1.4.1:
+- `Result.Success<T>(T)` chain-starting factory
+- `Then` bridging overloads (sync bind/map; Task source with async-bind/sync-bind/map)
+- `Ensure<T>(this Task<Result<T>>, Func<T,bool>, string)`
+- `ToResult<T>(this Task<T?>, string)` and `ToResult<T>(this Task<Result<T>>, string)`
+- `RequireValue<T>(this Task<Result<T?>>, string)`
+- `ValidateNotNull<T>(this Result<T>, Func<T?, (object?, string)>)`
+
+### Build
+- Green under .NET SDK 10.0.3xx (new IDE0370/IDE0390/CA1873 rules; xunit.v3 + Microsoft.Testing
+  Platform alignment in the unit test project)
+- BMAD v6.10.0 installed (`_bmad/`, `.claude/skills/bmad-*`); legacy v4 `BMAD/` folder retired
+
 ## [1.1.0] - 2025-01-XX
 
 ### Major Improvements
