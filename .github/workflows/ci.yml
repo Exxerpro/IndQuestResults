@@ -102,32 +102,3 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  package:
-    runs-on: ubuntu-latest
-    needs: [build, link-check]
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-        
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.SOLUTION_PATH }}
-      
-    - name: Build
-      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
-      
-    - name: Pack
-      run: dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj --configuration Release --no-build --output ./packages
-
-    - name: Upload packages
-      uses: actions/upload-artifact@v4
-      with:
-        name: nuget-packages
-        path: ./packages/
