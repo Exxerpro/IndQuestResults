@@ -538,5 +538,188 @@ public static class ResultExtensions
             : defaultValue;
     }
 
+    /// <summary>
+    /// Async alias over <see cref="ThenEnsure{T}(Task{Result{T}}, Func{T, bool}, string)"/>; restores sync/async symmetry
+    /// with the synchronous <c>Result&lt;T&gt;.Ensure</c>.
+    /// </summary>
+    /// <typeparam name="T">The result value type.</typeparam>
+    /// <param name="resultTask">The previous result task.</param>
+    /// <param name="predicate">The condition to check, receiving the value.</param>
+    /// <param name="errorMessage">The error message if the condition fails.</param>
+    /// <returns>A task containing the validated result. Upstream failures short-circuit unchanged.</returns>
+    public static Task<Result<T>> Ensure<T>(this Task<Result<T>> resultTask, Func<T, bool> predicate, string errorMessage)
+    {
+        return resultTask.ThenEnsure(predicate, errorMessage);
+    }
+
+    /// <summary>
+    /// Chains a successful result into another result, flattening the railway (preferred bind overload).
+    /// Selected when the delegate returns a <see cref="Result{T}"/>; produces no nested <c>Result&lt;Result&lt;TOut&gt;&gt;</c>.
+    /// </summary>
+    /// <typeparam name="TIn">The input type.</typeparam>
+    /// <typeparam name="TOut">The output type.</typeparam>
+    /// <param name="result">The source result.</param>
+    /// <param name="bind">The function returning the next <see cref="Result{T}"/>.</param>
+    /// <returns>The bound <see cref="Result{T}"/>, propagating failures unchanged.</returns>
+    public static Result<TOut> Then<TIn, TOut>(this Result<TIn> result, Func<TIn, Result<TOut>> bind)
+    {
+        return result.Bind(bind);
+    }
+
+    /// <summary>
+    /// Projects a successful result value into a new value (fallback map overload).
+    /// Selected when the delegate returns a plain value rather than a <see cref="Result{T}"/>.
+    /// </summary>
+    /// <typeparam name="TIn">The input type.</typeparam>
+    /// <typeparam name="TOut">The output type.</typeparam>
+    /// <param name="result">The source result.</param>
+    /// <param name="map">The projection function.</param>
+    /// <returns>The mapped <see cref="Result{T}"/>, propagating failures unchanged.</returns>
+    public static Result<TOut> Then<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> map)
+    {
+        return result.Map(map);
+    }
+
+    /// <summary>
+    /// Chains a successful async result into an async result, flattening the railway (async bind overload).
+    /// Distinct by parameter type from the value-map overload; never collides with it.
+    /// </summary>
+    /// <typeparam name="TIn">The input type.</typeparam>
+    /// <typeparam name="TOut">The output type.</typeparam>
+    /// <param name="resultTask">The previous result task.</param>
+    /// <param name="bindAsync">The async function returning the next <see cref="Result{T}"/>.</param>
+    /// <returns>A task containing the bound result, propagating failures unchanged.</returns>
+    public static Task<Result<TOut>> Then<TIn, TOut>(this Task<Result<TIn>> resultTask, Func<TIn, Task<Result<TOut>>> bindAsync)
+    {
+        return resultTask.ThenAsync(bindAsync);
+    }
+
+    /// <summary>
+    /// Chains a successful async result into a synchronous result, flattening the railway (preferred sync-bind overload in an async chain).
+    /// Selected when the delegate returns a <see cref="Result{T}"/>; produces no nested <c>Result&lt;Result&lt;TOut&gt;&gt;</c>.
+    /// </summary>
+    /// <typeparam name="TIn">The input type.</typeparam>
+    /// <typeparam name="TOut">The output type.</typeparam>
+    /// <param name="resultTask">The previous result task.</param>
+    /// <param name="bind">The function returning the next <see cref="Result{T}"/>.</param>
+    /// <returns>A task containing the bound result, propagating failures unchanged.</returns>
+    public static Task<Result<TOut>> Then<TIn, TOut>(this Task<Result<TIn>> resultTask, Func<TIn, Result<TOut>> bind)
+    {
+        return resultTask.ThenAsync(value => Task.FromResult(bind(value)));
+    }
+
+    /// <summary>
+    /// Projects a successful async result value into a new value (fallback map overload).
+    /// Selected when the delegate returns a plain value rather than a <see cref="Result{T}"/>.
+    /// </summary>
+    /// <typeparam name="TIn">The input type.</typeparam>
+    /// <typeparam name="TOut">The output type.</typeparam>
+    /// <param name="resultTask">The previous result task.</param>
+    /// <param name="map">The projection function.</param>
+    /// <returns>A task containing the mapped result, propagating failures unchanged.</returns>
+    public static Task<Result<TOut>> Then<TIn, TOut>(this Task<Result<TIn>> resultTask, Func<TIn, TOut> map)
+    {
+        return resultTask.ThenMap(map);
+    }
+
+    /// <summary>
+    /// Awaits a nullable-reference task and adapts it to a <see cref="Result{T}"/>:
+    /// a null value becomes a failure carrying <paramref name="errorMessage"/>; a non-null value succeeds.
+    /// </summary>
+    /// <typeparam name="T">The reference type produced by the task.</typeparam>
+    /// <param name="task">The task producing a possibly-null value.</param>
+    /// <param name="errorMessage">The failure message used when the awaited value is null.</param>
+    /// <returns>A success carrying the value, or a failure carrying <paramref name="errorMessage"/> when null.</returns>
+    public static async Task<Result<T>> ToResult<T>(this Task<T?> task, string errorMessage) where T : class
+    {
+        var value = await task.ConfigureAwait(false);
+        return value is null ? Result<T>.WithFailure(errorMessage) : Result<T>.Success(value);
+    }
+
+    /// <summary>
+    /// Awaits a result task and adapts it to a non-null <see cref="Result{T}"/> with documented precedence:
+    /// an existing failure propagates first (its errors preserved); only a successful-but-null value becomes a
+    /// failure carrying <paramref name="errorMessage"/>; a successful non-null value succeeds.
+    /// </summary>
+    /// <typeparam name="T">The reference type produced by the result.</typeparam>
+    /// <param name="task">The task producing a <see cref="Result{T}"/> whose value may be null.</param>
+    /// <param name="errorMessage">The failure message used when the awaited success value is null.</param>
+    /// <returns>The propagated failure, a failure carrying <paramref name="errorMessage"/> for success-but-null, or a success.</returns>
+    public static async Task<Result<T>> ToResult<T>(this Task<Result<T>> task, string errorMessage) where T : class
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.IsFailure
+            ? Result<T>.WithFailure(result.Errors)
+            : result.Value is null
+                ? Result<T>.WithFailure(errorMessage)
+                : Result<T>.Success(result.Value);
+    }
+
+    /// <summary>
+    /// Awaits a result whose value is a nullable reference (<see cref="Result{T}"/> of <c>T?</c>) and adapts it to a
+    /// non-null <see cref="Result{T}"/> with documented precedence: an existing failure propagates first (its errors
+    /// preserved); only a successful-but-null value becomes a failure carrying <paramref name="errorMessage"/>; a
+    /// successful non-null value succeeds carrying the now-non-null value.
+    /// </summary>
+    /// <remarks>
+    /// Distinct from <c>ToResult</c> by name, not signature: a <c>ToResult&lt;T&gt;(this Task&lt;Result&lt;T?&gt;&gt;, string)</c>
+    /// overload is impossible because nullable reference-type annotations are erased in CLR metadata, so it would share
+    /// the same signature as the existing <c>ToResult&lt;T&gt;(this Task&lt;Result&lt;T&gt;&gt;, string)</c> and produce
+    /// CS0111 (duplicate member). This verb fills the gap for repositories that return <c>Result&lt;T?&gt;</c>.
+    /// </remarks>
+    /// <typeparam name="T">The reference type produced by the result.</typeparam>
+    /// <param name="task">The task producing a <see cref="Result{T}"/> whose value is a nullable reference.</param>
+    /// <param name="errorMessage">The failure message used when the awaited success value is null.</param>
+    /// <returns>The propagated failure, a failure carrying <paramref name="errorMessage"/> for success-but-null, or a success carrying the non-null value.</returns>
+    public static async Task<Result<T>> RequireValue<T>(this Task<Result<T?>> task, string errorMessage) where T : class
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.RequireValue(errorMessage);
+    }
+
+    /// <summary>
+    /// Adapts a result whose value is a nullable reference (<see cref="Result{T}"/> of <c>T?</c>) to a non-null
+    /// <see cref="Result{T}"/> with the same precedence as the asynchronous overload: an existing failure propagates
+    /// first (its errors preserved); only a successful-but-null value becomes a failure carrying
+    /// <paramref name="errorMessage"/>; a successful non-null value succeeds carrying the now-non-null value.
+    /// </summary>
+    /// <typeparam name="T">The reference type produced by the result.</typeparam>
+    /// <param name="result">The result whose value is a nullable reference.</param>
+    /// <param name="errorMessage">The failure message used when the success value is null.</param>
+    /// <returns>The propagated failure, a failure carrying <paramref name="errorMessage"/> for success-but-null, or a success carrying the non-null value.</returns>
+    public static Result<T> RequireValue<T>(this Result<T?> result, string errorMessage) where T : class
+    {
+        return result.IsFailure
+            ? Result<T>.WithFailure(result.Errors)
+            : result.Value is null
+                ? Result<T>.WithFailure(errorMessage)
+                : Result<T>.Success(result.Value);
+    }
+
+    /// <summary>
+    /// Validates that a component selected from the current value is not null, continuing the railway when it is
+    /// present and failing with a <see cref="Validation.NullArgumentError"/>-style message when it is null.
+    /// Upstream failures short-circuit unchanged.
+    /// </summary>
+    /// <typeparam name="T">The result value type.</typeparam>
+    /// <param name="result">The source result.</param>
+    /// <param name="selector">Selects the component to check and its parameter name.</param>
+    /// <returns>A task containing the original result, or a failure describing the null argument.</returns>
+    public static Task<Result<T>> ValidateNotNull<T>(this Result<T> result, Func<T?, (object? value, string parameterName)> selector)
+    {
+        if (result.IsFailure)
+        {
+            return Task.FromResult(result);
+        }
+
+        var (value, parameterName) = selector(result.Value);
+        return Task.FromResult(
+            string.IsNullOrEmpty(parameterName)
+                ? Result<T>.WithFailure("Parameter name cannot be null or empty.")
+                : value is null
+                    ? FailForNullArgument<T>(parameterName)
+                    : result);
+    }
+
     // (Async collection helpers like SequenceAsync/TraverseAsync/TraverseParallelAsync are available under IndQuestResults.Async.ResultAsync.)
 }

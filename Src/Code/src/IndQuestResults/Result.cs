@@ -293,6 +293,20 @@ public sealed class Result
     }
 
     /// <summary>
+    /// Creates a successful <see cref="Result{T}"/> carrying the specified value.
+    /// Convenience chain-starting factory on the non-generic <see cref="Result"/> class,
+    /// delegating to <see cref="Result{T}.Success(T)"/>.
+    /// Follows industry standard Result&lt;T&gt; pattern: null values are valid success results when T is nullable.
+    /// </summary>
+    /// <typeparam name="T">The type of the value associated with the result.</typeparam>
+    /// <param name="data">The value associated with the result.</param>
+    /// <returns>A successful <see cref="Result{T}"/> instance carrying <paramref name="data"/>.</returns>
+    public static Result<T> Success<T>(T data)
+    {
+        return Result<T>.Success(data);
+    }
+
+    /// <summary>
     /// Creates a failed result with the specified errors.
     /// </summary>
     /// <param name="errors">The collection of error messages.</param>
