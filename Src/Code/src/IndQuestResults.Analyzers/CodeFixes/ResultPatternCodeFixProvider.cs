@@ -50,19 +50,19 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
         switch (diagnostic.Id)
         {
             case ResultPatternAnalyzer.UnhandledResultId:
-                await RegisterUnhandledResultFixes(context, root, diagnosticSpan);
+                RegisterUnhandledResultFixes(context, root, diagnosticSpan);
                 break;
 
             case ResultPatternAnalyzer.DirectValueAccessId:
-                await RegisterDirectValueAccessFixes(context, root, diagnosticSpan);
+                RegisterDirectValueAccessFixes(context, root, diagnosticSpan);
                 break;
 
             case ResultPatternAnalyzer.ThrowingInResultId:
-                await RegisterThrowingInResultFixes(context, root, diagnosticSpan);
+                RegisterThrowingInResultFixes(context, root, diagnosticSpan);
                 break;
 
             case ResultPatternAnalyzer.NullResultId:
-                await RegisterNullResultFixes(context, root, diagnosticSpan);
+                RegisterNullResultFixes(context, root, diagnosticSpan);
                 break;
         }
     }
@@ -70,7 +70,7 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
     /// <summary>
     /// Registers code fixes for unhandled Result<T> diagnostics.
     /// </summary>
-    private async Task RegisterUnhandledResultFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
+    private void RegisterUnhandledResultFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
     {
         var invocation = root.FindNode(span).FirstAncestorOrSelf<InvocationExpressionSyntax>();
         if (invocation == null)
@@ -96,7 +96,7 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
     /// <summary>
     /// Registers code fixes for direct Value access diagnostics.
     /// </summary>
-    private async Task RegisterDirectValueAccessFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
+    private void RegisterDirectValueAccessFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
     {
         var memberAccess = root.FindNode(span).FirstAncestorOrSelf<MemberAccessExpressionSyntax>();
         if (memberAccess == null)
@@ -114,7 +114,7 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
     /// <summary>
     /// Registers code fixes for throw statements inside Result-returning methods.
     /// </summary>
-    private async Task RegisterThrowingInResultFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
+    private void RegisterThrowingInResultFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
     {
         var throwStatement = root.FindNode(span).FirstAncestorOrSelf<ThrowStatementSyntax>();
         if (throwStatement == null)
@@ -132,7 +132,7 @@ public class ResultPatternCodeFixProvider : CodeFixProvider
     /// <summary>
     /// Registers code fixes for null returns in Result-returning methods.
     /// </summary>
-    private async Task RegisterNullResultFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
+    private void RegisterNullResultFixes(CodeFixContext context, SyntaxNode root, Microsoft.CodeAnalysis.Text.TextSpan span)
     {
         var returnStatement = root.FindNode(span).FirstAncestorOrSelf<ReturnStatementSyntax>();
         if (returnStatement == null)

@@ -301,7 +301,7 @@ public static class ResultAsync
             return cancellationToken.IsCancellationRequested
                 ? ResultExtensions.Cancelled<TOutput>()
                 : result.IsSuccess && result.Value is not null
-                ? await func(result.Value!).ConfigureAwait(false)
+                ? await func(result.Value).ConfigureAwait(false)
                 : Result<TOutput>.Failure(result.Errors ?? [ResultConstants.DefaultErrorMessage]);
         }
         catch (OperationCanceledException)

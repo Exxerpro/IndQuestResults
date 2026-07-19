@@ -70,7 +70,7 @@ public class MetricsExample
         if (userResult.Value is not null)
         {
             // Check permissions  
-            var permissionsResult = await CheckUserPermissionsAsync(userResult.Value!, ct);
+            var permissionsResult = await CheckUserPermissionsAsync(userResult.Value, ct);
 
             if (!permissionsResult.IsSuccess)
             {

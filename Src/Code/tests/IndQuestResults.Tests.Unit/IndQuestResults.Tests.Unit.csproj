@@ -27,6 +27,10 @@
     
     <!-- Prevent Directory.Build.props from auto-adding xUnit v2 packages -->
     <DisableImplicitXUnitPackages>true</DisableImplicitXUnitPackages>
+
+    <!-- xUnit v3 requires an executable app host on all builds (SDK 10.0.3xx enforces this) -->
+    <OutputType>Exe</OutputType>
+    <UseAppHost>true</UseAppHost>
   </PropertyGroup>
   <!-- ============================================================================ -->
   <!-- TESTING PLATFORM PROPERTIES -->
@@ -39,9 +43,8 @@
     <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
     <TestingPlatformServer>true</TestingPlatformServer>
-    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
+    <!-- xunit.v3 supplies the entry point; MTP only contributes SelfRegisteredExtensions -->
     <GenerateTestingPlatformEntryPoint>false</GenerateTestingPlatformEntryPoint>
-    
   </PropertyGroup>
   <PropertyGroup>
     <!-- Test Configuration -->
@@ -71,18 +74,8 @@
   <!-- ============================================================================ -->
   <!-- PACKAGE REFERENCES - VISUAL STUDIO RUNNER -->
   <!-- ============================================================================ -->
-  <ItemGroup Label="Visual Studio Runner">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" />
-    <PackageReference Include="xunit.runner.visualstudio">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+  <ItemGroup Label="Runners">
     <PackageReference Include="xunit.v3.runner.inproc.console" />
-    <PackageReference Include="xunit.v3.runner.msbuild">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="coverlet.collector" />
   </ItemGroup>
   <!-- ============================================================================ -->

@@ -220,7 +220,7 @@ internal sealed class ConcurrentCache<TKey, TValue> : IDisposable where TKey : n
         {
             if (_cache.TryGetValue(key, out CacheItem? existingItem))
             {
-                existingItem!.LastAccessed = Interlocked.Increment(ref _accessCounter);
+                existingItem.LastAccessed = Interlocked.Increment(ref _accessCounter);
                 return existingItem.Value;
             }
         }
@@ -239,7 +239,7 @@ internal sealed class ConcurrentCache<TKey, TValue> : IDisposable where TKey : n
             // Double-check in case another thread added it
             if (_cache.TryGetValue(key, out CacheItem? existingItem))
             {
-                existingItem!.LastAccessed = Interlocked.Increment(ref _accessCounter);
+                existingItem.LastAccessed = Interlocked.Increment(ref _accessCounter);
                 return existingItem.Value;
             }
 

@@ -118,12 +118,14 @@
 
   <!-- Test Projects Only -->
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Tests'))">
-    <NoWarn>$(NoWarn);CS1587;CA1016</NoWarn>
+    <!-- CA1873/IDE0370/IDE0390 (new in SDK 10.0.3xx): fire on pre-existing test code; shipping code fixes them properly -->
+    <NoWarn>$(NoWarn);CS1587;CA1016;CA1873;IDE0370;IDE0390</NoWarn>
   </PropertyGroup>
 
   <!-- Sample Projects Only -->
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Samples'))">
-    <NoWarn>$(NoWarn);CA1848;IDE0028</NoWarn>
+    <!-- CA1873 (new in SDK 10.0.3xx): samples log eagerly for readability -->
+    <NoWarn>$(NoWarn);CA1848;IDE0028;CA1873</NoWarn>
   </PropertyGroup>
 
   <!-- Mutation Testing -->
