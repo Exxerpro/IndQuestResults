@@ -5,8 +5,13 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write   # create the GitHub Release
+  id-token: write   # OIDC token for NuGet.org Trusted Publishing
+
 env:
   DOTNET_VERSION: '10.0.x'
+  SOLUTION_PATH: 'Src/Code/IndQuestResults.sln'
 
 jobs:
   pack-and-publish:
@@ -22,18 +27,38 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Restore
-      run: dotnet restore Src/Code/IndQuestResults.sln
+      run: dotnet restore ${{ env.SOLUTION_PATH }}
 
     - name: Build
-      run: dotnet build Src/Code/IndQuestResults.sln -c Release --no-restore
+      run: dotnet build ${{ env.SOLUTION_PATH }} -c Release --no-restore
+
+    - name: Test
+      run: |
+        dotnet test ${{ env.SOLUTION_PATH }} \
+          --configuration Release \
+          --no-build \
+          -- \
+          --filter-not-class IndQuestResults.Tests.Unit.Performance.PerformanceMetricsSmokeTests
 
     - name: Pack
       run: dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj -c Release --no-build -o ./packages
 
-    - name: Publish NuGet
-      env:
-        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      run: dotnet nuget push ./packages/*.nupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+    # Trusted Publishing: exchanges this workflow's OIDC identity for a
+    # short-lived NuGet.org API key. Requires a Trusted Publishing policy on
+    # nuget.org pointing at this repo + workflow file, and the repository
+    # variable NUGET_USER set to the nuget.org profile that owns the package.
+    - name: NuGet login (Trusted Publishing)
+      uses: NuGet/login@v1
+      id: nuget-login
+      with:
+        user: ${{ vars.NUGET_USER }}
+
+    - name: Publish to NuGet.org
+      run: |
+        dotnet nuget push ./packages/*.nupkg \
+          --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} \
+          --source https://api.nuget.org/v3/index.json \
+          --skip-duplicate
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2

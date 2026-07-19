@@ -2,13 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 env:
   DOTNET_VERSION: '10.0.x'
-  SOLUTION_PATH: './Src/Code/IndQuestResults.All.sln'
+  SOLUTION_PATH: './Src/Code/IndQuestResults.sln'
   COVERAGE_MIN_LINE: '85'
   COVERAGE_MIN_BRANCH: '75'
 
@@ -125,11 +125,7 @@ jobs:
       
     - name: Pack
       run: dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj --configuration Release --no-build --output ./packages
-      
-    - name: Push to NuGet (if release)
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: dotnet nuget push ./packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
-      
+
     - name: Upload packages
       uses: actions/upload-artifact@v4
       with:
