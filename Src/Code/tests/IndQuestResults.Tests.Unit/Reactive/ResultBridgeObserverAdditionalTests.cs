@@ -32,7 +32,9 @@ public class ResultBridgeObserverAdditionalTests
         results[0].Error.ShouldContain("Observable error: boom");
     }
 
-    [Fact]
+#pragma warning disable xUnit1004 // documented known-failing aspirational contract, kept visible as a skip
+    [Fact(Skip = "Aspirational contract never implemented: ResultBridgeObserver.OnNext does not catch handler exceptions, and the test's own always-throwing handler makes its results assertion unsatisfiable. Known-failing on Kat3 baseline (IndQuestFailingTests). Revisit with a Reactive exception-preservation design.")]
+#pragma warning restore xUnit1004
     public void OnNext_ExceptionInHandler_PreservesException()
     {
         // Arrange

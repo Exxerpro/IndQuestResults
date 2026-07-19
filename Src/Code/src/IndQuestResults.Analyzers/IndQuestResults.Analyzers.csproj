@@ -16,7 +16,9 @@
 
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!-- Packed explicitly (dotnet pack) when releasing the analyzers; on-build packing double-evaluates
+         under SDK 10.0.302 and fails NU5017 in the outer pass where OutputPath is empty. -->
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <DevelopmentDependency>true</DevelopmentDependency>
     
     <!-- NuGet Package Metadata -->
