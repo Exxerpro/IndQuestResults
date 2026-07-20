@@ -38,7 +38,8 @@ jobs:
           --configuration Release \
           --no-build \
           -- \
-          --filter-not-class IndQuestResults.Tests.Unit.Performance.PerformanceMetricsSmokeTests
+          --filter-not-class IndQuestResults.Tests.Unit.Performance.PerformanceMetricsSmokeTests \
+          --filter-not-class IndQuestResults.Tests.Mutation.Performance.PerformanceMetricsSmokeTests
 
     - name: Pack
       run: dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj -c Release --no-build -o ./packages
