@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.1] - 2026-07-19
+
+### Release engineering only — no library code changes
+- Identical API and behavior to 1.5.0 (which was published manually while the
+  automated pipeline was being repaired)
+- First release published end-to-end through the tag-triggered GitHub Actions
+  pipeline using NuGet.org Trusted Publishing (OIDC)
+
 ## [1.5.0] - 2026-07-19
 
 ### Added — failure-value-preserving railway combinators (ADR 0004)
