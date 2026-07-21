@@ -31,12 +31,14 @@ public class CancellationAwareResultEdgeCasesTests
     [Fact]
     public async Task WrapWithTimeout_TimeoutVsExternalCancellation_AreDistinguished()
     {
-        // Timeout case
+        // Timeout case — op (1000ms) far exceeds timeout (100ms) so the timeout reliably fires
+        // first even under CI load (900ms margin; small margins here flaked when the op completed
+        // before a jittered short-timeout timer).
         var timeoutRes = await CancellationAwareResult.WrapWithTimeout(async token =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(50), token);
+            await Task.Delay(TimeSpan.FromMilliseconds(1000), token);
             return 1;
-        }, TimeSpan.FromMilliseconds(10));
+        }, TimeSpan.FromMilliseconds(100));
         timeoutRes.IsFailure.ShouldBeTrue();
         timeoutRes.Error.ShouldBe(ResultErrors.OperationTimedOut);
 

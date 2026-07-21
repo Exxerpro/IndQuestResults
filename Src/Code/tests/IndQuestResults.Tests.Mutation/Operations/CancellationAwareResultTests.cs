@@ -12,11 +12,13 @@ public class CancellationAwareResultTests
     [Fact]
     public async Task WrapWithTimeout_ShouldReturnTimeoutFailure_WhenOnlyTimeoutTriggers()
     {
-        // Arrange: long-running operation, short timeout, no external cancel
+        // Arrange: long-running operation (1000ms) vs a much shorter timeout (100ms) so the timeout
+        // reliably fires first even under CI load (900ms margin; a tighter margin flaked when the op
+        // slipped in before a jittered short-timeout timer).
         // Act
         var result = await CancellationAwareResult.WrapWithTimeout(
-            async ct => { await Task.Delay(TimeSpan.FromMilliseconds(200), ct); return 42; },
-            TimeSpan.FromMilliseconds(50),
+            async ct => { await Task.Delay(TimeSpan.FromMilliseconds(1000), ct); return 42; },
+            TimeSpan.FromMilliseconds(100),
             CancellationToken.None);
 
         // Assert: timeout failure (not external cancellation)
