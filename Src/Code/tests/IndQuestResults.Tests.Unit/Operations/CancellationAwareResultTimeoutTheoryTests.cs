@@ -3,12 +3,15 @@ namespace IndQuestResults.Tests.Unit.Operations;
 public class CancellationAwareResultTimeoutTheoryTests
 {
     // opDelayMs, timeoutMs, externalCancelMs (-1 = no external cancel), expect: 0=success,1=timeout,2=cancel
+    // Margins between competing events are deliberately large (>=500ms) so CI timer-scheduling
+    // jitter cannot flip which event fires first. Each case still completes as soon as its winning
+    // event fires (op done / timeout / cancel), so the suite stays fast despite the large delays.
     public static TheoryData<int,int,int,int> WrapWithTimeout_Cases() => new()
     {
-        { 20, 300, -1, 0 },  // completes before timeout (extra margin to avoid flakiness)
-        { 200, 50, -1, 1 },  // times out before op completes
-        { 200, 500, 10, 2 }, // external cancel wins
-        { 500, 50, 10, 2 },  // external cancel vs timeout -> cancel (ensures cancel precedes timeout)
+        { 50, 1000, -1, 0 },    // op (50ms) completes well before timeout (1000ms) -> success
+        { 1000, 100, -1, 1 },   // op (1000ms) far exceeds timeout (100ms) -> timeout
+        { 1000, 1000, 50, 2 },  // external cancel (50ms) beats op and timeout (both 1000ms) -> cancel
+        { 1000, 600, 50, 2 },   // external cancel (50ms) reliably precedes timeout (600ms) -> cancel
     };
 
     [Theory]
