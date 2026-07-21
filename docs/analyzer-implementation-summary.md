@@ -143,7 +143,7 @@ The analyzers are disabled for the IndQuestResults library itself to avoid noise
 
 ## Related Documentation
 
-- [Result-Manual.md](../Result-Manual.md) - Main library documentation
+- [Result-Manual.md](Result-Manual.md) - Main library documentation
 - [code-review-checklist.md](./code-review-checklist.md) - Code review guidelines
 - [static-analysis-report.md](./static-analysis-report.md) - Static analysis results
 

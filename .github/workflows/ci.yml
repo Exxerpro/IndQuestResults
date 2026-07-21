@@ -110,7 +110,10 @@ jobs:
     - name: Check links
       uses: lycheeverse/lychee-action@v2
       with:
-        args: --verbose --no-progress --exclude-path "coverage-report/**" -- "**/*.md" "docs/**/*.md"
+        # docs/archive/** holds frozen historical drafts (e.g. README.backup.md) whose relative
+        # links were valid in their original location; they are intentionally not maintained, so
+        # exclude them from link validation rather than rewriting archived content.
+        args: --verbose --no-progress --exclude-path "coverage-report/**" --exclude-path "docs/archive/**" -- "**/*.md" "docs/**/*.md"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
