@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.6.0] - 2026-07-21
+
+> **Last release with .NET 9 support.** As .NET 9 nears end of life, v1.7.0+ will
+> target .NET 10 and later only. This version multi-targets `net9.0` and `net10.0`.
+
+### Fixed — Reactive: stream errors now surface as exception-preserving failures
+- `RouteResultsObserver<T>.OnError` routed a stream error to the failure subject as a
+  *success* `Result` carrying the message string. It now routes a **failure** `Result`
+  that preserves the original exception (`IsFaulted`), matching `ResultBridgeObserver.OnError`
+  and `ResultObserver.OnError`.
+- Re-activates two previously-skipped reactive contract tests (`RouteResults_StreamError_PreservesException`,
+  `OnNext_ExceptionInHandler_PreservesException`) that now pass against the implemented behavior.
+
+### Added — test coverage
+- New `ResultRailwayVerbsTests` suite covering the railway verbs (`Then` bind-vs-map overload
+  selection, `Ensure`, `ToResult`, `RequireValue`, `ValidateNotNull`) across sync and async receivers.
+
 ## [1.5.1] - 2026-07-19
 
 ### Release engineering only — no library code changes

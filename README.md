@@ -5,11 +5,15 @@
 [![Coverage](https://img.shields.io/badge/coverage-74.5%25-green)](#)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#)
 [![.NET Version](https://img.shields.io/badge/.NET-10.0+-blue)](#)
-[![NuGet](https://img.shields.io/badge/NuGet-v1.0.7-blue)](#release-notes)
+[![NuGet](https://img.shields.io/badge/NuGet-v1.6.0-blue)](#release-notes)
 [![Contributors](https://img.shields.io/badge/contributors-welcome-brightgreen)](#contributing)
 [![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-enforced-blue)](#code-of-conduct) [![Docs](https://img.shields.io/badge/docs-available-brightgreen)](docs/README.md)
 
 A battle-tested, enterprise-grade Result<T> library for functional error handling in .NET applications. Provides type-safe, performant, and expressive ways to represent operation outcomes without exceptions.
+
+> ⚠️ **.NET 9 support notice** — **v1.6.0 is the last release to support .NET 9.**
+> As .NET 9 approaches end of life, subsequent releases (v1.7.0+) will target **.NET 10 and later only**.
+> This version multi-targets `net9.0` and `net10.0`; if you are still on .NET 9, pin to `1.6.0` and plan your upgrade to .NET 10.
 
 ## Key Features
 
