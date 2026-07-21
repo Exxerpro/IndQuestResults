@@ -721,5 +721,90 @@ public static class ResultExtensions
                     : result);
     }
 
+    /// <summary>
+    /// Value-carrying <c>Ensure</c>: on a success with a non-null value, returns the original success when
+    /// <paramref name="predicate"/> holds; otherwise returns <paramref name="onFalse"/> applied to the current
+    /// value, letting the failure carry a diagnostic value (typically a value-carrying <c>WithFailure</c>) rather
+    /// than only a string. Upstream failures — and success-with-null — short-circuit unchanged, so any carried
+    /// failure value survives. Unlike <see cref="Result{T}.Ensure(Func{T, bool}, string)"/>, the failure branch is
+    /// supplied by the caller and receives the value.
+    /// </summary>
+    /// <typeparam name="T">The result value type.</typeparam>
+    /// <param name="result">The source result.</param>
+    /// <param name="predicate">The condition to check, receiving the current value.</param>
+    /// <param name="onFalse">Produces the failure result when the predicate does not hold, receiving the current value.</param>
+    /// <returns>The original success, <paramref name="onFalse"/>'s result, or the original instance when short-circuiting.</returns>
+    public static Result<T> EnsureOrFault<T>(this Result<T> result, Func<T, bool> predicate, Func<T, Result<T>> onFalse)
+    {
+        return result.IsSuccess && result.Value is not null
+            ? predicate(result.Value) ? result : onFalse(result.Value)
+            : result;
+    }
+
+    /// <summary>
+    /// Async-source overload of <see cref="EnsureOrFault{T}(Result{T}, Func{T, bool}, Func{T, Result{T}})"/>;
+    /// restores sync/async symmetry with the synchronous verb. Upstream failures — and success-with-null —
+    /// short-circuit unchanged, preserving any carried failure value.
+    /// </summary>
+    /// <typeparam name="T">The result value type.</typeparam>
+    /// <param name="resultTask">The previous result task.</param>
+    /// <param name="predicate">The condition to check, receiving the current value.</param>
+    /// <param name="onFalse">Produces the failure result when the predicate does not hold, receiving the current value.</param>
+    /// <returns>A task containing the original success, <paramref name="onFalse"/>'s result, or the original instance when short-circuiting.</returns>
+    public static async Task<Result<T>> EnsureOrFault<T>(this Task<Result<T>> resultTask, Func<T, bool> predicate, Func<T, Result<T>> onFalse)
+    {
+        var result = await resultTask.ConfigureAwait(false);
+        return result.EnsureOrFault(predicate, onFalse);
+    }
+
+    /// <summary>
+    /// Value-aware <c>TapError</c>: executes a side effect only when the result is a failure, receiving both the
+    /// error collection and the failure's carried value (which may be null), then returns the original instance
+    /// unchanged. Complements the string-only
+    /// <see cref="ResultErrorExtensions.TapError{T}(Result{T}, Action{IEnumerable{string}})"/> overload — the
+    /// two-argument delegate makes them distinct with no overload-resolution ambiguity. Nothing is swallowed;
+    /// exceptions from <paramref name="onError"/> propagate to the caller.
+    /// </summary>
+    /// <typeparam name="T">The result value type.</typeparam>
+    /// <param name="result">The source result.</param>
+    /// <param name="onError">Action to execute on failure, receiving the errors and the carried value.</param>
+    /// <returns>The original <see cref="Result{T}"/> instance.</returns>
+    public static Result<T> TapError<T>(this Result<T> result, Action<IReadOnlyList<string>, T?> onError)
+    {
+        if (result is null)
+        {
+            return Result<T>.WithFailure("Result cannot be null");
+        }
+
+        if (onError is null)
+        {
+            return Result<T>.WithFailure("Action cannot be null");
+        }
+
+        if (result.IsFailure)
+        {
+            var errors = result.Errors as IReadOnlyList<string>
+                ?? (result.Errors ?? [ResultConstants.DefaultErrorMessage]).ToArray();
+            onError(errors, result.Value);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Async-source overload of <see cref="TapError{T}(Result{T}, Action{IReadOnlyList{string}, T})"/>; fires the
+    /// value-aware side effect only on failure and returns the original instance unchanged, so value-carrying
+    /// failures survive. Nothing is swallowed; exceptions from <paramref name="onError"/> propagate to the caller.
+    /// </summary>
+    /// <typeparam name="T">The result value type.</typeparam>
+    /// <param name="resultTask">The previous result task.</param>
+    /// <param name="onError">Action to execute on failure, receiving the errors and the carried value.</param>
+    /// <returns>A task containing the original <see cref="Result{T}"/> instance.</returns>
+    public static async Task<Result<T>> TapError<T>(this Task<Result<T>> resultTask, Action<IReadOnlyList<string>, T?> onError)
+    {
+        var result = await resultTask.ConfigureAwait(false);
+        return result.TapError(onError);
+    }
+
     // (Async collection helpers like SequenceAsync/TraverseAsync/TraverseParallelAsync are available under IndQuestResults.Async.ResultAsync.)
 }
