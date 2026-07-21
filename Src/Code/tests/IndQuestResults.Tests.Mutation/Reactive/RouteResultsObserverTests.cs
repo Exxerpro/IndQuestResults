@@ -154,7 +154,8 @@ public class RouteResultsObserverTests
         var receivedFailures = new List<string>();
 
         successSubject.Subscribe(onSuccess: receivedSuccesses.Add);
-        failureSubject.Subscribe(onSuccess: receivedFailures.Add);
+        // A stream error routes to the failure subject as a *failure* Result; read its error messages.
+        failureSubject.Subscribe(onSuccess: _ => { }, onFailure: receivedFailures.AddRange);
 
         // Act
         using var subscription = sourceObservable.RouteResults(successSubject, failureSubject);
