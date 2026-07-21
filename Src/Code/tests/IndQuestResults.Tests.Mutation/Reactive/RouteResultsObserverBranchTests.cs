@@ -43,7 +43,8 @@ public class RouteResultsObserverBranchTests
         var router = new RouteResultsObserver<int>(success, failure);
 
         var failures = new List<string>();
-        failure.Subscribe(onSuccess: failures.Add);
+        // A stream error routes to the failure subject as a *failure* Result; read its error messages.
+        failure.Subscribe(onSuccess: _ => { }, onFailure: failures.AddRange);
 
         router.OnError(new Exception("E1"));
 

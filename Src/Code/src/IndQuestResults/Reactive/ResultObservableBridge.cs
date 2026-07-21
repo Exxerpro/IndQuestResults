@@ -522,8 +522,13 @@ internal class RouteResultsObserver<T> : IObserver<Result<T>>
 
     public void OnError(Exception error)
     {
-        var errorMessage = $"Stream error: {error.Message}";
-        _failureSubject.OnNext(Result<string>.Success(errorMessage));
+        // Route a stream error to the failure subject as a *failure* Result that preserves the
+        // original exception (IsFaulted). This matches ResultBridgeObserver.OnError / ResultObserver.OnError,
+        // which also surface stream errors as failures rather than successes.
+        // Typed errors array + named exception: when T is string, the string-message and
+        // value-first WithFailure overloads are ambiguous, so target the errors-array overload.
+        string[] errors = [$"Stream error: {error.Message}"];
+        _failureSubject.OnNext(Result<string>.WithFailure(errors, exception: error));
     }
 
     public void OnCompleted()

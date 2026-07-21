@@ -154,7 +154,8 @@ public class RouteResultsObserverTests
         var receivedFailures = new List<string>();
 
         successSubject.Subscribe(onSuccess: receivedSuccesses.Add);
-        failureSubject.Subscribe(onSuccess: receivedFailures.Add);
+        // A stream error routes to the failure subject as a *failure* Result; read its error messages.
+        failureSubject.Subscribe(onSuccess: _ => { }, onFailure: receivedFailures.AddRange);
 
         // Act
         using var subscription = sourceObservable.RouteResults(successSubject, failureSubject);
@@ -165,9 +166,7 @@ public class RouteResultsObserverTests
         receivedFailures.ShouldBe(["Stream error: Stream failed"]);
     }
 
-#pragma warning disable xUnit1004 // documented known-failing aspirational contract, kept visible as a skip
-    [Fact(Skip = "Aspirational contract never implemented: RouteResults publishes the stream error as a message value (see RouteResults_StreamError), not an exception-carrying failure. Known-failing on Kat3 baseline (IndQuestFailingTests). Revisit with a Reactive exception-preservation design.")]
-#pragma warning restore xUnit1004
+    [Fact]
     public void RouteResults_StreamError_PreservesException()
     {
         // Arrange
