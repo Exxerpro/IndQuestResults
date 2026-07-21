@@ -38,32 +38,44 @@ jobs:
         dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore /p:RunAnalyzers=true /p:RunCodeAnalysis=true 2>&1 | grep -E "(IQR201|IQR202|IQR301|IQR302)" || echo "No ROP violations detected"
       
     - name: Test with coverage (Cobertura)
+      shell: bash
       run: |
-        dotnet test ${{ env.SOLUTION_PATH }} \
-          --configuration Release \
-          --no-build \
-          --settings coverage.runsettings \
-          --collect:"XPlat Code Coverage" \
-          -- \
-          --filter-not-class IndQuestResults.Tests.Unit.Performance.PerformanceMetricsSmokeTests
+        # The solution mixes test runners (xUnit v3 / Microsoft.Testing.Platform for the unit project,
+        # VSTest for the mutation project), so collect coverage at the process level with dotnet-coverage.
+        # It is runner-agnostic, unlike VSTest's --collect:"XPlat Code Coverage", which MTP ignores
+        # (previously producing no coverage file and failing the report step).
+        dotnet tool install --global dotnet-coverage
+        export PATH="$PATH:$HOME/.dotnet/tools"
+        # Explicit `--` separates dotnet-coverage's own options from the wrapped command, so the
+        # inner `dotnet test ... -- --filter-not-class` is passed through verbatim.
+        dotnet-coverage collect \
+          --output coverage.cobertura.xml \
+          --output-format cobertura \
+          -- dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-build -- --filter-not-class IndQuestResults.Tests.Unit.Performance.PerformanceMetricsSmokeTests
 
-    - name: Generate HTML coverage report
+    - name: Generate coverage report (HTML + library-scoped Cobertura)
       shell: bash
       run: |
         dotnet tool install --global dotnet-reportgenerator-globaltool
-        echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+        export PATH="$PATH:$HOME/.dotnet/tools"
+        # Scope to the shipping library only (exclude tests/samples/benchmarks/analyzers and the
+        # Performance implementation) so enforced rates reflect the core API — matching the intent of
+        # the previous coverlet runsettings. The scoped Cobertura report feeds the threshold gate below.
         reportgenerator \
-          -reports:**/coverage.cobertura.xml \
+          -reports:coverage.cobertura.xml \
           -targetdir:coverage-report \
-          -reporttypes:Html;HtmlSummary
+          -reporttypes:"Html;HtmlSummary;Cobertura" \
+          -assemblyfilters:"+IndQuestResults;-IndQuestResults.Tests*;-IndQuestResults.Samples*;-IndQuestResults.Benchmarks*;-IndQuestResults.Analyzers*" \
+          -filefilters:"-*Performance*"
 
     - name: Enforce coverage threshold
       run: |
         python3 - << 'PY'
         import os, glob, xml.etree.ElementTree as ET
-        files = glob.glob('**/coverage.cobertura.xml', recursive=True)
+        # Prefer the library-scoped Cobertura produced by reportgenerator; fall back to the raw file.
+        files = glob.glob('coverage-report/Cobertura.xml') or glob.glob('**/coverage.cobertura.xml', recursive=True)
         if not files:
-            raise SystemExit('No coverage.cobertura.xml found')
+            raise SystemExit('No coverage report found')
         latest = max(files, key=os.path.getmtime)
         root = ET.parse(latest).getroot()
         lr = float(root.get('line-rate')) * 100.0
