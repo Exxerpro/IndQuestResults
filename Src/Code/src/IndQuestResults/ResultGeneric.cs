@@ -666,6 +666,25 @@ public sealed class Result<T>
     }
 
     /// <summary>
+    /// Terminally projects this result to a plain value: <paramref name="onSuccess"/> when the result is a
+    /// success with a non-null value; otherwise <paramref name="onFailure"/> receives the errors and the
+    /// (possibly null) carried failure value. This is the synchronous sibling of the value-aware
+    /// <see cref="IndQuestResults.Operations.ResultStepExtensions.MatchAsync{T, TOut}(System.Threading.Tasks.Task{Result{T}}, Func{T, TOut}, Func{IEnumerable{string}, T, TOut})"/>
+    /// and routes on <c>IsSuccess</c> (not <c>IsRecoverable</c>), so the success branch never observes a null value
+    /// and a success-with-null routes to <paramref name="onFailure"/>.
+    /// </summary>
+    /// <typeparam name="TOut">The projected type.</typeparam>
+    /// <param name="onSuccess">Projection for a success with a non-null value.</param>
+    /// <param name="onFailure">Projection receiving the errors and the carried (possibly null) failure value.</param>
+    /// <returns>The value produced by the matching branch.</returns>
+    public TOut Match<TOut>(Func<T, TOut> onSuccess, Func<IEnumerable<string>, T?, TOut> onFailure)
+    {
+        return IsSuccess && Value is not null
+            ? onSuccess(Value)
+            : onFailure(Errors, Value);
+    }
+
+    /// <summary>
     /// Recovers from a failure by executing the provided recovery function.
     /// </summary>
     /// <param name="recoverFunc">The function to execute on failure.</param>

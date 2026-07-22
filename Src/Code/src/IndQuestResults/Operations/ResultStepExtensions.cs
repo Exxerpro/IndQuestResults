@@ -81,7 +81,7 @@ public static class ResultStepExtensions
     /// errors and a null value.
     /// </summary>
     /// <remarks>
-    /// Unlike <see cref="ResultValueExtensions.MatchValue{T, TOut}"/>, routing is on <c>IsSuccess</c> rather than
+    /// Unlike <c>MatchValue</c>, routing is on <c>IsSuccess</c> rather than
     /// <c>IsRecoverable</c>, so the success branch can never observe a null value.
     /// </remarks>
     /// <typeparam name="T">The result value type.</typeparam>

@@ -80,7 +80,7 @@ public class ResultTapErrorAsyncTests
         await Should.ThrowAsync<ArgumentNullException>(
             ((Task<Result<Dto>>)null!).TapErrorAsync(_ => Task.CompletedTask));
         await Should.ThrowAsync<ArgumentNullException>(
-            Task.FromResult(Result<Dto>.WithFailure(new[] { "e1" })).TapErrorAsync(null!));
+            Task.FromResult(Result<Dto>.WithFailure(new[] { "e1" })).TapErrorAsync((Func<IEnumerable<string>, Task>)null!));
     }
 
     [Fact]

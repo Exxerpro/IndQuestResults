@@ -130,6 +130,31 @@ public static class ResultValueExtensions
     }
 
     /// <summary>
+    /// Value-aware variant of <see cref="MatchValue{T, TOut}(Result{T}, Func{T, TOut}, Func{IEnumerable{string}, TOut})"/>
+    /// whose failure branch also receives the (possibly null) carried failure value. Routing is preserved from the
+    /// sibling overload: it branches on <c>IsRecoverable</c> (not <c>IsSuccess</c>), so the failure branch fires only
+    /// when the result is not recoverable.
+    /// </summary>
+    /// <typeparam name="T">The source value type.</typeparam>
+    /// <typeparam name="TOut">The return value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="onSuccess">Function for the success branch.</param>
+    /// <param name="onFailure">Function for the failure branch, receiving the errors and the carried (possibly null) value.</param>
+    /// <returns>The value produced by the matching branch.</returns>
+    public static TOut MatchValue<T, TOut>(this Result<T> result, Func<T, TOut> onSuccess, Func<IEnumerable<string>, T?, TOut> onFailure)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+        if (!result.IsRecoverable)
+        {
+            var errs = result.Errors ?? [ResultConstants.DefaultErrorMessage];
+            return onFailure(errs, result.Value);
+        }
+        return onSuccess(result.Value!);
+    }
+
+    /// <summary>
     /// Non-generic variant for convenience.
     /// </summary>
     /// <typeparam name="TOut">The return value type.</typeparam>

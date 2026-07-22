@@ -122,6 +122,54 @@ public static class ResultErrorExtensions
     }
 
     /// <summary>
+    /// Value-aware async mirror of <see cref="TapError{T}(Result{T}, Action{IEnumerable{string}})"/>: asynchronously
+    /// executes a side effect with the errors and the (possibly null) carried value of a failed Result{T} without
+    /// changing it (fires only when the result is a failure) and returns the original result instance, so
+    /// value-carrying failures survive. Exceptions from the action propagate to the caller; nothing is swallowed.
+    /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The input Result.</param>
+    /// <param name="action">Asynchronous action to execute with the error collection and carried value.</param>
+    /// <returns>A task containing the original result instance.</returns>
+    public static async Task<Result<T>> TapErrorAsync<T>(this Result<T> result, Func<IEnumerable<string>, T?, Task> action)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (result.IsFailure)
+        {
+            await action(result.Errors ?? [ResultConstants.DefaultErrorMessage], result.Value).ConfigureAwait(false);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Async-source overload of <see cref="TapErrorAsync{T}(Result{T}, Func{IEnumerable{string}, T, Task})"/>:
+    /// asynchronously executes a side effect with the errors and the (possibly null) carried value of a failed
+    /// Result{T} without changing it (fires only when the result is a failure) and returns the original result
+    /// instance, so value-carrying failures survive. Exceptions from the action propagate to the caller; nothing
+    /// is swallowed.
+    /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="resultTask">The previous result task.</param>
+    /// <param name="action">Asynchronous action to execute with the error collection and carried value.</param>
+    /// <returns>A task containing the original result instance.</returns>
+    public static async Task<Result<T>> TapErrorAsync<T>(this Task<Result<T>> resultTask, Func<IEnumerable<string>, T?, Task> action)
+    {
+        ArgumentNullException.ThrowIfNull(resultTask);
+        ArgumentNullException.ThrowIfNull(action);
+
+        var result = await resultTask.ConfigureAwait(false);
+        if (result.IsFailure)
+        {
+            await action(result.Errors ?? [ResultConstants.DefaultErrorMessage], result.Value).ConfigureAwait(false);
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Error-aware recovery for non-generic Result.
     /// </summary>
     /// <param name="result">The input Result.</param>
