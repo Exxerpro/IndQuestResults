@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.7.0] - 2026-07-22
+
+### Added — value-carrying failure combinators
+Completes the value-carrying railway family (building on the v1.5.0/v1.6.0 failure-value-preserving combinators) so callers can log on failure and attach a diagnostic value without leaving the fluent chain:
+- `EnsureOrFault<T>(predicate, Func<T,Result<T>> onFalse)` (sync + Task-source) — an `Ensure` whose failure carries a value, not just a string.
+- value-aware `TapError<T>(Action<IReadOnlyList<string>, T?>)` (sync + Task-source) — side effect on failure that also receives the carried value.
+- value-aware `TapErrorAsync<T>(Func<IEnumerable<string>, T?, Task>)` (sync + Task-source) — async variant.
+- sync value-aware `Match<T,TOut>` and `MatchValue<T,TOut>` (`onFailure` receives `(errors, T? value)`) — sync siblings of the existing value-aware `MatchAsync`.
+
+### Notes
+- First release consumable by the IndTrace command-handler functional-pipeline refactor.
+- Still multi-targets `net9.0` and `net10.0` (net9 remains supported through this line per the 1.6.0 notice).
+
 ## [1.6.0] - 2026-07-21
 
 > **Last release with .NET 9 support.** As .NET 9 nears end of life, v1.7.0+ will

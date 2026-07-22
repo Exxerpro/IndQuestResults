@@ -5,7 +5,7 @@
 [![Coverage](https://img.shields.io/badge/coverage-74.5%25-green)](#)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#)
 [![.NET Version](https://img.shields.io/badge/.NET-10.0+-blue)](#)
-[![NuGet](https://img.shields.io/badge/NuGet-v1.6.0-blue)](#release-notes)
+[![NuGet](https://img.shields.io/badge/NuGet-v1.7.0-blue)](#release-notes)
 [![Contributors](https://img.shields.io/badge/contributors-welcome-brightgreen)](#contributing)
 [![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-enforced-blue)](#code-of-conduct) [![Docs](https://img.shields.io/badge/docs-available-brightgreen)](docs/README.md)
 
