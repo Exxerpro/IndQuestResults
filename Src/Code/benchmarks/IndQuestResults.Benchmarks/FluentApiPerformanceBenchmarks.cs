@@ -5,7 +5,7 @@ namespace IndQuestResults.Benchmarks;
 /// Measures the overhead of functional composition patterns and railway-oriented programming constructs
 /// including Map, Bind, Ensure, Tap, Match, and Recover operations.
 /// </summary>
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob]
 [MemoryDiagnoser]
 [RPlotExporter]
 public class FluentApiPerformanceBenchmarks

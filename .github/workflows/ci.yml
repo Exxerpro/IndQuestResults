@@ -7,7 +7,9 @@ on:
     branches: [ main, dev ]
 
 env:
-  DOTNET_VERSION: '10.0.x'
+  DOTNET_VERSION: |
+    10.0.x
+    11.0.x
   SOLUTION_PATH: './Src/Code/IndQuestResults.sln'
   COVERAGE_MIN_LINE: '85'
   COVERAGE_MIN_BRANCH: '75'

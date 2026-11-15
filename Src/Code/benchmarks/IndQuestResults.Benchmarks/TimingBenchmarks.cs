@@ -6,7 +6,7 @@ namespace IndQuestResults.Benchmarks;
 /// Benchmarks to measure the overhead of Result timing extensions compared to manual timing.
 /// Validates that timing extensions add minimal performance impact while providing convenience.
 /// </summary>
-[SimpleJob(RuntimeMoniker.Net90)]
+[SimpleJob]
 [MemoryDiagnoser]
 [CategoriesColumn]
 public class TimingBenchmarks

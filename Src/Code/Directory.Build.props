@@ -4,8 +4,7 @@
   <Import Project="$(MSBuildThisFileDirectory)Common.props" />
 
   <PropertyGroup>
-    <!-- Removed net8.0 due to Lock type requirement (introduced in .NET 9.0) -->
-    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <!-- Each project declares its supported target frameworks. -->
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

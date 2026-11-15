@@ -5,7 +5,7 @@ namespace IndQuestResults.Benchmarks;
 /// IndQuestResults cases are compiled. To include external libraries, add packages
 /// to this benchmarks project and define symbols as needed (see README.md).
 /// </summary>
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob]
 [MemoryDiagnoser]
 public class ExternalComparisonBenchmarks
 {

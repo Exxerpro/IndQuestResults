@@ -4,7 +4,7 @@ namespace IndQuestResults.Benchmarks;
 /// Benchmarks testing the thread-safety and performance characteristics of Result operations under concurrent load.
 /// Validates the immutable design's performance in multi-threaded scenarios and measures contention effects.
 /// </summary>
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob]
 [MemoryDiagnoser]
 [ThreadingDiagnoser]
 public class ConcurrencyBenchmarks

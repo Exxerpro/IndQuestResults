@@ -32,14 +32,20 @@ internal static class CodeFixTestHelper
             compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
             parseOptions: new CSharpParseOptions(LanguageVersion.Preview));
 
+        var runtimeDir = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
         var project = workspace.AddProject(projectInfo)
             .AddMetadataReference(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+            .AddMetadataReference(MetadataReference.CreateFromFile(System.IO.Path.Combine(runtimeDir, "System.Runtime.dll")))
+            .AddMetadataReference(MetadataReference.CreateFromFile(System.IO.Path.Combine(runtimeDir, "System.Collections.dll")))
             .AddMetadataReference(MetadataReference.CreateFromFile(typeof(Console).Assembly.Location))
             .AddMetadataReference(MetadataReference.CreateFromFile(typeof(Result).Assembly.Location))
             .AddMetadataReference(MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location))
-            .AddMetadataReference(MetadataReference.CreateFromFile(typeof(List<>).Assembly.Location));
+            .AddMetadataReference(MetadataReference.CreateFromFile(typeof(List<>).Assembly.Location))
+            .AddMetadataReference(MetadataReference.CreateFromFile(typeof(Task).Assembly.Location));
 
-        var document = workspace.AddDocument(project.Id, "Test.cs", SourceText.From(source));
+        var document = project.AddDocument("Test.cs", SourceText.From(source));
+        workspace.TryApplyChanges(document.Project.Solution);
+        document = workspace.CurrentSolution.GetDocument(document.Id)!;
 
         // Run analyzer to get diagnostics
         var analyzer = new TAnalyzer();

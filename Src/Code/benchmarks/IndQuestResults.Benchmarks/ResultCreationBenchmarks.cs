@@ -5,7 +5,7 @@ namespace IndQuestResults.Benchmarks;
 /// Tests construction costs for successful and failed Results with varying error collection sizes.
 /// Validates performance characteristics of Result instantiation patterns.
 /// </summary>
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob]
 [MemoryDiagnoser]
 [RPlotExporter]
 public class ResultCreationBenchmarks

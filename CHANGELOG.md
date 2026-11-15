@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Added — .NET 11 (`net11.0`) Target Framework Support & Architecture Evaluation
+- Added `.NET 11.0` (`net11.0`) target framework alongside `.NET 10.0` (`net10.0` LTS), retiring `.NET 9.0` per the v1.6.0 support notice.
+- Pinned SDK `11.0.100` (`rollForward: latestFeature`) in `global.json` and updated CI/Release/Docs workflows (`ci.yml`, `release.yml`, `docs.yml`) for `.NET 10.0.x` and `.NET 11.0.x`.
+- Documented **ADR-001** (`docs/specs/adr-001-csharp15-unions-and-closed-hierarchies.md`, Issue #7): evaluated C# 15 / .NET 11 `union` types and `closed` hierarchies via BMAD Party Mode (upgraded to v6.12.4) and opted out to prevent `IUnion.Value` (`object?`) value-type boxing, custom `[Union]` `TryGetValue` ceremony/overload collisions, and breaking changes to our strictly additive `Result<T>` contract.
+
 ## [1.7.0] - 2026-07-22
 
 ### Added — value-carrying failure combinators

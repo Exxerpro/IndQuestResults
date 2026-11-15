@@ -61,7 +61,7 @@ dotnet tool install -g dotnet-stryker
 ```
 
 ### Development Environment
-- Target Framework: .NET 9.0
+- Target Frameworks: .NET 10.0 and .NET 11.0 (`net10.0;net11.0`)
 - Language Version: Latest C#
 - Nullable Reference Types: Enabled
 - Treat Warnings as Errors: Enabled
@@ -228,7 +228,7 @@ F:\Dynamic\IndFusion\IndQuestResults\
 ## Build Configuration
 
 The solution uses centralized build configuration via `Directory.Build.props`:
-- Consistent targeting of .NET 9.0
+- Multi-targeting of .NET 10.0 and .NET 11.0 (`net10.0;net11.0`) for the shipping library and mutation tests, and `net11.0` for unit tests, samples, and benchmarks
 - Shared package references for test projects
 - Mutation testing tools for quality assurance projects
 - Benchmarking tools for performance projects
