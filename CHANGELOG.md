@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.8.0] - 2026-11-15
 
 ### Added — .NET 11 (`net11.0`) Target Framework Support & Architecture Evaluation
 - Added `.NET 11.0` (`net11.0`) target framework alongside `.NET 10.0` (`net10.0` LTS), retiring `.NET 9.0` per the v1.6.0 support notice.
