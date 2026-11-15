@@ -7,6 +7,7 @@ This is the entry point for all Result-related specifications and documentation.
 - [Result Manual](../Result-Manual.md)
 - [Result and Result<T> Specification](./result-spec.md)
 - [Mutation Hardening Specs](./mutation-spec.md)
+- [ADR-001: Opt-Out of C# 15 / .NET 11 Union Types and Closed Hierarchies](./adr-001-csharp15-unions-and-closed-hierarchies.md)
 
 ### Recommended Reading Order
 

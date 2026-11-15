@@ -5,7 +5,7 @@ namespace IndQuestResults.Benchmarks;
 /// Validates the claimed 50% improvement in error formatting through optimized string operations
 /// and tests various error collection scenarios including Span&lt;T&gt; optimizations.
 /// </summary>
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob]
 [MemoryDiagnoser]
 [RPlotExporter]
 public class ErrorFormattingBenchmarks

@@ -25,7 +25,7 @@ public static class BenchmarkExtensions
 /// Validates the claimed 40% reduction in memory pressure and zero allocations for successful operations.
 /// Tests various scenarios including boxing avoidance, closure allocations, and collection processing efficiency.
 /// </summary>
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob]
 [MemoryDiagnoser]
 [EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class MemoryAllocationBenchmarks
@@ -49,7 +49,9 @@ public class MemoryAllocationBenchmarks
     public void Setup()
     {
         _resultArray = new Result<int>[CollectionSize];
+#pragma warning disable IDE0028 // Preserve preallocated capacity for allocation measurements.
         _resultList = new List<Result<int>>(CollectionSize);
+#pragma warning restore IDE0028
 
         for (int i = 0; i < CollectionSize; i++)
         {

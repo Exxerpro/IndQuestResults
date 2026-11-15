@@ -52,7 +52,7 @@ public class TestClass
     }
 }";
 
-        var expected = Diagnostic(ExceptionHandlingComplianceAnalyzer.MissingExceptionParameterId, DiagnosticSeverity.Warning, 14, 20);
+        var expected = Diagnostic(ExceptionHandlingComplianceAnalyzer.MissingExceptionParameterId, DiagnosticSeverity.Warning, 15, 20);
 
         await VerifyAnalyzerAsync<ExceptionHandlingComplianceAnalyzer>(testCode, _logger, expected);
     }

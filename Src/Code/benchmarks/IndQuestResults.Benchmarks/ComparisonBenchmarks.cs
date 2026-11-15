@@ -5,7 +5,7 @@ namespace IndQuestResults.Benchmarks;
 /// Measures performance of core Result operations including creation, checking, error handling,
 /// and functional operations like Map, Bind, and Match.
 /// </summary>
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob]
 [MemoryDiagnoser]
 [RPlotExporter]
 public class ComparisonBenchmarks

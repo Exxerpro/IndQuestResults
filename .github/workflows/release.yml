@@ -10,7 +10,9 @@ permissions:
   id-token: write   # OIDC token for NuGet.org Trusted Publishing
 
 env:
-  DOTNET_VERSION: '10.0.x'
+  DOTNET_VERSION: |
+    10.0.x
+    11.0.x
   SOLUTION_PATH: 'Src/Code/IndQuestResults.sln'
 
 jobs:
@@ -42,7 +44,9 @@ jobs:
           --filter-not-class IndQuestResults.Tests.Mutation.Performance.PerformanceMetricsSmokeTests
 
     - name: Pack
-      run: dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj -c Release --no-build -o ./packages
+      run: |
+        dotnet pack Src/Code/src/IndQuestResults/IndQuestResults.csproj -c Release --no-build -o ./packages
+        dotnet pack Src/Code/src/IndQuestResults.Analyzers/IndQuestResults.Analyzers.csproj -c Release --no-build -o ./packages
 
     # Trusted Publishing: exchanges this workflow's OIDC identity for a
     # short-lived NuGet.org API key. Requires a Trusted Publishing policy on

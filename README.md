@@ -5,7 +5,7 @@
 [![Coverage](https://img.shields.io/badge/coverage-74.5%25-green)](#)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#)
 [![.NET Version](https://img.shields.io/badge/.NET-10.0+-blue)](#)
-[![NuGet](https://img.shields.io/badge/NuGet-v1.7.0-blue)](#release-notes)
+[![NuGet](https://img.shields.io/badge/NuGet-v1.8.0-blue)](#release-notes)
 [![Contributors](https://img.shields.io/badge/contributors-welcome-brightgreen)](#contributing)
 [![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-enforced-blue)](#code-of-conduct) [![Docs](https://img.shields.io/badge/docs-available-brightgreen)](docs/README.md)
 
@@ -13,7 +13,7 @@ A battle-tested, enterprise-grade Result<T> library for functional error handlin
 
 > ⚠️ **.NET 9 support notice** — **v1.6.0 is the last release to support .NET 9.**
 > As .NET 9 approaches end of life, subsequent releases (v1.7.0+) will target **.NET 10 and later only**.
-> This version multi-targets `net9.0` and `net10.0`; if you are still on .NET 9, pin to `1.6.0` and plan your upgrade to .NET 10.
+> This version multi-targets `net10.0` and `net11.0`; if you are still on .NET 9, pin to `1.6.0` and plan your upgrade to .NET 10 or later.
 
 ## Key Features
 
@@ -113,7 +113,9 @@ Note: Optional analyzers are available in `IndQuestResults.Analyzers` to guide a
 
 ## Package Information
 
-- Target Framework: .NET 10.0+
+- SDK: .NET 11.0.100 or a later .NET 11 SDK (see `global.json`).
+- Target Frameworks: .NET 10.0 and .NET 11.0.
+- Tests, samples, and benchmarks run on .NET 11; install the .NET 10 runtime to run the multi-targeted mutation tests.
 - Dependencies: none (zero external dependencies)
 - Package ID: IndQuestResults
 - License: MIT

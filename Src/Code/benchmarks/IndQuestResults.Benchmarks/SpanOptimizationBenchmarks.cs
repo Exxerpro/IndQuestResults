@@ -5,7 +5,7 @@ namespace IndQuestResults.Benchmarks;
 /// Validates the claimed 70% reduction in allocations through stack-allocated Span usage
 /// for small error collections (≤16 items) versus traditional heap-allocated approaches.
 /// </summary>
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob]
 [MemoryDiagnoser]
 [RPlotExporter]
 public class SpanOptimizationBenchmarks
